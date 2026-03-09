@@ -126,7 +126,7 @@ export default function Scoop() {
                                 Choose Category Preference
                                 <span className="ml-2 text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full uppercase tracking-wider font-bold">Most Popular</span>
                             </h3>
-                            <div className="grid grid-cols-2 gap-4 relative z-10">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
                                 {CATEGORY_PREFS.map((cat) => {
                                     const isSelected = selectedCategory.id === cat.id;
                                     return (
