@@ -113,15 +113,15 @@ export default function Footer() {
                     <div className="flex flex-col gap-3">
                         <h4 className="text-xl font-extrabold text-white tracking-wide">Stay Sweet</h4>
                         <p className="text-sm font-medium text-white/80 leading-relaxed">
-                            Be the first to know about new drops and get <span className="text-yellow-300 font-bold">15% off</span> your first order!
+                            Be the first to know about new drops and get <span className="text-pink-300 font-bold">15% off</span> your first order!
                         </p>
-                        <div className="flex items-center bg-white/15 backdrop-blur-md rounded-2xl border-2 border-white/20 overflow-hidden mt-2 focus-within:border-yellow-300 focus-within:bg-white/25 transition-all">
+                        <div className="flex items-center bg-white/15 backdrop-blur-md rounded-2xl border-2 border-white/20 overflow-hidden mt-2 focus-within:border-pink-300 focus-within:bg-white/25 transition-all">
                             <input
                                 type="email"
                                 placeholder="Email address..."
                                 className="flex-1 py-3.5 px-4 bg-transparent text-sm font-bold text-white placeholder:text-white/60 outline-none"
                             />
-                            <button className="bg-transparent px-4 py-2 text-yellow-300 hover:scale-110 transition-transform" aria-label="Subscribe">
+                            <button className="bg-transparent px-4 py-2 text-pink-300 hover:scale-110 transition-transform" aria-label="Subscribe">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path d="M22 2L11 13" /><path d="M22 2L15 22L11 13L2 9L22 2Z" />
                                 </svg>
@@ -131,14 +131,14 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Yellow wave bottom */}
+            {/* Pink wave bottom */}
             <div className="h-[30px] relative mt-[-1px]">
                 <div className="absolute inset-0 bg-[#3b8a8a]"></div>
                 <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-full block absolute top-0 left-0 z-10">
                     <defs>
                         <linearGradient id="wave-gradient-bottom" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#facc15" />
-                            <stop offset="100%" stopColor="#fbbf24" />
+                            <stop offset="0%" stopColor="#f9a8d4" />
+                            <stop offset="100%" stopColor="#f472b6" />
                         </linearGradient>
                     </defs>
                     <path d="M0,0 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="url(#wave-gradient-bottom)" />

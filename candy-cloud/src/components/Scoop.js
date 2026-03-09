@@ -19,7 +19,6 @@ const COLOR_THEMES = [
 ];
 
 const CATEGORY_PREFS = [
-    { id: "any", name: "Mix Em All!", emoji: "🍭" },
     { id: "sweet-treat", name: "Sweet Treat", emoji: "🍬" },
     { id: "dreamy-delight", name: "Dreamy Delight", emoji: "☁️" },
     { id: "cloud-nine", name: "Cloud Nine", emoji: "🧁" },
@@ -135,12 +134,29 @@ export default function Scoop() {
                                             key={cat.id}
                                             onClick={() => setSelectedCategory(cat)}
                                             className={`
-                                                p-4 rounded-2xl flex items-center gap-3 transition-all duration-300
-                                                border-2 ${isSelected ? "border-pink-500 bg-white ring-4 ring-pink-50 shadow-md scale-[1.02]" : "border-gray-100 bg-white/60 hover:bg-white hover:border-pink-200"}
+                                                relative p-6 rounded-[24px] flex flex-col items-center gap-3 transition-all duration-300 overflow-hidden group
+                                                border-2 ${isSelected ? "border-pink-500 shadow-[0_10px_30px_rgba(236,72,153,0.3)] scale-[1.03] -translate-y-1" : "border-pink-50 bg-white/60 hover:bg-white hover:border-pink-200 hover:shadow-lg hover:-translate-y-1"}
                                             `}
                                         >
-                                            <span className="text-2xl">{cat.emoji}</span>
-                                            <span className={`font-bold ${isSelected ? 'text-pink-600' : 'text-gray-600'}`}>{cat.name}</span>
+                                            {/* Dynamic vibrant background when selected */}
+                                            {isSelected && (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-pink-100/80 via-white to-purple-100/80 opacity-100 z-0"></div>
+                                            )}
+
+                                            {/* The Emoji Icon Box */}
+                                            <div className={`
+                                                relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-4xl transition-transform duration-500 
+                                                ${isSelected ? "bg-white shadow-md scale-110" : "bg-pink-50 group-hover:bg-pink-100 group-hover:scale-110"}
+                                            `}>
+                                                {cat.emoji}
+                                                {isSelected && <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white animate-bounce"></div>}
+                                            </div>
+
+                                            {/* Text Selection */}
+                                            <span className={`relative z-10 text-lg font-black tracking-wide text-center mt-1 leading-tight ${isSelected ? 'text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 drop-shadow-sm' : 'text-gray-600 group-hover:text-pink-500'}`}>
+                                                {cat.name}
+                                            </span>
+
                                         </button>
                                     );
                                 })}
