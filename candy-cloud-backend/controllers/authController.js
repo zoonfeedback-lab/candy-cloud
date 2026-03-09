@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const OTP = require("../models/OTP");
 const sendOTP = require("../utils/sendEmail");
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate JWT tokens
 const generateTokens = (id) => {
@@ -162,6 +165,68 @@ exports.login = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+
+// @desc    Login/Register with Google
+// @route   POST /api/auth/google
+exports.googleLogin = async (req, res, next) => {
+    try {
+        const { credential } = req.body;
+
+        if (!credential) {
+            res.status(400);
+            return next(new Error("No Google credential provided"));
+        }
+
+        // Verify the Google token
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { email, name, sub: googleId } = payload;
+
+        // Check if user already exists
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // Register new user via Google
+            user = await User.create({
+                name,
+                email,
+                authProvider: "google",
+                // password is not required for google users
+            });
+        }
+
+        // Generate our own JWT tokens for the user
+        const { accessToken, refreshToken } = generateTokens(user._id);
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(user.isNew ? 201 : 200).json({
+            success: true,
+            token: accessToken,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                authProvider: user.authProvider,
+            },
+        });
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        res.status(401);
+        next(new Error("Google authentication failed"));
     }
 };
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "@/context/AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function AuthModal() {
     const {
@@ -10,6 +11,7 @@ export default function AuthModal() {
         authModalMode,
         closeAuthModal,
         login,
+        loginWithGoogle,
         register,
         requestRegistrationOTP,
     } = useAuth();
@@ -58,6 +60,20 @@ export default function AuthModal() {
             closeAuthModal();
         } catch (err) {
             setError(err.message || "Invalid email or password");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        try {
+            setLoading(true);
+            setError("");
+            await loginWithGoogle(credentialResponse.credential);
+            resetForm();
+            closeAuthModal();
+        } catch (err) {
+            setError(err.message || "Google sign-in failed");
         } finally {
             setLoading(false);
         }
@@ -222,6 +238,23 @@ export default function AuthModal() {
                         >
                             {loading ? "Signing in..." : "Sign In ✨"}
                         </button>
+
+                        <div className="relative flex py-3 items-center">
+                            <div className="flex-grow border-t border-gray-200"></div>
+                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold uppercase">Or continue with</span>
+                            <div className="flex-grow border-t border-gray-200"></div>
+                        </div>
+
+                        <div className="flex justify-center w-full">
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={() => setError("Google sign-in was unsuccessful or cancelled")}
+                                shape="pill"
+                                theme="outline"
+                                size="large"
+                            />
+                        </div>
+
                     </form>
                 )}
 
@@ -283,6 +316,24 @@ export default function AuthModal() {
                         >
                             {loading ? "Sending Code..." : "Next: Verify Email 📨"}
                         </button>
+
+                        <div className="relative flex py-3 items-center">
+                            <div className="flex-grow border-t border-gray-200"></div>
+                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold uppercase">Or continue with</span>
+                            <div className="flex-grow border-t border-gray-200"></div>
+                        </div>
+
+                        <div className="flex justify-center w-full">
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={() => setError("Google sign-up was unsuccessful or cancelled")}
+                                shape="pill"
+                                theme="outline"
+                                text="signup_with"
+                                size="large"
+                            />
+                        </div>
+
                     </form>
                 )}
 

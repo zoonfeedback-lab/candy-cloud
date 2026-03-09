@@ -15,10 +15,14 @@ const userSchema = new mongoose.Schema({
         match: [/^\S+@\S+\.\S+$/, "Please add a valid email"],
     },
     password: {
-        type: String,
-        required: [true, "Please add a password"],
+        type: String, // Optional for Google SSO
         minlength: 6,
-        select: false, // Don't return password by default
+        select: false,
+    },
+    authProvider: {
+        type: String,
+        enum: ["local", "google"],
+        default: "local",
     },
     phone: {
         type: String,

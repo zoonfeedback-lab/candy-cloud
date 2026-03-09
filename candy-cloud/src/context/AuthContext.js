@@ -78,6 +78,24 @@ export function AuthProvider({ children }) {
         return data;
     };
 
+    // Google Login
+    const loginWithGoogle = async (credential) => {
+        const res = await fetch(`${API_URL}/api/auth/google`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ credential }),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || "Google Authentication failed");
+
+        setToken(data.token);
+        setUser(data.user);
+        localStorage.setItem("cc_token", data.token);
+        localStorage.setItem("cc_user", JSON.stringify(data.user));
+        return data;
+    };
+
     // Logout
     const logout = useCallback(async () => {
         try {
@@ -148,6 +166,7 @@ export function AuthProvider({ children }) {
             requestRegistrationOTP,
             register,
             login,
+            loginWithGoogle,
             logout,
             authFetch,
             API_URL,
