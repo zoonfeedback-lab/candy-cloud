@@ -38,9 +38,15 @@ const userSchema = new mongoose.Schema({
         enum: ["customer", "admin"],
         default: "customer",
     },
-    lastSpunAt: {
-        type: Date,
-        default: null,
+    hasSpun: {
+        type: Boolean,
+        default: false,
+    },
+    activeReward: {
+        label: { type: String, default: null },
+        discountType: { type: String, enum: ["percentage", "fixed", "item", null], default: null },
+        discountValue: { type: Number, default: 0 },
+        wonAt: { type: Date, default: null },
     },
 }, {
     timestamps: true,

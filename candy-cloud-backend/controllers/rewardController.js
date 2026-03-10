@@ -1,22 +1,15 @@
-const Coupon = require("../models/Coupon");
 const User = require("../models/User");
-const crypto = require("crypto");
 
 const PRIZES = [
-    { label: "Mystery Item 3", discountType: "item", discountValue: 0, weight: 10 },    // Index 0
-    { label: "10% OFF", discountType: "percentage", discountValue: 10, weight: 30 },   // Index 1
-    { label: "Mystery Item 1", discountType: "item", discountValue: 0, weight: 10 },    // Index 2
-    { label: "Free Shipping", discountType: "fixed", discountValue: 500, weight: 20 },  // Index 3 (assuming 500 = free shipping)
-    { label: "Mystery Item 2", discountType: "item", discountValue: 0, weight: 10 },    // Index 4
-    { label: "Free Sticker", discountType: "item", discountValue: 0, weight: 20 },      // Index 5
+    { label: "Mystery Item 3", discountType: "item", discountValue: 0, weight: 10 },
+    { label: "10% OFF", discountType: "percentage", discountValue: 10, weight: 30 },
+    { label: "Mystery Item 1", discountType: "item", discountValue: 0, weight: 10 },
+    { label: "Free Shipping", discountType: "fixed", discountValue: 500, weight: 20 },
+    { label: "Mystery Item 2", discountType: "item", discountValue: 0, weight: 10 },
+    { label: "Free Sticker", discountType: "item", discountValue: 0, weight: 20 },
 ];
 
-// Helper to generate a random code
-const generatePromoCode = () => {
-    return 'LUCKY-' + crypto.randomBytes(3).toString("hex").toUpperCase();
-};
-
-// @desc    Spin the wheel and get a reward
+// @desc    Spin the wheel and get a reward (one-time only)
 // @route   POST /api/rewards/spin
 // @access  Private
 exports.spinWheel = async (req, res, next) => {
@@ -28,18 +21,12 @@ exports.spinWheel = async (req, res, next) => {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Check cooldown (24 hours)
-        const now = new Date();
-        if (user.lastSpunAt) {
-            const timeDiff = now.getTime() - new Date(user.lastSpunAt).getTime();
-            const hoursDiff = timeDiff / (1000 * 3600);
-            if (hoursDiff < 24) {
-                return res.status(403).json({
-                    success: false,
-                    message: `You can only spin once every 24 hours. Check back later!`,
-                    nextSpinAvailable: new Date(new Date(user.lastSpunAt).getTime() + 24 * 60 * 60 * 1000)
-                });
-            }
+        // One-time spin check
+        if (user.hasSpun) {
+            return res.status(403).json({
+                success: false,
+                message: "You've already claimed your welcome reward!",
+            });
         }
 
         // Determine Prize using weighted randomizer
@@ -56,79 +43,86 @@ exports.spinWheel = async (req, res, next) => {
         }
 
         const wonPrize = PRIZES[winningIndex];
-        const couponCode = generatePromoCode();
 
-        // Save Coupon
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
-
-        const coupon = await Coupon.create({
-            code: couponCode,
-            user: userId,
+        // Save reward directly to user account
+        user.hasSpun = true;
+        user.activeReward = {
+            label: wonPrize.label,
             discountType: wonPrize.discountType,
             discountValue: wonPrize.discountValue,
-            description: wonPrize.label,
-            expiresAt
-        });
-
-        // Update User lastSpunAt
-        user.lastSpunAt = now;
+            wonAt: new Date(),
+        };
         await user.save();
 
         res.status(200).json({
             success: true,
             winningIndex,
-            coupon: {
-                code: coupon.code,
+            reward: {
                 label: wonPrize.label,
-                expiresAt: coupon.expiresAt
-            }
+                discountType: wonPrize.discountType,
+                discountValue: wonPrize.discountValue,
+            },
         });
     } catch (error) {
         next(error);
     }
 };
 
-// @desc    Apply a promo code
-// @route   POST /api/rewards/apply-coupon
+// @desc    Get user's active reward
+// @route   GET /api/rewards/active
 // @access  Private
-exports.applyCoupon = async (req, res, next) => {
+exports.getActiveReward = async (req, res, next) => {
     try {
-        const { code } = req.body;
-        const userId = req.user.id;
+        const user = await User.findById(req.user.id);
 
-        if (!code) {
-            return res.status(400).json({ success: false, message: "Please provide a coupon code" });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Find the coupon
-        const coupon = await Coupon.findOne({
-            code: code.toUpperCase(),
-            user: userId
-        });
-
-        if (!coupon) {
-            return res.status(404).json({ success: false, message: "Invalid or unauthorized coupon code" });
-        }
-
-        if (coupon.isUsed) {
-            return res.status(400).json({ success: false, message: "This coupon has already been used" });
-        }
-
-        if (new Date(coupon.expiresAt) < new Date()) {
-            return res.status(400).json({ success: false, message: "This coupon has expired" });
+        // Check if user has an active (unredeemed) reward
+        if (!user.activeReward || !user.activeReward.label) {
+            return res.status(200).json({ success: true, reward: null });
         }
 
         res.status(200).json({
             success: true,
-            coupon: {
-                id: coupon._id,
-                code: coupon.code,
-                discountType: coupon.discountType,
-                discountValue: coupon.discountValue,
-                description: coupon.description
-            }
+            reward: {
+                label: user.activeReward.label,
+                discountType: user.activeReward.discountType,
+                discountValue: user.activeReward.discountValue,
+                wonAt: user.activeReward.wonAt,
+            },
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Redeem the active reward (called after order is placed)
+// @route   POST /api/rewards/redeem
+// @access  Private
+exports.redeemReward = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        if (!user.activeReward || !user.activeReward.label) {
+            return res.status(400).json({ success: false, message: "No active reward to redeem" });
+        }
+
+        // Clear the reward
+        user.activeReward = {
+            label: null,
+            discountType: null,
+            discountValue: 0,
+            wonAt: null,
+        };
+        await user.save();
+
+        res.status(200).json({ success: true, message: "Reward redeemed successfully!" });
     } catch (error) {
         next(error);
     }

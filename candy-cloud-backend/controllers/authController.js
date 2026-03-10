@@ -119,6 +119,7 @@ exports.register = async (req, res, next) => {
                 email: user.email,
                 phone: user.phone,
                 role: user.role,
+                hasSpun: user.hasSpun,
             },
         });
     } catch (error) {
@@ -161,6 +162,7 @@ exports.login = async (req, res, next) => {
                 email: user.email,
                 phone: user.phone,
                 role: user.role,
+                hasSpun: user.hasSpun,
             },
         });
     } catch (error) {
@@ -220,6 +222,7 @@ exports.googleLogin = async (req, res, next) => {
                 email: user.email,
                 phone: user.phone,
                 role: user.role,
+                hasSpun: user.hasSpun,
                 authProvider: user.authProvider,
             },
         });
@@ -278,6 +281,7 @@ exports.getMe = async (req, res, next) => {
                 phone: user.phone,
                 address: user.address,
                 role: user.role,
+                hasSpun: user.hasSpun,
             },
         });
     } catch (error) {

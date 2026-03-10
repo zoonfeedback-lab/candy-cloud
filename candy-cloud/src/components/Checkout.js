@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -31,11 +31,9 @@ function CheckoutContent() {
     const [jazzCashData, setJazzCashData] = useState(null);
     const [easyPaisaData, setEasyPaisaData] = useState(null);
 
-    // Promo code state
-    const [promoCode, setPromoCode] = useState("");
-    const [appliedPromo, setAppliedPromo] = useState(null);
-    const [promoError, setPromoError] = useState("");
-    const [promoLoading, setPromoLoading] = useState(false);
+    // Active reward state (auto-applied from spinner)
+    const [activeReward, setActiveReward] = useState(null);
+    const [rewardLoading, setRewardLoading] = useState(false);
 
     const isDirect = searchParams.get("direct") === "true";
 
@@ -77,54 +75,39 @@ function CheckoutContent() {
 
     const shippingCost = shippingMethod === "express" ? 500 : 0;
 
-    // Calculate Promo Discount
+    // Auto-fetch active reward on mount
+    useEffect(() => {
+        const fetchActiveReward = async () => {
+            if (!isAuthenticated) return;
+            setRewardLoading(true);
+            try {
+                const res = await authFetch(`${API_URL}/api/rewards/active`);
+                const data = await res.json();
+                if (data.success && data.reward) {
+                    setActiveReward(data.reward);
+                }
+            } catch (err) {
+                console.error("Failed to fetch active reward", err);
+            } finally {
+                setRewardLoading(false);
+            }
+        };
+        fetchActiveReward();
+    }, [isAuthenticated, authFetch, API_URL]);
+
+    // Calculate Reward Discount
     let discountAmount = 0;
-    if (appliedPromo) {
-        if (appliedPromo.discountType === "percentage") {
-            discountAmount = itemsSubtotal * (appliedPromo.discountValue / 100);
-        } else if (appliedPromo.discountType === "fixed") {
-            // Apply only to items/shipping
-            discountAmount = Math.min(itemsSubtotal + shippingCost, appliedPromo.discountValue);
-        } else if (appliedPromo.discountType === "item") {
-            // "Mystery Item" / Free Sticker etc. doesn't reduce price but is added to order list. Wait for confirmation.
-            // Handled visually in the summary.
+    if (activeReward) {
+        if (activeReward.discountType === "percentage") {
+            discountAmount = itemsSubtotal * (activeReward.discountValue / 100);
+        } else if (activeReward.discountType === "fixed") {
+            discountAmount = Math.min(itemsSubtotal + shippingCost, activeReward.discountValue);
+        } else if (activeReward.discountType === "item") {
             discountAmount = 0;
         }
     }
 
     const total = Math.max(0, itemsSubtotal + shippingCost - discountAmount);
-
-    const handleApplyPromo = async () => {
-        if (!promoCode.trim()) return;
-        if (!isAuthenticated) {
-            openAuthModal("login");
-            return;
-        }
-
-        setPromoLoading(true);
-        setPromoError("");
-
-        try {
-            const res = await authFetch(`${API_URL}/api/rewards/apply-coupon`, {
-                method: "POST",
-                body: JSON.stringify({ code: promoCode }),
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                setAppliedPromo(data.coupon);
-                setPromoCode("");
-            } else {
-                setPromoError(data.message || "Invalid or expired promo code.");
-                setAppliedPromo(null);
-            }
-        } catch (error) {
-            setPromoError("Failed to apply promo code. Try again.");
-            setAppliedPromo(null);
-        } finally {
-            setPromoLoading(false);
-        }
-    };
 
     return (
         <section className="py-12 px-5 max-w-[1100px] mx-auto w-full">
@@ -274,9 +257,9 @@ function CheckoutContent() {
                                 <span className="font-bold text-gray-400">Shipping</span>
                                 <span className="font-bold text-gray-500">{shippingCost > 0 ? `Rs ${shippingCost.toLocaleString()}` : "Free"}</span>
                             </div>
-                            {appliedPromo && (
+                            {activeReward && (
                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="font-bold text-pink-500">Discount ({appliedPromo.description})</span>
+                                    <span className="font-bold text-pink-500">✨ Spinner Reward ({activeReward.label})</span>
                                     <span className="font-bold text-pink-500">
                                         -{discountAmount > 0 ? `Rs ${discountAmount.toLocaleString()}` : 'Free Gift'}
                                     </span>
@@ -289,42 +272,22 @@ function CheckoutContent() {
                             <span className="text-2xl font-black text-pink-500">Rs {total.toLocaleString()}</span>
                         </div>
 
-                        {/* Promo Code Input */}
-                        <div className="mb-6 bg-[#f8f9fa] rounded-xl p-4 border border-gray-100">
-                            <label className="text-xs font-bold text-gray-500 mb-2 block">Promo Code</label>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={promoCode}
-                                    onChange={(e) => setPromoCode(e.target.value)}
-                                    placeholder="LUCKY-XXXX"
-                                    className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 uppercase"
-                                    disabled={appliedPromo || promoLoading}
-                                />
-                                {appliedPromo ? (
-                                    <button
-                                        onClick={() => setAppliedPromo(null)}
-                                        className="px-4 py-2.5 rounded-lg bg-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-300 transition-colors"
-                                    >
-                                        Remove
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={handleApplyPromo}
-                                        disabled={promoLoading || !promoCode}
-                                        className="px-4 py-2.5 rounded-lg bg-pink-500 text-white font-bold text-sm hover:bg-pink-600 transition-colors disabled:opacity-50"
-                                    >
-                                        {promoLoading ? "..." : "Apply"}
-                                    </button>
-                                )}
+                        {/* Active Reward Banner */}
+                        {activeReward && (
+                            <div className="mb-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-4 border border-pink-200">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-lg">✨</span>
+                                    <span className="text-xs font-black text-pink-600 uppercase tracking-wider">Spinner Reward Applied!</span>
+                                </div>
+                                <p className="text-sm font-bold text-gray-700">{activeReward.label}</p>
+                                <p className="text-[10px] text-gray-500 mt-1">This reward was auto-applied from your welcome spin.</p>
                             </div>
-                            {promoError && (
-                                <p className="text-red-500 text-[10px] sm:text-xs mt-2 font-bold">{promoError}</p>
-                            )}
-                            {appliedPromo && (
-                                <p className="text-green-500 text-[10px] sm:text-xs mt-2 font-bold">Code applied successfully! 🎉</p>
-                            )}
-                        </div>
+                        )}
+                        {rewardLoading && (
+                            <div className="mb-6 bg-gray-50 rounded-xl p-4 border border-gray-100 text-center">
+                                <p className="text-xs text-gray-400 font-bold">Checking for rewards...</p>
+                            </div>
+                        )}
 
                         {/* Payment Method Selection */}
                         <div className="mb-6">
@@ -380,7 +343,7 @@ function CheckoutContent() {
                                         shippingCost,
                                         total,
                                         discountAmt: discountAmount,
-                                        couponCode: appliedPromo ? appliedPromo.code : null,
+                                        couponCode: activeReward ? activeReward.label : null,
                                         shippingMethod,
                                         paymentMethod,
                                         shippingAddress: {
@@ -447,6 +410,12 @@ function CheckoutContent() {
                                                         setOrderError(epData.message || "Failed to initialize EasyPaisa payment.");
                                                     }
                                                 } else {
+                                                    // Redeem reward if applied
+                                                    if (activeReward) {
+                                                        try {
+                                                            await authFetch(`${API_URL}/api/rewards/redeem`, { method: "POST" });
+                                                        } catch (e) { console.error("Failed to redeem reward", e); }
+                                                    }
                                                     if (!isDirect) clearCart();
                                                     router.push("/success");
                                                 }

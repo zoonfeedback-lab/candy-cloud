@@ -14,20 +14,22 @@ const PRIZES = [
 ];
 
 export default function PrizeSpinner() {
-    const { isAuthenticated, openAuthModal, authFetch, API_URL } = useAuth();
+    const { isAuthenticated, user, openAuthModal, authFetch, API_URL } = useAuth();
     const [isSpinning, setIsSpinning] = useState(false);
     const [hasSpun, setHasSpun] = useState(false);
     const [prize, setPrize] = useState(null);
     const [rotation, setRotation] = useState(0);
 
-    // Reset spinner when user logs out
+    // Check if user has already spun (from backend user data)
     useEffect(() => {
         if (!isAuthenticated) {
             setHasSpun(false);
             setPrize(null);
             setRotation(0);
+        } else if (user?.hasSpun) {
+            setHasSpun(true);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, user]);
 
     const handleSpinClick = () => {
         if (!isAuthenticated) {
@@ -61,18 +63,8 @@ export default function PrizeSpinner() {
             // Calculate rotation to land exactly on the winning slice
             const extraSpins = Math.floor(Math.random() * 5 + 5) * 360;
             const sliceAngle = 360 / PRIZES.length;
-
-            // The slice center angle
-            // Math backwards to ensure normalizedRotation matches the slice
-            // Slice i ranges from (i * sliceAngle - sliceAngle/2) to (i * sliceAngle + sliceAngle/2)
-            // But visually, index 0 is at top (-90 offset in SVG originally).
-            // Actually, the previous math: winningIndex = Math.floor(((360 - normalizedRotation + sliceAngle / 2) % 360) / sliceAngle)
-            // Reverse engineering it to get a valid normalizedRotation:
             const targetRotation = 360 - (winningIndex * sliceAngle);
-
-            // Add a little randomness within the slice so it doesn't always land dead center
             const randomOffset = (Math.random() - 0.5) * (sliceAngle * 0.8);
-
             const totalRotation = rotation + extraSpins + targetRotation + randomOffset;
 
             setRotation(totalRotation);
@@ -80,7 +72,7 @@ export default function PrizeSpinner() {
             setTimeout(() => {
                 setIsSpinning(false);
                 setHasSpun(true);
-                setPrize({ ...wonPrize, couponCode: data.coupon.code });
+                setPrize({ ...wonPrize });
                 if (wonPrize.label !== "Try Again") {
                     triggerConfetti();
                 }
@@ -181,12 +173,7 @@ export default function PrizeSpinner() {
                             <span className="text-2xl block mb-1">🎊</span>
                             <p className="text-sm text-gray-500 font-medium">You won:</p>
                             <p className="font-black text-pink text-2xl tracking-tight">{prize.label}!</p>
-                            {prize.couponCode && (
-                                <div className="mt-2 bg-pink-50 border border-pink-200 rounded-lg p-2 font-mono text-pink-600 font-bold select-all tracking-wider">
-                                    {prize.couponCode}
-                                </div>
-                            )}
-                            <p className="text-xs text-gray-400 mt-1">Copy this code to use at checkout!</p>
+                            <p className="text-xs text-pink-500 mt-2 font-bold">✨ Auto-applied at checkout!</p>
                         </>
                     )}
                 </div>
