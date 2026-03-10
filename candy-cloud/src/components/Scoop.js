@@ -153,17 +153,17 @@ export default function Scoop() {
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-12 gap-10 items-start">
+                <div className="grid lg:grid-cols-12 gap-10 items-stretch">
                     {/* Left Column: Configuration Form */}
-                    <div className="lg:col-span-7 space-y-10">
+                    <div className="lg:col-span-6 flex flex-col h-full gap-8">
 
                         {/* 2. Size Selection */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+                        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex-1 flex flex-col">
                             <h3 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
                                 <span className="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
                                 Choose your Size
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
                                 {SCOOP_SIZES.map((size) => {
                                     const isSelected = selectedSize.id === size.id;
                                     return (
@@ -171,7 +171,7 @@ export default function Scoop() {
                                             key={size.id}
                                             onClick={() => setSelectedSize(size)}
                                             className={`
-                                                relative p-5 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300
+                                                relative p-5 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 h-full
                                                 border-2 ${isSelected ? "border-pink-400 bg-pink-50 ring-4 ring-pink-50 shadow-md scale-105" : "border-gray-100 bg-white hover:border-pink-200 hover:bg-gray-50"}
                                             `}
                                         >
@@ -189,12 +189,12 @@ export default function Scoop() {
                         </div>
 
                         {/* 3. Color Theme */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+                        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex-1 flex flex-col">
                             <h3 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
                                 <span className="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
                                 Pick a Color Theme
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 flex-1">
                                 {COLOR_THEMES.map((theme) => {
                                     const isSelected = selectedColor.id === theme.id;
                                     return (
@@ -202,7 +202,7 @@ export default function Scoop() {
                                             key={theme.id}
                                             onClick={() => setSelectedColor(theme)}
                                             className={`
-                                                p-4 rounded-2xl flex items-center gap-4 transition-all duration-300
+                                                p-4 rounded-2xl flex items-center gap-4 transition-all duration-300 h-full
                                                 border-2 ${isSelected ? theme.activeClass + ` bg-white shadow-md ring-4 scale-[1.02]` : "border-gray-100 bg-white hover:border-gray-300"}
                                             `}
                                         >
@@ -221,11 +221,11 @@ export default function Scoop() {
                     </div>
 
                     {/* Right Column: Mystery Cup Summary */}
-                    <div className="lg:col-span-5 relative">
-                        {/* Sticky container */}
-                        <div className={`sticky top-24 transition-transform duration-500 ${isPulsing ? 'scale-105' : 'scale-100'}`}>
+                    <div className="lg:col-span-6 relative h-full flex flex-col">
+                        {/* Summary container */}
+                        <div className={`transition-transform duration-500 flex-1 flex flex-col ${isPulsing ? 'scale-105' : 'scale-100'}`}>
 
-                            <div className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] border border-white">
+                            <div className="bg-white flex flex-col h-full justify-between rounded-[32px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] border border-white">
 
                                 {/* Dynamic Header / "The Cup" */}
                                 <div className={`h-48 relative flex items-center justify-center overflow-hidden transition-all duration-700 ${selectedColor.bgRaw}`}>
@@ -246,99 +246,103 @@ export default function Scoop() {
                                 </div>
 
                                 {/* Body */}
-                                <div className="p-8">
-                                    <h3 className="text-2xl font-black text-gray-800 mb-6 text-center">Your Mystery Order</h3>
+                                <div className="p-8 flex-1 flex flex-col justify-between">
+                                    <div className="w-full">
+                                        <h3 className="text-2xl font-black text-gray-800 mb-6 text-center">Your Mystery Order</h3>
 
-                                    <div className="space-y-4 mb-8 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                        <div className="space-y-4 mb-8 bg-gray-50 p-6 rounded-2xl border border-gray-100">
 
-                                        <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-3">
-                                            <span className="text-gray-500 font-medium text-sm">Size</span>
-                                            <div className="text-right">
-                                                <span className="font-bold text-gray-800 block">{selectedSize.name}</span>
-                                                <span className="text-xs text-pink-500 font-bold">{selectedSize.weight}</span>
+                                            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-3">
+                                                <span className="text-gray-500 font-medium text-sm">Size</span>
+                                                <div className="text-right">
+                                                    <span className="font-bold text-gray-800 block">{selectedSize.name}</span>
+                                                    <span className="text-xs text-pink-500 font-bold">{selectedSize.weight}</span>
+                                                </div>
                                             </div>
+
+                                            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-3">
+                                                <span className="text-gray-500 font-medium text-sm">Category</span>
+                                                <span className="font-bold text-gray-800 flex items-center gap-2">
+                                                    {selectedCategory.name} {selectedCategory.emoji}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-gray-500 font-medium text-sm">Theme</span>
+                                                <span className="font-bold text-gray-800 flex items-center gap-2">
+                                                    {selectedColor.name} {selectedColor.emoji}
+                                                </span>
+                                            </div>
+
                                         </div>
 
-                                        <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-3">
-                                            <span className="text-gray-500 font-medium text-sm">Category</span>
-                                            <span className="font-bold text-gray-800 flex items-center gap-2">
-                                                {selectedCategory.name} {selectedCategory.emoji}
-                                            </span>
-                                        </div>
+                                        <div className="w-full mt-auto pt-6">
+                                            {/* Quantity & Total */}
+                                            <div className="flex items-center justify-between mb-8">
+                                                <div className="flex items-center bg-gray-100 rounded-full p-1">
+                                                    <button
+                                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                                        className="w-10 h-10 rounded-full bg-white text-gray-600 font-bold hover:bg-pink-100 hover:text-pink-600 transition-colors flex items-center justify-center shadow-sm"
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <span className="w-12 text-center font-bold text-gray-800">
+                                                        {quantity}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => setQuantity(Math.min(50, quantity + 1))}
+                                                        className="w-10 h-10 rounded-full bg-white text-gray-600 font-bold hover:bg-pink-100 hover:text-pink-600 transition-colors flex items-center justify-center shadow-sm"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
 
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-500 font-medium text-sm">Theme</span>
-                                            <span className="font-bold text-gray-800 flex items-center gap-2">
-                                                {selectedColor.name} {selectedColor.emoji}
-                                            </span>
-                                        </div>
+                                                <div className="text-right">
+                                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total</p>
+                                                    <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+                                                        Rs {totalPrice}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                    </div>
-
-                                    {/* Quantity & Total */}
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="flex items-center bg-gray-100 rounded-full p-1">
+                                            {/* Action Button */}
                                             <button
-                                                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                                className="w-10 h-10 rounded-full bg-white text-gray-600 font-bold hover:bg-pink-100 hover:text-pink-600 transition-colors flex items-center justify-center shadow-sm"
-                                            >
-                                                -
-                                            </button>
-                                            <span className="w-12 text-center font-bold text-gray-800">
-                                                {quantity}
-                                            </span>
-                                            <button
-                                                onClick={() => setQuantity(Math.min(10, quantity + 1))}
-                                                className="w-10 h-10 rounded-full bg-white text-gray-600 font-bold hover:bg-pink-100 hover:text-pink-600 transition-colors flex items-center justify-center shadow-sm"
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-
-                                        <div className="text-right">
-                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total</p>
-                                            <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
-                                                Rs {totalPrice}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Button */}
-                                    <button
-                                        disabled={addedFeedback}
-                                        onClick={handleAddMysteryToCart}
-                                        className={`
+                                                disabled={addedFeedback}
+                                                onClick={handleAddMysteryToCart}
+                                                className={`
                                             w-full py-4 rounded-2xl font-black text-lg transition-all duration-300 flex items-center justify-center gap-2
                                             ${addedFeedback
-                                                ? "bg-green-500 text-white shadow-[0_10px_25px_rgba(34,197,94,0.4)] scale-[0.98]"
-                                                : "bg-gray-900 text-white hover:bg-pink-500 hover:shadow-[0_10px_30px_rgba(236,72,153,0.3)] hover:-translate-y-1"
-                                            }
+                                                        ? "bg-green-500 text-white shadow-[0_10px_25px_rgba(34,197,94,0.4)] scale-[0.98]"
+                                                        : "bg-gray-900 text-white hover:bg-pink-500 hover:shadow-[0_10px_30px_rgba(236,72,153,0.3)] hover:-translate-y-1"
+                                                    }
                                         `}
-                                    >
-                                        {addedFeedback ? (
-                                            <>Added to Cart! <span className="text-2xl">🪄</span></>
-                                        ) : (
-                                            <>Add Mystery Cup <span className="text-2xl">🛒</span></>
-                                        )}
-                                    </button>
+                                            >
+                                                {addedFeedback ? (
+                                                    <>Added to Cart! <span className="text-2xl">🪄</span></>
+                                                ) : (
+                                                    <>Add Mystery Cup <span className="text-2xl">🛒</span></>
+                                                )}
+                                            </button>
+                                        </div>
 
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Trust badges below */}
-                            <div className="flex justify-center gap-4 mt-6 opacity-70">
-                                <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
-                                    🌈 Premium Quality
-                                </span>
-                                <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
-                                    🚀 Ships in 24h
-                                </span>
-                            </div>
+                                {/* Trust badges below */}
+                                <div className="flex justify-center gap-4 mt-6 opacity-70">
+                                    <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
+                                        🌈 Premium Quality
+                                    </span>
+                                    <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
+                                        🚀 Ships in 24h
+                                    </span>
+                                </div>
 
+                            </div>
                         </div>
+
                     </div>
                 </div>
-
             </div>
         </section>
     );

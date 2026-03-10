@@ -88,7 +88,7 @@ export default function Cart() {
                                             >-</button>
                                             <span className="font-bold text-sm">{item.quantity}</span>
                                             <button
-                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                onClick={() => updateQuantity(item.id, Math.min(50, item.quantity + 1))}
                                                 className="text-gray-500 hover:text-gray-800 font-bold w-6 text-center text-lg leading-none transition-colors"
                                                 aria-label="Increase quantity"
                                             >+</button>

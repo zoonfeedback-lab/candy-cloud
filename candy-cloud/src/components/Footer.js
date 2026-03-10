@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
     return (
-        <footer className="relative mt-16">
+        <footer className="relative">
             {/* Cloud-bumps top decoration */}
             <div className="relative h-[200px] md:h-[260px] overflow-hidden bg-transparent" style={{ marginBottom: '-2px' }}>
                 {/* Background teal layer - back clouds */}

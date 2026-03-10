@@ -67,7 +67,7 @@ export default function Hero() {
                             <span className="w-10 text-center font-semibold text-dark">{qty}</span>
                             <button
                                 className="w-9 h-9 bg-pink text-white text-xl font-bold flex items-center justify-center hover:bg-pink-dark transition-colors"
-                                onClick={() => setQty(qty + 1)}
+                                onClick={() => setQty(Math.min(50, qty + 1))}
                                 aria-label="Increase quantity"
                             >+</button>
                         </div>
