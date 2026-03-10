@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { getDashboardStats } = require("../controllers/adminController");
+const { getDashboardStats, getAdminOrders, getAdminInventory } = require("../controllers/adminController");
 const { protect, admin } = require("../middleware/auth");
 
-// All admin routes must be protected and restricted to admin role
-router.use(protect, admin);
+// All admin routes are protected by both user and admin middleware
+router.use(protect);
+router.use(admin);
 
 router.get("/dashboard", getDashboardStats);
+router.get("/orders", getAdminOrders);
+router.get("/inventory", getAdminInventory);
 
 module.exports = router;

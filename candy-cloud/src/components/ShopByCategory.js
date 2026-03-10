@@ -54,7 +54,7 @@ export default function ShopByCategory() {
                 </div>
 
                 {/* Search Bar */}
-                <div className="max-w-[500px] mx-auto mb-10">
+                {/* <div className="max-w-[500px] mx-auto mb-10">
                     <div className="relative group">
                         <input
                             type="text"
@@ -80,10 +80,10 @@ export default function ShopByCategory() {
                             Found <span className="text-pink-500 font-bold">{allResults.length}</span> result{allResults.length !== 1 ? 's' : ''} across all categories
                         </p>
                     )}
-                </div>
+                </div> */}
 
                 {/* Tab Buttons */}
-                <div className="flex justify-center gap-4 mb-12 flex-wrap">
+                {/* <div className="flex justify-center gap-4 mb-12 flex-wrap">
                     {tabs.map((name) => {
                         const isActive = activeTab === name;
                         const tabEmoji = name === ALL_KEY ? "" : categories[name].emoji + " ";
@@ -108,7 +108,7 @@ export default function ShopByCategory() {
                             </button>
                         );
                     })}
-                </div>
+                </div> */}
 
                 {/* Active Category Container */}
                 <div className={`relative rounded-[30px] p-8 md:p-12 transition-all duration-500 shadow-sm border border-white/50 bg-gradient-to-b ${activeTab === ALL_KEY ? 'from-[#f3efff] to-[#ffeaf5]' : 'from-[#ffe3ef] to-[#ffd3e6]'} overflow-hidden`}>

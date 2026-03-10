@@ -1,31 +1,41 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminLayout({ children }) {
     const { isAuthenticated, user, loading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
     const [isAuthorized, setIsAuthorized] = useState(false);
 
+    const isLoginPage = pathname === "/admin/login";
+
     useEffect(() => {
+        if (isLoginPage) return; // Skip auth check on login page
+
         if (!loading) {
             if (!isAuthenticated) {
-                router.replace("/");
+                router.replace("/admin/login");
             } else if (user?.role !== "admin") {
                 router.replace("/");
             } else {
                 setIsAuthorized(true);
             }
         }
-    }, [isAuthenticated, user, loading, router]);
+    }, [isAuthenticated, user, loading, router, isLoginPage]);
+
+    if (isLoginPage) {
+        return <>{children}</>;
+    }
 
     if (loading || !isAuthorized) {
         return (
-            <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
-                <div className="text-pink-500 font-bold text-xl animate-pulse">Loading Admin Panel...</div>
+            <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center space-y-4">
+                <div className="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+                <div className="text-gray-500 font-bold text-sm uppercase tracking-widest">Loading Admin Panel</div>
             </div>
         );
     }

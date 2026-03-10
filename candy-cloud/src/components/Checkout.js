@@ -37,6 +37,26 @@ function CheckoutContent() {
 
     const isDirect = searchParams.get("direct") === "true";
 
+    // Auto-fetch active reward on mount
+    useEffect(() => {
+        const fetchActiveReward = async () => {
+            if (!isAuthenticated) return;
+            setRewardLoading(true);
+            try {
+                const res = await authFetch(`${API_URL}/api/rewards/active`);
+                const data = await res.json();
+                if (data.success && data.reward) {
+                    setActiveReward(data.reward);
+                }
+            } catch (err) {
+                console.error("Failed to fetch active reward", err);
+            } finally {
+                setRewardLoading(false);
+            }
+        };
+        fetchActiveReward();
+    }, [isAuthenticated, authFetch, API_URL]);
+
     if (!isLoaded) return null;
 
     let itemsToRender = cartItems;
@@ -74,26 +94,6 @@ function CheckoutContent() {
     }
 
     const shippingCost = shippingMethod === "express" ? 500 : 0;
-
-    // Auto-fetch active reward on mount
-    useEffect(() => {
-        const fetchActiveReward = async () => {
-            if (!isAuthenticated) return;
-            setRewardLoading(true);
-            try {
-                const res = await authFetch(`${API_URL}/api/rewards/active`);
-                const data = await res.json();
-                if (data.success && data.reward) {
-                    setActiveReward(data.reward);
-                }
-            } catch (err) {
-                console.error("Failed to fetch active reward", err);
-            } finally {
-                setRewardLoading(false);
-            }
-        };
-        fetchActiveReward();
-    }, [isAuthenticated, authFetch, API_URL]);
 
     // Calculate Reward Discount
     let discountAmount = 0;

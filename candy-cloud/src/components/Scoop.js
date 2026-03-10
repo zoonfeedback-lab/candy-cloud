@@ -24,12 +24,7 @@ const CATEGORY_PREFS = [
     { id: "cloud-nine", name: "Cloud Nine", emoji: "🧁" },
 ];
 
-const FLAVOR_PROFILES = [
-    { id: "sweet", name: "Sweet & Fruity", emoji: "🍓" },
-    { id: "sour", name: "Sour Power", emoji: "⚡" },
-    { id: "chocolate", name: "Chocolate Dream", emoji: "🍫" },
-    { id: "anything", name: "Anything Goes!", emoji: "🎲" },
-];
+
 
 export default function Scoop() {
     const { addToCart } = useCart();
@@ -39,7 +34,6 @@ export default function Scoop() {
     const [selectedSize, setSelectedSize] = useState(SCOOP_SIZES[0]);
     const [selectedColor, setSelectedColor] = useState(COLOR_THEMES[0]);
     const [selectedCategory, setSelectedCategory] = useState(CATEGORY_PREFS[0]);
-    const [selectedFlavor, setSelectedFlavor] = useState(FLAVOR_PROFILES[0]);
     const [quantity, setQuantity] = useState(1);
 
     const [addedFeedback, setAddedFeedback] = useState(false);
@@ -60,7 +54,7 @@ export default function Scoop() {
             price: selectedSize.price, // Cart context multiplies by qty automatically
             emoji: selectedColor.emoji,
             type: "Custom Cup",
-            description: `Category: ${selectedCategory.name} | Theme: ${selectedColor.name} | Flavor: ${selectedFlavor.name} | Weight: ${selectedSize.weight}`
+            description: `Category: ${selectedCategory.name} | Theme: ${selectedColor.name} | Weight: ${selectedSize.weight}`
         };
 
         addToCart(mysteryItem, quantity);
@@ -114,54 +108,54 @@ export default function Scoop() {
                     </p>
                 </div>
 
+                {/* 1. Category Preference (Moved to top and made full-width) */}
+                <div className="bg-gradient-to-br from-pink-50 to-white backdrop-blur-md rounded-3xl p-8 border-2 border-pink-100 shadow-[0_8px_30px_rgba(236,72,153,0.08)] relative overflow-hidden mb-10">
+                    <div className="absolute -top-10 -right-10 text-[100px] opacity-10 rotate-12">🍭</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2 relative z-10">
+                        <span className="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-md">1</span>
+                        Choose Category Preference
+                        <span className="ml-2 text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full uppercase tracking-wider font-bold">Most Popular</span>
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+                        {CATEGORY_PREFS.map((cat) => {
+                            const isSelected = selectedCategory.id === cat.id;
+                            return (
+                                <button
+                                    key={cat.id}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className={`
+                                        relative p-6 rounded-[24px] flex flex-col items-center gap-3 transition-all duration-300 overflow-hidden group
+                                        border-2 ${isSelected ? "border-pink-500 shadow-[0_10px_30px_rgba(236,72,153,0.3)] scale-[1.03] -translate-y-1" : "border-pink-50 bg-white/60 hover:bg-white hover:border-pink-200 hover:shadow-lg hover:-translate-y-1"}
+                                    `}
+                                >
+                                    {/* Dynamic vibrant background when selected */}
+                                    {isSelected && (
+                                        <div className="absolute inset-0 bg-gradient-to-br from-pink-100/80 via-white to-purple-100/80 opacity-100 z-0"></div>
+                                    )}
+
+                                    {/* The Emoji Icon Box */}
+                                    <div className={`
+                                        relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-4xl transition-transform duration-500 
+                                        ${isSelected ? "bg-white shadow-md scale-110" : "bg-pink-50 group-hover:bg-pink-100 group-hover:scale-110"}
+                                    `}>
+                                        {cat.emoji}
+                                        {isSelected && <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white animate-bounce"></div>}
+                                    </div>
+
+                                    {/* Text Selection */}
+                                    <span className={`relative z-10 text-lg font-black tracking-wide text-center mt-1 leading-tight ${isSelected ? 'text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 drop-shadow-sm' : 'text-gray-600 group-hover:text-pink-500'}`}>
+                                        {cat.name}
+                                    </span>
+
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
                 <div className="grid lg:grid-cols-12 gap-10 items-start">
                     {/* Left Column: Configuration Form */}
                     <div className="lg:col-span-7 space-y-10">
-
-                        {/* 1. Category Preference (Moved to top by User Request) */}
-                        <div className="bg-gradient-to-br from-pink-50 to-white backdrop-blur-md rounded-3xl p-8 border-2 border-pink-100 shadow-[0_8px_30px_rgba(236,72,153,0.08)] relative overflow-hidden">
-                            <div className="absolute -top-10 -right-10 text-[100px] opacity-10 rotate-12">🍭</div>
-                            <h3 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2 relative z-10">
-                                <span className="bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-md">1</span>
-                                Choose Category Preference
-                                <span className="ml-2 text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full uppercase tracking-wider font-bold">Most Popular</span>
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
-                                {CATEGORY_PREFS.map((cat) => {
-                                    const isSelected = selectedCategory.id === cat.id;
-                                    return (
-                                        <button
-                                            key={cat.id}
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`
-                                                relative p-6 rounded-[24px] flex flex-col items-center gap-3 transition-all duration-300 overflow-hidden group
-                                                border-2 ${isSelected ? "border-pink-500 shadow-[0_10px_30px_rgba(236,72,153,0.3)] scale-[1.03] -translate-y-1" : "border-pink-50 bg-white/60 hover:bg-white hover:border-pink-200 hover:shadow-lg hover:-translate-y-1"}
-                                            `}
-                                        >
-                                            {/* Dynamic vibrant background when selected */}
-                                            {isSelected && (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-pink-100/80 via-white to-purple-100/80 opacity-100 z-0"></div>
-                                            )}
-
-                                            {/* The Emoji Icon Box */}
-                                            <div className={`
-                                                relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-4xl transition-transform duration-500 
-                                                ${isSelected ? "bg-white shadow-md scale-110" : "bg-pink-50 group-hover:bg-pink-100 group-hover:scale-110"}
-                                            `}>
-                                                {cat.emoji}
-                                                {isSelected && <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white animate-bounce"></div>}
-                                            </div>
-
-                                            {/* Text Selection */}
-                                            <span className={`relative z-10 text-lg font-black tracking-wide text-center mt-1 leading-tight ${isSelected ? 'text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 drop-shadow-sm' : 'text-gray-600 group-hover:text-pink-500'}`}>
-                                                {cat.name}
-                                            </span>
-
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
 
                         {/* 2. Size Selection */}
                         <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
@@ -222,31 +216,7 @@ export default function Scoop() {
                             </div>
                         </div>
 
-                        {/* 4. Flavor Profile */}
-                        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                            <h3 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
-                                <span className="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
-                                Flavor Profile
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                {FLAVOR_PROFILES.map((flavor) => {
-                                    const isSelected = selectedFlavor.id === flavor.id;
-                                    return (
-                                        <button
-                                            key={flavor.id}
-                                            onClick={() => setSelectedFlavor(flavor)}
-                                            className={`
-                                                p-4 rounded-2xl flex items-center gap-3 transition-all duration-300
-                                                border-2 ${isSelected ? "border-pink-400 bg-pink-50 ring-4 ring-pink-50 shadow-sm" : "border-gray-100 bg-white hover:bg-gray-50"}
-                                            `}
-                                        >
-                                            <span className="text-2xl">{flavor.emoji}</span>
-                                            <span className={`font-bold ${isSelected ? 'text-pink-600' : 'text-gray-600'}`}>{flavor.name}</span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+
 
                     </div>
 
@@ -296,17 +266,10 @@ export default function Scoop() {
                                             </span>
                                         </div>
 
-                                        <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-3">
+                                        <div className="flex justify-between items-center">
                                             <span className="text-gray-500 font-medium text-sm">Theme</span>
                                             <span className="font-bold text-gray-800 flex items-center gap-2">
                                                 {selectedColor.name} {selectedColor.emoji}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-500 font-medium text-sm">Flavor</span>
-                                            <span className="font-bold text-gray-800 flex items-center gap-2">
-                                                {selectedFlavor.name} {selectedFlavor.emoji}
                                             </span>
                                         </div>
 
