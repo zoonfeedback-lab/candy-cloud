@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminOrders() {
@@ -264,7 +265,9 @@ export default function AdminOrders() {
                             {orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="py-4 pl-2">
-                                        <span className="font-bold text-[#ea580c] text-sm">#{order.id.slice(-6).toUpperCase()}</span>
+                                        <Link href={`/admin/orders/${order.id}`} className="font-bold text-[#ea580c] hover:text-[#c2410c] hover:underline transition-colors text-sm">
+                                            #{order.id.slice(-6).toUpperCase()}
+                                        </Link>
                                         {/* Show golden scoop badge next to ID if applicable */}
                                         {order.isGoldenScoop && (
                                             <span title="Golden Scoop Order" className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-yellow-100 text-yellow-600 text-[10px]">⭐</span>
@@ -291,9 +294,9 @@ export default function AdminOrders() {
                                         {renderStatusBadge(order.status)}
                                     </td>
                                     <td className="py-4 text-right pr-4">
-                                        <button className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors ml-auto">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                        </button>
+                                        <Link href={`/admin/orders/${order.id}`} title="View Order Details" className="text-gray-400 hover:text-[#ea580c] w-8 h-8 inline-flex items-center justify-center rounded-lg hover:bg-orange-50 transition-colors ml-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}
