@@ -294,3 +294,222 @@ exports.getAdminInventory = async (req, res, next) => {
         next(error);
     }
 };
+
+// @desc    Get Admin Customer Details (Profile, Orders, KPIs, Journey)
+// @route   GET /api/admin/customers/:id
+// @access  Private/Admin
+exports.getAdminCustomerDetails = async (req, res, next) => {
+    try {
+        const customerId = req.params.id;
+
+        // 1. Fetch User Profile
+        const customer = await User.findById(customerId).select("-password").lean();
+
+        if (!customer) {
+            return res.status(404).json({ success: false, error: "Customer not found" });
+        }
+
+        // 2. Fetch All Orders for this User
+        const orders = await Order.find({ user: customerId })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        // 3. Calculate KPIs
+        const totalOrders = orders.length;
+        // Sum total of all non-cancelled orders
+        const totalSpent = orders
+            .filter(o => o.orderStatus !== "cancelled")
+            .reduce((sum, order) => sum + order.total, 0);
+
+        const avgOrderValue = totalOrders > 0 ? (totalSpent / totalOrders) : 0;
+
+        // Mocking magic points as Total Spent * 2 for now
+        const magicPoints = Math.floor(totalSpent * 2);
+
+        // 4. Format Order History for Table
+        const formattedOrders = orders.map(order => ({
+            id: order.orderNumber,
+            date: order.createdAt,
+            amount: order.total,
+            status: order.orderStatus
+        }));
+
+        // 5. Build Magic Journey Timeline
+        const journey = [];
+
+        // Base milestone: Account Creation
+        journey.push({
+            id: "joined",
+            title: "Joined Newsletter", // Simulating this as account creation step
+            description: "Subscribed to \"Sweet Treats Weekly\"",
+            date: customer.createdAt
+        });
+
+        // First Order milestone
+        if (orders.length > 0) {
+            // orders are sorted newest first, so last is oldest
+            const firstOrder = orders[orders.length - 1];
+
+            // Try to grab the first item name for flavor text
+            let firstItemFlavor = "their first treat";
+            if (firstOrder.items && firstOrder.items.length > 0) {
+                firstItemFlavor = firstOrder.items[0].name;
+            }
+
+            journey.push({
+                id: "first_order",
+                title: "First Order Placed",
+                description: `Order #${firstOrder.orderNumber.slice(-6).toUpperCase()} - ${firstItemFlavor}`,
+                date: firstOrder.createdAt
+            });
+        }
+
+        // Golden Scoop milestone
+        if (customer.hasSpun) {
+            // Try to find the order that had a discount/golden scoop applied
+            const goldenOrder = orders.find(o => o.discount > 0 || o.couponCode);
+            // Default to account creation date + 1 day if not found directly
+            const spinDate = goldenOrder ? goldenOrder.createdAt : new Date(customer.createdAt.getTime() + 86400000);
+
+            journey.push({
+                id: "golden_scoop",
+                title: "Won a Golden Scoop",
+                description: `Reached ${magicPoints} points milestone`,
+                date: spinDate
+            });
+        }
+
+        // Sort journey newest first (descending)
+        journey.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // 6. Format Profile data
+        // For location and phone, we use the shipping address of their most recent order if it exists, otherwise use placeholders
+        let phone = "+1 (555) 000-0000";
+        let location = "Unknown Location";
+
+        if (orders.length > 0 && orders[0].shippingAddress) {
+            const addr = orders[0].shippingAddress;
+            if (addr.phone) phone = addr.phone;
+            if (addr.city && addr.state) {
+                location = `${addr.city}, ${addr.state}`;
+            } else if (addr.city) {
+                location = addr.city;
+            }
+        }
+
+        const profile = {
+            id: customer._id,
+            name: customer.name,
+            email: customer.email,
+            phone: phone,
+            location: location,
+            memberSince: customer.createdAt,
+            isGoldenScoopWinner: customer.hasSpun || false
+        };
+
+        res.status(200).json({
+            success: true,
+            profile,
+            kpis: {
+                totalSpent,
+                totalOrders,
+                avgOrderValue,
+                magicPoints
+            },
+            orders: formattedOrders,
+            journey
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Get Admin Golden Scoop Management Data
+// @route   GET /api/admin/golden-scoop
+// @access  Private/Admin
+exports.getAdminGoldenScoop = async (req, res, next) => {
+    try {
+        // 1. Fetch Golden Scoop Winners (Users who have spun)
+        const winners = await User.find({ hasSpun: true })
+            .select("name email createdAt")
+            .sort({ createdAt: -1 })
+            .lean();
+
+        // 2. Format Winners List 
+        // We'll also try to fetch their associated order to get the Order ID and Reward amount
+        // Since we don't strictly track the exact reward value per user in the schema yet, we'll derive/mock it from recent orders
+        const formattedWinners = [];
+
+        for (const user of winners) {
+            // Find an order for this user that had a discount
+            const order = await Order.findOne({ user: user._id, discount: { $gt: 0 } }).lean()
+                || await Order.findOne({ user: user._id }).sort({ createdAt: -1 }).lean();
+
+            // Determine Reward String
+            let rewardStr = "$10 Credit"; // Fallback
+            if (user.activeReward && user.activeReward.label) {
+                rewardStr = user.activeReward.label;
+            } else if (order && order.discount > 0) {
+                rewardStr = `$${order.discount.toFixed(2)} Credit`;
+            }
+
+            formattedWinners.push({
+                id: user._id.toString().substring(user._id.toString().length - 4), // Short derived ID
+                date: order ? order.createdAt : user.createdAt,
+                customerName: user.name,
+                orderId: order ? `#ORD-${order.orderNumber.slice(-4).toUpperCase()}` : "N/A",
+                reward: rewardStr
+            });
+        }
+
+        // 3. Campaign Status KPIs
+        const totalScoopsAssigned = 60; // Hardcoded max limit for the "campaign"
+        const scoopsRemaining = Math.max(0, totalScoopsAssigned - winners.length);
+        const winProbability = 2.0; // Hardcoded display value for the mockup
+
+        // Sum total discounts given
+        const totalJackpotGiven = await Order.aggregate([
+            { $match: { discount: { $gt: 0 } } },
+            { $group: { _id: null, total: { $sum: "$discount" } } }
+        ]);
+        const currentJackpot = totalJackpotGiven[0] ? totalJackpotGiven[0].total : 500.00; // Default to 500 if zero to match mockup feel
+
+        const campaign = {
+            status: "Active",
+            winProbability,
+            totalScoops: totalScoopsAssigned,
+            scoopsRemaining,
+            currentJackpot
+        };
+
+        // 4. Bar Chart Data (Weekly Performance Mockup)
+        // We generate realistic looking mock data for the 7 bars
+        const chartData = {
+            MON: 45,
+            TUE: 80,
+            WED: 35,
+            THU: 60,
+            FRI: 55,
+            SAT: 95,
+            SUN: 25
+        };
+
+        // Total campaign orders (Mock stat matching the UI)
+        const totalCampaignOrders = await Order.countDocuments();
+
+        res.status(200).json({
+            success: true,
+            campaign,
+            winners: formattedWinners,
+            chartData,
+            stats: {
+                weeklyPerformance: "+12%",
+                campaignOrders: totalCampaignOrders > 0 ? totalCampaignOrders : 2410
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
