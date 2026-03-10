@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const Product = require("./models/Product");
 const User = require("./models/User");
+const Order = require("./models/Order");
 
 dotenv.config();
 
@@ -46,6 +47,18 @@ const products = [
     { name: "Customize Cloud Deal", price: 3500, category: "special-deal", emoji: "🌈", description: "10 products of your choice - custom bundle", stock: 20, rating: 5.0, reviews: 60, isFeatured: true },
 ];
 
+// ─── Sample Customers ───
+const sampleCustomers = [
+    { name: "Ayesha Khan", email: "ayesha@example.com", password: "password123", phone: "03001112233" },
+    { name: "Fatima Malik", email: "fatima@example.com", password: "password123", phone: "03002223344" },
+    { name: "Zara Ahmed", email: "zara@example.com", password: "password123", phone: "03003334455" },
+    { name: "Hania Aamir", email: "hania@example.com", password: "password123", phone: "03004445566" },
+    { name: "Sara Rizvi", email: "sara@example.com", password: "password123", phone: "03005556677" },
+];
+
+// Helper to create a date N days ago
+const daysAgo = (n) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+
 const seedDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
@@ -53,16 +66,18 @@ const seedDB = async () => {
 
         // Clear existing data
         await Product.deleteMany({});
-        console.log("🗑️  Cleared existing products");
+        await Order.deleteMany({});
+        console.log("🗑️  Cleared existing products and orders");
 
         // Insert products
-        const created = await Product.insertMany(products);
-        console.log(`🍬 Seeded ${created.length} products`);
+        const createdProducts = await Product.insertMany(products);
+        console.log(`🍬 Seeded ${createdProducts.length} products`);
 
         // Create admin user
+        let adminUser;
         const adminExists = await User.findOne({ email: "admin@candycloud.com" });
         if (!adminExists) {
-            await User.create({
+            adminUser = await User.create({
                 name: "CandyCloud Admin",
                 email: "admin@candycloud.com",
                 password: "admin123456",
@@ -70,9 +85,174 @@ const seedDB = async () => {
                 phone: "03001234567",
             });
             console.log("👑 Created admin user (admin@candycloud.com / admin123456)");
+        } else {
+            adminUser = adminExists;
+            console.log("👑 Admin user already exists");
         }
 
+        // Create sample customers
+        const customerUsers = [];
+        for (const cust of sampleCustomers) {
+            const exists = await User.findOne({ email: cust.email });
+            if (!exists) {
+                const created = await User.create(cust);
+                customerUsers.push(created);
+            } else {
+                customerUsers.push(exists);
+            }
+        }
+        console.log(`👥 Ensured ${customerUsers.length} sample customers`);
+
+        // ─── Create Sample Orders ───
+        const statuses = ["placed", "confirmed", "processing", "shipped", "out_for_delivery", "delivered", "cancelled"];
+        const paymentMethods = ["cod", "jazzcash", "easypaisa", "cod", "cod"];
+        const shippingMethods = ["standard", "express", "standard", "express", "standard"];
+
+        const sampleOrders = [];
+
+        for (let i = 0; i < customerUsers.length; i++) {
+            const customer = customerUsers[i];
+            const orderStatus = statuses[i % statuses.length];
+            const daysOffset = (customerUsers.length - i) * 2;
+
+            // Pick 1-3 random products for this order
+            const numItems = Math.floor(Math.random() * 3) + 1;
+            const shuffled = [...createdProducts].sort(() => 0.5 - Math.random());
+            const pickedProducts = shuffled.slice(0, numItems);
+
+            const items = pickedProducts.map(p => ({
+                product: p._id.toString(),
+                name: p.name,
+                emoji: p.emoji,
+                price: p.price,
+                quantity: Math.floor(Math.random() * 3) + 1,
+                description: p.description,
+            }));
+
+            const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const shippingCost = shippingMethods[i] === "express" ? 250 : 150;
+            const total = subtotal + shippingCost;
+
+            // Build tracking history based on current status
+            const trackingHistory = [];
+            const statusIndex = statuses.indexOf(orderStatus);
+
+            if (orderStatus === "cancelled") {
+                trackingHistory.push({ status: "placed", message: "Order has been placed successfully", timestamp: daysAgo(daysOffset) });
+                trackingHistory.push({ status: "cancelled", message: "Order cancelled by customer", timestamp: daysAgo(daysOffset - 1) });
+            } else {
+                const progressStatuses = statuses.slice(0, statusIndex + 1).filter(s => s !== "cancelled");
+                const messages = {
+                    placed: "Order has been placed successfully",
+                    confirmed: "Order has been confirmed and is being prepared",
+                    processing: "Order is being packed with love 💖",
+                    shipped: "Order has been shipped! On its way to you",
+                    out_for_delivery: "Order is out for delivery — almost there!",
+                    delivered: "Order has been delivered. Enjoy your goodies! 🎉",
+                };
+                progressStatuses.forEach((s, j) => {
+                    trackingHistory.push({
+                        status: s,
+                        message: messages[s],
+                        timestamp: daysAgo(daysOffset - j),
+                    });
+                });
+            }
+
+            sampleOrders.push({
+                user: customer._id,
+                items,
+                subtotal,
+                shippingCost,
+                total,
+                shippingAddress: {
+                    firstName: customer.name.split(" ")[0],
+                    lastName: customer.name.split(" ").slice(1).join(" ") || "Cloud",
+                    street: `${Math.floor(Math.random() * 200) + 1} Sugar Lane`,
+                    city: ["Lahore", "Karachi", "Islamabad", "Faisalabad", "Rawalpindi"][i],
+                    zip: `${54000 + i * 1000}`,
+                    phone: customer.phone,
+                },
+                shippingMethod: shippingMethods[i],
+                paymentMethod: paymentMethods[i],
+                paymentStatus: orderStatus === "delivered" ? "paid" : "pending",
+                orderStatus,
+                trackingHistory,
+                estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+            });
+        }
+
+        // Add a couple extra orders for more data
+        for (let j = 0; j < 5; j++) {
+            const customer = customerUsers[j % customerUsers.length];
+            const statusOptions = ["placed", "processing", "shipped"];
+            const orderStatus = statusOptions[j % statusOptions.length];
+            const daysOffset = j + 1;
+
+            const numItems = Math.floor(Math.random() * 2) + 1;
+            const shuffled = [...createdProducts].sort(() => 0.5 - Math.random());
+            const items = shuffled.slice(0, numItems).map(p => ({
+                product: p._id.toString(),
+                name: p.name,
+                emoji: p.emoji,
+                price: p.price,
+                quantity: 1,
+                description: p.description,
+            }));
+
+            const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const shippingCost = 150;
+            const total = subtotal + shippingCost;
+
+            const trackingHistory = [{ status: "placed", message: "Order has been placed successfully", timestamp: daysAgo(daysOffset) }];
+            if (orderStatus !== "placed") {
+                trackingHistory.push({ status: "confirmed", message: "Order confirmed", timestamp: daysAgo(daysOffset - 0.5) });
+            }
+            if (orderStatus === "processing") {
+                trackingHistory.push({ status: "processing", message: "Order is being packed with love 💖", timestamp: daysAgo(daysOffset - 1) });
+            }
+            if (orderStatus === "shipped") {
+                trackingHistory.push({ status: "processing", message: "Order is being packed with love 💖", timestamp: daysAgo(daysOffset - 1) });
+                trackingHistory.push({ status: "shipped", message: "Order has been shipped!", timestamp: daysAgo(daysOffset - 1.5) });
+            }
+
+            sampleOrders.push({
+                user: customer._id,
+                items,
+                subtotal,
+                shippingCost,
+                total,
+                shippingAddress: {
+                    firstName: customer.name.split(" ")[0],
+                    lastName: customer.name.split(" ").slice(1).join(" ") || "Cloud",
+                    street: `${Math.floor(Math.random() * 200) + 1} Candy Avenue`,
+                    city: "Lahore",
+                    zip: "54000",
+                    phone: customer.phone,
+                },
+                shippingMethod: "standard",
+                paymentMethod: "cod",
+                paymentStatus: "pending",
+                orderStatus,
+                trackingHistory,
+                estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            });
+        }
+
+        // Insert all orders (bypass the pre-save hook for orderNumber by using create)
+        for (const orderData of sampleOrders) {
+            await Order.create(orderData);
+        }
+        console.log(`📦 Seeded ${sampleOrders.length} sample orders`);
+
         console.log("\n✅ Database seeded successfully!");
+        console.log("─────────────────────────────────");
+        console.log("👑 Admin Login: admin@candycloud.com / admin123456");
+        console.log(`🍬 ${createdProducts.length} products`);
+        console.log(`👥 ${customerUsers.length} customers`);
+        console.log(`📦 ${sampleOrders.length} orders (various statuses)`);
+        console.log("─────────────────────────────────");
+
         process.exit(0);
     } catch (error) {
         console.error("❌ Seed error:", error.message);

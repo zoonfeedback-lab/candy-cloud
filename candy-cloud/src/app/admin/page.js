@@ -45,7 +45,7 @@ export default function AdminDashboard() {
 
     if (!data) return <div className="text-red-500 font-bold">Failed to load dashboard data.</div>;
 
-    const { kpis, recentOrders, inventory } = data;
+    const { kpis, recentOrders, inventory, goldenScoopPanel } = data;
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -174,19 +174,32 @@ export default function AdminDashboard() {
 
                     <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 mb-8 mt-auto text-center">
                         <p className="text-xs font-black text-orange-400 uppercase tracking-widest mb-1">Current Jackpot</p>
-                        <h4 className="text-2xl font-black text-gray-900 mb-2">$500 Store Credit</h4>
-                        <p className="text-xs text-orange-600/80 font-medium">Remaining Scoops: 12 / 60</p>
+                        <h4 className="text-2xl font-black text-gray-900 mb-2">${goldenScoopPanel?.currentJackpot?.toFixed(2) || '500.00'} Store Credit</h4>
+                        <p className="text-xs text-orange-600/80 font-medium">Remaining Scoops: {goldenScoopPanel?.scoopsRemaining ?? 0} / {goldenScoopPanel?.totalScoops ?? 60}</p>
                     </div>
 
                     <div className="mb-8">
                         <h4 className="font-bold text-sm text-gray-900 mb-3">Latest Winners</h4>
                         <div className="flex -space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xl">👩</div>
-                            <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xl">👱‍♂️</div>
-                            <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xl">👧</div>
-                            <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-white flex items-center justify-center text-xs font-black text-orange-600">
-                                +45
-                            </div>
+                            {goldenScoopPanel?.latestWinners && goldenScoopPanel.latestWinners.length > 0 ? (
+                                <>
+                                    {goldenScoopPanel.latestWinners.map((winner, idx) => {
+                                        const bgColors = ["bg-pink-100 text-pink-600", "bg-teal-100 text-teal-600", "bg-orange-100 text-orange-600"];
+                                        return (
+                                            <div key={idx} className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-xs font-black shadow-sm ${bgColors[idx % bgColors.length]}`} title={winner.name}>
+                                                {winner.initials}
+                                            </div>
+                                        );
+                                    })}
+                                    {kpis.goldenScoopsFound > 3 && (
+                                        <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-white flex items-center justify-center text-xs font-black text-orange-600">
+                                            +{kpis.goldenScoopsFound - 3}
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <p className="text-sm text-gray-400 font-medium">No winners yet!</p>
+                            )}
                         </div>
                     </div>
 
@@ -212,10 +225,11 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Map through the actual inventory from DB, fallback to UI items if empty */}
-                    {inventory && inventory.length >= 3 ? inventory.slice(0, 3).map((item, i) => {
+                    {/* Map through the actual inventory from DB */}
+                    {inventory && inventory.length > 0 ? inventory.slice(0, 3).map((item, i) => {
                         const colors = ["border-pink-500", "border-teal-400", "border-orange-500"];
                         const bgColors = ["bg-pink-500", "bg-teal-400", "bg-orange-500"];
+                        const textColors = ["text-pink-500", "text-teal-400", "text-orange-500"];
                         const progress = Math.min(100, (item.stock / 100) * 100);
 
                         return (
@@ -224,48 +238,16 @@ export default function AdminDashboard() {
                                 <div className="flex justify-between items-start mb-10">
                                     <div>
                                         <h4 className="font-black text-gray-900 text-lg">{item.name}</h4>
-                                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">Stock: {item.stock}</p>
+                                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">{item.category || 'PRODUCT'} &middot; Stock: {item.stock}</p>
                                     </div>
-                                    <span className={`text-sm font-black ${i === 0 ? "text-pink-500" : i === 1 ? "text-teal-400" : "text-orange-500"}`}>
+                                    <span className={`text-sm font-black ${textColors[i]}`}>
                                         ${item.price.toFixed(2)}
                                     </span>
                                 </div>
                             </div>
                         )
                     }) : (
-                        // UI Fallbacks if no products in DB matching
-                        <>
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 overflow-hidden relative">
-                                <div className="absolute bottom-0 left-0 h-1.5 bg-pink-500 w-[85%]"></div>
-                                <div className="flex justify-between items-start mb-10">
-                                    <div>
-                                        <h4 className="font-black text-gray-900 text-lg">Sweet Treat</h4>
-                                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">ENTRY LEVEL BOX</p>
-                                    </div>
-                                    <span className="text-sm font-black text-pink-500">$19.99</span>
-                                </div>
-                            </div>
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 overflow-hidden relative">
-                                <div className="absolute bottom-0 left-0 h-1.5 bg-teal-400 w-[60%]"></div>
-                                <div className="flex justify-between items-start mb-10">
-                                    <div>
-                                        <h4 className="font-black text-gray-900 text-lg">Dreamy Delight</h4>
-                                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">PREMIUM BOX</p>
-                                    </div>
-                                    <span className="text-sm font-black text-teal-400">$49.99</span>
-                                </div>
-                            </div>
-                            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 overflow-hidden relative">
-                                <div className="absolute bottom-0 left-0 h-1.5 bg-orange-500 w-[40%]"></div>
-                                <div className="flex justify-between items-start mb-10">
-                                    <div>
-                                        <h4 className="font-black text-gray-900 text-lg">Cloud Nine</h4>
-                                        <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">ULTIMATE LUXURY</p>
-                                    </div>
-                                    <span className="text-sm font-black text-orange-500">$99.99</span>
-                                </div>
-                            </div>
-                        </>
+                        <div className="col-span-3 text-center py-8 text-gray-400 font-medium">No products in inventory yet.</div>
                     )}
                 </div>
             </div>

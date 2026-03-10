@@ -265,7 +265,7 @@ export default function AdminOrders() {
                             {orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50/50 transition-colors group">
                                     <td className="py-4 pl-2">
-                                        <Link href={`/admin/orders/${order.id}`} className="font-bold text-[#ea580c] hover:text-[#c2410c] hover:underline transition-colors text-sm">
+                                        <Link href={`/admin/orders/${order._id}`} className="font-bold text-[#ea580c] hover:text-[#c2410c] hover:underline transition-colors text-sm">
                                             #{order.id.slice(-6).toUpperCase()}
                                         </Link>
                                         {/* Show golden scoop badge next to ID if applicable */}
@@ -294,7 +294,7 @@ export default function AdminOrders() {
                                         {renderStatusBadge(order.status)}
                                     </td>
                                     <td className="py-4 text-right pr-4">
-                                        <Link href={`/admin/orders/${order.id}`} title="View Order Details" className="text-gray-400 hover:text-[#ea580c] w-8 h-8 inline-flex items-center justify-center rounded-lg hover:bg-orange-50 transition-colors ml-auto">
+                                        <Link href={`/admin/orders/${order._id}`} title="View Order Details" className="text-gray-400 hover:text-[#ea580c] w-8 h-8 inline-flex items-center justify-center rounded-lg hover:bg-orange-50 transition-colors ml-auto">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
                                         </Link>
                                     </td>

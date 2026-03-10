@@ -51,8 +51,37 @@ exports.getDashboardStats = async (req, res, next) => {
         const inventory = await Product.find({ isActive: true })
             .sort({ stock: 1 }) // Show low stock first
             .limit(3)
-            .select("name price stock")
+            .select("name price stock category")
             .lean();
+
+        // 5. Get Golden Scoop Campaign Data for the panel
+        const totalScoopsLimit = 60;
+        const scoopsUsed = goldenScoopsFound;
+        const scoopsRemaining = Math.max(0, totalScoopsLimit - scoopsUsed);
+
+        // Sum total discounts given to calculate real jackpot
+        const jackpotAgg = await Order.aggregate([
+            { $match: { discount: { $gt: 0 } } },
+            { $group: { _id: null, total: { $sum: "$discount" } } }
+        ]);
+        const currentJackpot = jackpotAgg[0] ? jackpotAgg[0].total : 500;
+
+        // Get latest 3 winners (users who spun)
+        const latestWinners = await User.find({ hasSpun: true })
+            .select("name")
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .lean();
+
+        const goldenScoopPanel = {
+            scoopsRemaining,
+            totalScoops: totalScoopsLimit,
+            currentJackpot,
+            latestWinners: latestWinners.map(u => ({
+                name: u.name,
+                initials: u.name ? u.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "US"
+            }))
+        };
 
         res.status(200).json({
             success: true,
@@ -63,7 +92,8 @@ exports.getDashboardStats = async (req, res, next) => {
                 goldenScoopsFound
             },
             recentOrders: formattedOrders,
-            inventory
+            inventory,
+            goldenScoopPanel
         });
     } catch (error) {
         next(error);
@@ -137,6 +167,7 @@ exports.getAdminOrders = async (req, res, next) => {
             const isGoldenScoop = order.user?.hasSpun || order.couponCode ? true : false;
 
             return {
+                _id: order._id,
                 id: order.orderNumber,
                 customerName: order.shippingAddress?.firstName
                     ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`
