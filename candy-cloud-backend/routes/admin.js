@@ -4,6 +4,9 @@ const {
     getDashboardStats,
     getAdminOrders,
     getAdminInventory,
+    createProduct,
+    updateProduct,
+    getAdminCustomers,
     getAdminCustomerDetails,
     getAdminGoldenScoop
 } = require("../controllers/adminController");
@@ -16,7 +19,12 @@ router.use(admin);
 router.get("/dashboard", getDashboardStats);
 router.get("/orders", getAdminOrders);
 router.get("/inventory", getAdminInventory);
+router.post("/inventory", createProduct);
+router.put("/inventory/:id", updateProduct);
+router.get("/customers", getAdminCustomers);
 router.get("/customers/:id", getAdminCustomerDetails);
 router.get("/golden-scoop", getAdminGoldenScoop);
 
 module.exports = router;
+
+

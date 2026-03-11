@@ -2,23 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getProductData } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+const CATEGORY_CONFIG = {
+    "sweet-treat": { label: "Sweet Treat", emoji: "🍬", color: "from-pink to-pink-dark" },
+    "dreamy-delight": { label: "Dreamy Delight", emoji: "✨", color: "from-purple-400 to-pink" },
+    "cloud-nine": { label: "Cloud Nine", emoji: "☁️", color: "from-sky-400 to-teal" },
+    "bundle": { label: "Bundle", emoji: "🎁", color: "from-amber-400 to-orange-400" },
+    "special-deal": { label: "Special Deal", emoji: "⭐", color: "from-yellow-400 to-orange-400" },
+};
+
 const ITEM_COLORS = [
     { id: "pink", name: "Pink Splash", color: "bg-pink-400", ring: "ring-pink-200" },
     { id: "blue", name: "Ocean Blue", color: "bg-blue-400", ring: "ring-blue-200" },
     { id: "purple", name: "Lilac Dream", color: "bg-purple-400", ring: "ring-purple-200" },
     { id: "mystery", name: "Surprise Me", color: "bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400", ring: "ring-gray-200" },
-];
-
-const ITEM_SIZES = [
-    { id: "standard", name: "Standard", price: 250 },
-    { id: "large", name: "Large / Premium", price: 400 },
 ];
 
 export default function ItemDetail() {
@@ -28,27 +32,48 @@ export default function ItemDetail() {
     const { isAuthenticated, openAuthModal } = useAuth();
 
     const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [selectedColor, setSelectedColor] = useState(ITEM_COLORS[0]);
-    const [selectedSize, setSelectedSize] = useState(ITEM_SIZES[0]);
     const [quantity, setQuantity] = useState(1);
     const [addedToast, setAddedToast] = useState(false);
 
     useEffect(() => {
-        if (params.slug) {
-            const data = getProductData(params.slug);
-            if (data) {
-                setProduct(data);
-            } else {
-                router.push('/shop'); // Redirect if item not found
+        const fetchProduct = async () => {
+            if (!params.slug) return;
+
+            try {
+                // Fetch all products and find by slug match
+                const res = await fetch(`${API_URL}/api/products`);
+                const data = await res.json();
+
+                if (data.success) {
+                    const slugName = params.slug.toLowerCase().replace(/-/g, " ");
+                    const found = data.products.find(
+                        p => p.name.toLowerCase() === slugName
+                    );
+
+                    if (found) {
+                        setProduct(found);
+                    } else {
+                        router.push('/shop');
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch product:", err);
+                router.push('/shop');
+            } finally {
+                setLoading(false);
             }
-        }
+        };
+
+        fetchProduct();
     }, [params.slug, router]);
 
-    if (!product) {
+    if (loading || !product) {
         return <div className="min-h-screen flex items-center justify-center text-pink-500 font-bold animate-pulse">Loading Magic... ✨</div>;
     }
 
-    const { name, category, emoji, categoryData } = product;
+    const config = CATEGORY_CONFIG[product.category] || { label: product.category, emoji: "🎀", color: "from-pink-400 to-purple-400" };
 
     const handleAddToCart = () => {
         if (!isAuthenticated) {
@@ -57,12 +82,12 @@ export default function ItemDetail() {
         }
 
         const itemToCart = {
-            id: `item-${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
-            name: name,
-            price: selectedSize.price,
-            emoji: emoji,
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            emoji: product.emoji,
             type: "Shop Item",
-            description: `Size: ${selectedSize.name} | Color: ${selectedColor.name}`
+            description: product.description || `From ${config.label} collection`
         };
 
         addToCart(itemToCart, quantity);
@@ -89,7 +114,7 @@ export default function ItemDetail() {
                     <div className="w-full lg:w-1/2">
                         <div className={`
                             w-full aspect-square rounded-[40px] flex items-center justify-center relative overflow-hidden
-                            bg-gradient-to-br ${categoryData.color} p-1
+                            bg-gradient-to-br ${config.color} p-1
                         `}>
                             {/* Inner Card */}
                             <div className="absolute inset-[4px] bg-white/90 backdrop-blur-xl rounded-[36px] flex flex-col items-center justify-center p-8 text-center relative overflow-hidden group">
@@ -97,18 +122,22 @@ export default function ItemDetail() {
                                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] rounded-full opacity-20 blur-3xl transition-colors duration-500 ${selectedColor.color}`} style={{ zIndex: 0 }}></div>
 
                                 <span className="text-[120px] filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] animate-bounce relative z-10" style={{ animationDuration: '3s' }}>
-                                    {emoji}
+                                    {product.emoji}
                                 </span>
-                                <h2 className="text-4xl font-extrabold text-gray-800 mt-6 relative z-10">{name}</h2>
-                                <p className="text-pink-500 font-bold text-lg mt-2 relative z-10">{category}</p>
+                                <h2 className="text-4xl font-extrabold text-gray-800 mt-6 relative z-10">{product.name}</h2>
+                                <p className="text-pink-500 font-bold text-lg mt-2 relative z-10">{config.label}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Right Column - Configuration & Cart */}
                     <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">{name}</h1>
-                        <p className="text-2xl font-bold text-pink-500 mb-8">Rs {selectedSize.price}</p>
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">{product.name}</h1>
+                        <p className="text-2xl font-bold text-pink-500 mb-4">Rs {product.price}</p>
+
+                        {product.description && (
+                            <p className="text-gray-500 font-medium mb-8">{product.description}</p>
+                        )}
 
                         <div className="space-y-8">
                             {/* Color Selector */}
@@ -136,27 +165,12 @@ export default function ItemDetail() {
                                 </div>
                             </div>
 
-                            {/* Size Selector */}
-                            <div>
-                                <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Select Size</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {ITEM_SIZES.map(size => {
-                                        const isSelected = selectedSize.id === size.id;
-                                        return (
-                                            <button
-                                                key={size.id}
-                                                onClick={() => setSelectedSize(size)}
-                                                className={`
-                                                    p-4 rounded-2xl flex flex-col gap-1 transition-all duration-300 text-left border-2
-                                                    ${isSelected ? 'border-pink-500 bg-pink-50 ring-4 ring-pink-100 shadow-sm' : 'border-gray-200 bg-white hover:border-pink-300 hover:bg-pink-50/50'}
-                                                `}
-                                            >
-                                                <span className={`font-bold ${isSelected ? 'text-pink-700' : 'text-gray-800'}`}>{size.name}</span>
-                                                <span className="text-gray-500 text-sm">Rs {size.price}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                            {/* Stock Status */}
+                            <div className="flex items-center gap-2">
+                                <div className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                <span className={`text-sm font-bold ${product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                    {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+                                </span>
                             </div>
 
                             {/* Quantity & Add to Cart */}
@@ -170,7 +184,7 @@ export default function ItemDetail() {
                                         >-</button>
                                         <span className="font-bold text-lg text-gray-800 w-8 text-center">{quantity}</span>
                                         <button
-                                            onClick={() => setQuantity(quantity + 1)}
+                                            onClick={() => setQuantity(Math.min(product.stock || 50, quantity + 1))}
                                             className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-pink-500 hover:bg-pink-50 rounded-xl transition-colors font-bold text-xl"
                                         >+</button>
                                     </div>
@@ -178,11 +192,14 @@ export default function ItemDetail() {
                                     {/* Add Button */}
                                     <button
                                         onClick={handleAddToCart}
+                                        disabled={product.stock === 0}
                                         className={`
                                             flex-1 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2
-                                            ${addedToast
-                                                ? 'bg-green-500 text-white shadow-[0_8px_25px_rgba(34,197,94,0.4)] scale-[0.98]'
-                                                : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-[0_8px_25px_rgba(236,72,153,0.4)] hover:scale-[1.02]'}
+                                            ${product.stock === 0
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                : addedToast
+                                                    ? 'bg-green-500 text-white shadow-[0_8px_25px_rgba(34,197,94,0.4)] scale-[0.98]'
+                                                    : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-[0_8px_25px_rgba(236,72,153,0.4)] hover:scale-[1.02]'}
                                         `}
                                     >
                                         {addedToast ? (
@@ -190,9 +207,11 @@ export default function ItemDetail() {
                                                 <svg className="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path></svg>
                                                 Added to Cart!
                                             </>
+                                        ) : product.stock === 0 ? (
+                                            "Out of Stock"
                                         ) : (
                                             <>
-                                                Add to Cart • Rs {selectedSize.price * quantity}
+                                                Add to Cart • Rs {product.price * quantity}
                                             </>
                                         )}
                                     </button>

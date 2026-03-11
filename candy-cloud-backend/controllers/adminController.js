@@ -280,9 +280,13 @@ exports.getAdminInventory = async (req, res, next) => {
                 id: product._id,
                 name: product.name,
                 category: product.category || "Uncategorized",
+                emoji: product.emoji || "🎁",
+                description: product.description || "",
+                items: product.items || "",
                 sku: sku,
                 price: product.price,
                 stock: product.stock,
+                isFeatured: product.isFeatured || false,
                 stockStatus: stockLevelStatus
             };
         });
@@ -456,6 +460,99 @@ exports.getAdminCustomerDetails = async (req, res, next) => {
     }
 };
 
+// @desc    Get Admin Customers List
+// @route   GET /api/admin/customers
+// @access  Private/Admin
+exports.getAdminCustomers = async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 15;
+        const skip = (page - 1) * limit;
+        const search = req.query.search || "";
+
+        // Build filter: exclude admin users
+        const query = { role: { $ne: "admin" } };
+
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } },
+            ];
+        }
+
+        const totalCustomers = await User.countDocuments(query);
+        const customers = await User.find(query)
+            .select("name email phone createdAt hasSpun activeReward")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        // Get order stats for each customer in parallel
+        const customerIds = customers.map(c => c._id);
+        const orderStats = await Order.aggregate([
+            { $match: { user: { $in: customerIds } } },
+            {
+                $group: {
+                    _id: "$user",
+                    totalOrders: { $sum: 1 },
+                    totalSpent: { $sum: "$total" },
+                    lastOrderDate: { $max: "$createdAt" },
+                    lastCity: { $last: "$shippingAddress.city" },
+                }
+            }
+        ]);
+
+        // Build a lookup map
+        const statsMap = {};
+        orderStats.forEach(s => { statsMap[s._id.toString()] = s; });
+
+        const formattedCustomers = customers.map(c => {
+            const stats = statsMap[c._id.toString()] || {};
+            return {
+                id: c._id,
+                name: c.name,
+                email: c.email,
+                phone: c.phone || "—",
+                joinedAt: c.createdAt,
+                totalOrders: stats.totalOrders || 0,
+                totalSpent: stats.totalSpent || 0,
+                lastOrderDate: stats.lastOrderDate || null,
+                location: stats.lastCity || "—",
+                isGoldenScoop: c.hasSpun || false,
+            };
+        });
+
+        // KPIs
+        const totalCustomersGlobal = await User.countDocuments({ role: { $ne: "admin" } });
+        const goldenScoopWinners = await User.countDocuments({ role: { $ne: "admin" }, hasSpun: true });
+
+        const spendAgg = await Order.aggregate([
+            { $group: { _id: null, total: { $sum: "$total" }, count: { $sum: 1 } } }
+        ]);
+        const totalRevenue = spendAgg[0]?.total || 0;
+        const avgOrderValue = spendAgg[0]?.count > 0 ? Math.round(totalRevenue / spendAgg[0].count) : 0;
+
+        res.status(200).json({
+            success: true,
+            kpis: {
+                totalCustomers: totalCustomersGlobal,
+                goldenScoopWinners,
+                avgOrderValue,
+            },
+            customers: formattedCustomers,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(totalCustomers / limit),
+                totalItems: totalCustomers,
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Get Admin Golden Scoop Management Data
 // @route   GET /api/admin/golden-scoop
 // @access  Private/Admin
@@ -540,6 +637,62 @@ exports.getAdminGoldenScoop = async (req, res, next) => {
             }
         });
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Create a new product
+// @route   POST /api/admin/inventory
+// @access  Private/Admin
+exports.createProduct = async (req, res, next) => {
+    try {
+        const { name, price, category, emoji, description, items, stock, isFeatured } = req.body;
+
+        if (!name || price === undefined || !category) {
+            res.status(400);
+            return next(new Error("Name, price, and category are required"));
+        }
+
+        const product = await Product.create({
+            name,
+            price,
+            category,
+            emoji: emoji || "🎁",
+            description: description || "",
+            items: items || "",
+            stock: stock !== undefined ? stock : 100,
+            isFeatured: isFeatured || false,
+        });
+
+        res.status(201).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Update an existing product
+// @route   PUT /api/admin/inventory/:id
+// @access  Private/Admin
+exports.updateProduct = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            res.status(404);
+            return next(new Error("Product not found"));
+        }
+
+        const allowedFields = ["name", "price", "category", "emoji", "description", "items", "stock", "isFeatured", "isActive"];
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                product[field] = req.body[field];
+            }
+        });
+
+        await product.save();
+
+        res.json({ success: true, product });
     } catch (error) {
         next(error);
     }
