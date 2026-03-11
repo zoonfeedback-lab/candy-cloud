@@ -73,8 +73,8 @@ export default function AdminGoldenScoop() {
 
                     <div className="flex items-center gap-4">
                         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Golden Scoop Management</h1>
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 text-orange-500 text-xs font-black uppercase tracking-widest leading-none">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 border border-pink-100 text-pink-500 text-xs font-black uppercase tracking-widest leading-none">
+                            <span className="w-1.5 h-1.5 rounded-full bg-pink-500"></span>
                             Live Campaign
                         </span>
                     </div>
@@ -88,7 +88,7 @@ export default function AdminGoldenScoop() {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                         Export Report
                     </button>
-                    <button className="flex-1 md:flex-none px-6 py-3 rounded-xl bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-sm transition-colors shadow-sm shadow-orange-200 flex items-center justify-center gap-2">
+                    <button className="flex-1 md:flex-none px-6 py-3 rounded-xl bg-[#ec4899] hover:bg-[#be185d] text-white font-bold text-sm transition-colors shadow-sm shadow-pink-200 flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
                         Edit Campaign Details
                     </button>
@@ -106,7 +106,7 @@ export default function AdminGoldenScoop() {
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Fake Toggle */}
-                        <div className="w-12 h-6 bg-orange-500 rounded-full relative cursor-pointer flex items-center px-1">
+                        <div className="w-12 h-6 bg-pink-500 rounded-full relative cursor-pointer flex items-center px-1">
                             <div className="w-4 h-4 rounded-full bg-white absolute right-1"></div>
                         </div>
                         <span className="text-sm font-bold text-gray-600">Pause Rewards</span>
@@ -118,14 +118,14 @@ export default function AdminGoldenScoop() {
                     <div>
                         <p className="text-[11px] font-black text-gray-400 mb-1 uppercase tracking-widest">Win Probability</p>
                         <div className="flex items-baseline gap-2">
-                            <h2 className="text-4xl font-black text-orange-500">{campaign.winProbability.toFixed(1)}%</h2>
+                            <h2 className="text-4xl font-black text-pink-500">{campaign.winProbability.toFixed(1)}%</h2>
                             <span className="text-xs font-bold text-gray-400">1 in 50 orders</span>
                         </div>
                     </div>
                     {/* Mock interactive slider */}
                     <div className="relative pt-4">
                         <div className="h-1.5 w-full bg-gray-100 rounded-full"></div>
-                        <div className="absolute top-4 left-[20%] w-4 h-4 bg-orange-500 rounded-full border-2 border-white shadow -translate-y-[5px] -translate-x-[50%]"></div>
+                        <div className="absolute top-4 left-[20%] w-4 h-4 bg-pink-500 rounded-full border-2 border-white shadow -translate-y-[5px] -translate-x-[50%]"></div>
                     </div>
                 </div>
 
@@ -160,7 +160,7 @@ export default function AdminGoldenScoop() {
                     {/* Mock Avatar Stack */}
                     <div className="flex -space-x-2 relative z-10 mt-auto">
                         <div className="w-7 h-7 rounded-full bg-white border-2 border-[#fad643] flex items-center justify-center text-[8px] font-black text-gray-600 shadow-sm">JD</div>
-                        <div className="w-7 h-7 rounded-full bg-orange-100 border-2 border-[#fad643] flex items-center justify-center text-[8px] font-black text-orange-600 shadow-sm">AS</div>
+                        <div className="w-7 h-7 rounded-full bg-pink-100 border-2 border-[#fad643] flex items-center justify-center text-[8px] font-black text-pink-600 shadow-sm">AS</div>
                         <div className="w-7 h-7 rounded-full bg-blue-100 border-2 border-[#fad643] flex items-center justify-center text-[8px] font-black text-blue-600 shadow-sm">MK</div>
                     </div>
                 </div>
@@ -173,7 +173,7 @@ export default function AdminGoldenScoop() {
                 <div className="flex-[2_2_70%] bg-white rounded-[32px] shadow-sm border border-gray-100 flex flex-col">
                     <div className="p-6 md:p-8 flex justify-between items-center border-b border-gray-100">
                         <h3 className="text-xl font-black text-gray-900">Golden Scoop Winners</h3>
-                        <button className="text-[#ea580c] font-bold text-sm hover:underline">View All</button>
+                        <button className="text-[#ec4899] font-bold text-sm hover:underline">View All</button>
                     </div>
 
                     <div className="overflow-x-auto">
@@ -204,7 +204,7 @@ export default function AdminGoldenScoop() {
                                         </td>
                                         <td className="py-5">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center text-[10px] font-black shadow-sm">
+                                                <div className="w-8 h-8 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center text-[10px] font-black shadow-sm">
                                                     {getInitials(winner.customerName)}
                                                 </div>
                                                 <span className="font-bold text-gray-900 text-sm whitespace-nowrap">{winner.customerName}</span>
@@ -214,7 +214,7 @@ export default function AdminGoldenScoop() {
                                             <span className="text-gray-400 font-medium text-sm">{winner.orderId}</span>
                                         </td>
                                         <td className="py-5">
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fff9f0] text-orange-500 text-xs font-bold whitespace-nowrap">
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fff9f0] text-pink-500 text-xs font-bold whitespace-nowrap">
                                                 ⭐ {winner.reward}
                                             </span>
                                         </td>
@@ -245,7 +245,7 @@ export default function AdminGoldenScoop() {
                             {Object.keys(chartData).map(day => {
                                 const value = chartData[day];
                                 const heightPercent = (value / maxChartValue) * 100;
-                                const isSaturday = day === "SAT"; // Mocking the highlighted orange bar
+                                const isSaturday = day === "SAT"; // Mocking the highlighted pink bar
 
                                 return (
                                     <div key={day} className="flex flex-col items-center gap-2 group w-full relative z-10">
@@ -255,7 +255,7 @@ export default function AdminGoldenScoop() {
                                         </div>
                                         {/* Bar */}
                                         <div
-                                            className={`w-full max-w-[24px] rounded-t-lg transition-colors ${isSaturday ? "bg-[#ea580c]" : "bg-orange-100 group-hover:bg-orange-200"}`}
+                                            className={`w-full max-w-[24px] rounded-t-lg transition-colors ${isSaturday ? "bg-[#ec4899]" : "bg-pink-100 group-hover:bg-pink-200"}`}
                                             style={{ height: `${heightPercent}%`, minHeight: '8px' }}
                                         ></div>
                                     </div>

@@ -41,7 +41,7 @@ export default function AdminLogin() {
             <div className="max-w-md w-full bg-white rounded-[32px] shadow-sm border border-gray-100 p-10 flex flex-col items-center">
 
                 {/* Logo */}
-                <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center text-white font-black text-3xl mb-6 shadow-md shadow-orange-200">
+                <div className="w-16 h-16 bg-pink-500 rounded-2xl flex items-center justify-center text-white font-black text-3xl mb-6 shadow-md shadow-pink-200">
                     ☁️
                 </div>
 
@@ -63,7 +63,7 @@ export default function AdminLogin() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="manager@candycloud.com"
-                            className="w-full px-5 py-4 rounded-2xl bg-[#f8f9fa] border border-gray-100 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:bg-white transition-all text-gray-900"
+                            className="w-full px-5 py-4 rounded-2xl bg-[#f8f9fa] border border-gray-100 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-900"
                         />
                     </div>
 
@@ -75,14 +75,14 @@ export default function AdminLogin() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="w-full px-5 py-4 rounded-2xl bg-[#f8f9fa] border border-gray-100 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:bg-white transition-all text-gray-900 tracking-widest"
+                            className="w-full px-5 py-4 rounded-2xl bg-[#f8f9fa] border border-gray-100 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-900 tracking-widest"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full py-4 rounded-2xl text-white font-bold tracking-wide text-sm text-center shadow-[0_8px_20px_rgba(249,115,22,0.3)] hover:shadow-[0_12px_25px_rgba(249,115,22,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 mt-4 ${isLoading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500"
+                        className={`w-full py-4 rounded-2xl text-white font-bold tracking-wide text-sm text-center shadow-[0_8px_20px_rgba(249,115,22,0.3)] hover:shadow-[0_12px_25px_rgba(249,115,22,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 mt-4 ${isLoading ? "bg-pink-400 cursor-not-allowed" : "bg-pink-500"
                             }`}
                     >
                         {isLoading ? (

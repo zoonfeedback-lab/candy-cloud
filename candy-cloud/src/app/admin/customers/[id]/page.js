@@ -63,7 +63,7 @@ export default function AdminCustomerDetail() {
                 </div>
                 <h2 className="text-2xl font-black text-gray-900 mb-2">Customer Not Found</h2>
                 <p className="text-gray-500 mb-6">{error || "The customer you are looking for does not exist."}</p>
-                <button onClick={() => router.push('/admin/customers')} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-xl font-bold transition-colors">
+                <button onClick={() => router.push('/admin/customers')} className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-xl font-bold transition-colors">
                     Back to Customers
                 </button>
             </div>
@@ -131,18 +131,18 @@ export default function AdminCustomerDetail() {
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div className="flex items-center gap-6">
                     {/* Avatar Bubble */}
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-orange-100 border-4 border-orange-50 flex items-center justify-center text-orange-500 text-3xl font-black shadow-inner shrink-0 overflow-hidden relative">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-pink-100 border-4 border-pink-50 flex items-center justify-center text-pink-500 text-3xl font-black shadow-inner shrink-0 overflow-hidden relative">
                         {/* Fallback to initials if no actual image logic exists */}
                         <span className="z-10 relative">{getInitials(profile.name)}</span>
                         {/* Optional subtle gradient background inside the bubble to mimic the soft picture feel */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-pink-200/40 to-orange-200/40 z-0"></div>
+                        <div className="absolute inset-0 bg-gradient-to-tr from-pink-200/40 to-pink-200/40 z-0"></div>
                     </div>
 
                     <div>
                         <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <h1 className="text-2xl sm:text-3xl font-black text-gray-900">{profile.name}</h1>
                             {profile.isGoldenScoopWinner && (
-                                <span className="inline-flex flex-shrink-0 items-center gap-1.5 px-3 py-1 rounded-full bg-[#fff9f0] border border-[#fce9c0] text-orange-500 text-[11px] font-black uppercase tracking-widest leading-none">
+                                <span className="inline-flex flex-shrink-0 items-center gap-1.5 px-3 py-1 rounded-full bg-[#fff9f0] border border-[#fce9c0] text-pink-500 text-[11px] font-black uppercase tracking-widest leading-none">
                                     ⭐ Golden Scoop Winner
                                 </span>
                             )}
@@ -174,7 +174,7 @@ export default function AdminCustomerDetail() {
                     <button className="flex-1 md:flex-none px-5 py-2.5 rounded-xl border-2 border-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors">
                         Edit Profile
                     </button>
-                    <button className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-sm transition-colors shadow-sm">
+                    <button className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-[#ec4899] hover:bg-[#be185d] text-white font-bold text-sm transition-colors shadow-sm">
                         Send Magic Note
                     </button>
                 </div>
@@ -212,12 +212,12 @@ export default function AdminCustomerDetail() {
 
                 <div className="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 relative overflow-hidden">
                     <p className="text-xs font-bold text-gray-400 mb-1 uppercase tracking-widest flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" className="text-orange-400" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" className="text-pink-400" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         Magic Points
                     </p>
                     <div className="flex items-baseline justify-between">
                         <h2 className="text-2xl sm:text-3xl font-black text-gray-900">{kpis.magicPoints.toLocaleString()}</h2>
-                        <span className="text-[10px] font-black text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">+500✨</span>
+                        <span className="text-[10px] font-black text-pink-500 bg-pink-50 px-2 py-0.5 rounded-full">+500✨</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@ export default function AdminCustomerDetail() {
                 <div className="flex-1 space-y-4">
                     <div className="flex justify-between items-center px-1">
                         <h3 className="text-lg font-black text-gray-900">Order History</h3>
-                        <a href="#" className="text-[#ea580c] text-sm font-bold hover:underline">View All</a>
+                        <a href="#" className="text-[#ec4899] text-sm font-bold hover:underline">View All</a>
                     </div>
 
                     <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
@@ -276,7 +276,7 @@ export default function AdminCustomerDetail() {
                     {/* Magic Journey Timeline */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 px-1">
-                            <span className="text-orange-500">
+                            <span className="text-pink-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h-1v1"></path><path d="M22 22v-1h-1"></path><path d="M2 19h1v1"></path><path d="M22 5h1v-1"></path><path d="m9 21 6-6"></path><path d="m8 9 6 6"></path><path d="m15 15 6-6 3-2"></path></svg>
                             </span>
                             <h3 className="text-lg font-black text-gray-900">Magic Journey</h3>
@@ -290,7 +290,7 @@ export default function AdminCustomerDetail() {
                                 {journey.map((item, id) => (
                                     <div key={item.id} className="relative pl-8 bg-transparent">
                                         {/* Dot */}
-                                        <div className={`absolute left-[-2px] top-1 w-3 h-3 rounded-full border-2 bg-white ${id === 0 ? "border-orange-500" : "border-gray-300"}`}></div>
+                                        <div className={`absolute left-[-2px] top-1 w-3 h-3 rounded-full border-2 bg-white ${id === 0 ? "border-pink-500" : "border-gray-300"}`}></div>
 
                                         <h4 className={`text-sm font-black leading-tight ${id === 0 ? "text-gray-900" : "text-gray-600"}`}>{item.title}</h4>
                                         <p className="text-xs font-medium text-gray-400 mt-1 mb-1">{item.description}</p>
@@ -305,7 +305,7 @@ export default function AdminCustomerDetail() {
 
                     {/* Quick Actions Panel */}
                     <div className="bg-[#fff9f0] rounded-3xl p-6 border border-[#fce9c0]">
-                        <h3 className="text-[11px] font-black text-orange-600 uppercase tracking-widest mb-4">Admin Quick Actions</h3>
+                        <h3 className="text-[11px] font-black text-pink-600 uppercase tracking-widest mb-4">Admin Quick Actions</h3>
 
                         <div className="space-y-3">
                             <button className="w-full flex items-center justify-between bg-white text-gray-700 hover:text-gray-900 hover:shadow-md transition-shadow font-bold text-sm px-5 py-3.5 rounded-2xl border border-gray-100 group">

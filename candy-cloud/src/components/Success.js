@@ -1,15 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useCart } from "@/context/CartContext";
+import { useSearchParams } from "next/navigation";
 
-export default function Success() {
+function SuccessContent() {
     const { clearCart } = useCart();
+    const searchParams = useSearchParams();
+    const [orderId, setOrderId] = useState(null);
 
     useEffect(() => {
         // Clear the user's cart securely because they've just completed the purchase
         clearCart();
-    }, [clearCart]);
+        
+        // Grab the orderId from the URL if present
+        const id = searchParams.get('orderId');
+        if (id) {
+            setOrderId(id);
+        }
+    }, [clearCart, searchParams]);
 
     return (
         <section className="py-16 md:py-24 px-5 max-w-[800px] mx-auto w-full flex flex-col items-center text-center">
@@ -43,7 +52,11 @@ export default function Success() {
                 Hooray! The Sugar Scouts are on the move!
             </h1>
             <p className="text-[#6b7280] text-sm md:text-base font-medium max-w-[500px] mb-14 leading-relaxed">
-                Your order <span className="font-black text-pink-500">#CC-12345</span> has been received. Our friendly storks are currently packing your sweets with extra love and fluff.
+                {orderId ? (
+                    <>Your order <span className="font-black text-pink-500">#{orderId.substring(orderId.length - 6).toUpperCase()}</span> has been received.</>
+                ) : (
+                    <>Your lovely order has been received.</>
+                )} Our friendly storks are currently packing your sweets with extra love and fluff.
             </p>
 
             {/* Order Progress Tracker */}
@@ -95,7 +108,7 @@ export default function Success() {
                 <a href="/shop" className="w-full sm:w-auto flex-1 py-4 px-6 rounded-xl bg-pink-500 text-white font-black tracking-wide text-sm sm:text-base shadow-[0_8px_20px_rgba(236,72,153,0.3)] hover:-translate-y-1 hover:shadow-[0_12px_25px_rgba(236,72,153,0.4)] transition-all flex items-center justify-center gap-2">
                     Keep Shopping for Sweets <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 </a>
-                <a href="/track" className="w-full sm:w-auto flex-1 py-4 px-6 rounded-xl bg-white border border-gray-200 text-gray-700 hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 font-bold tracking-wide text-sm sm:text-base transition-colors flex items-center justify-center gap-2">
+                <a href={orderId ? `/track?q=${orderId}` : "/track"} className="w-full sm:w-auto flex-1 py-4 px-6 rounded-xl bg-white border border-gray-200 text-gray-700 hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 font-bold tracking-wide text-sm sm:text-base transition-colors flex items-center justify-center gap-2">
                     Track My Stork <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </a>
             </div>
@@ -105,5 +118,13 @@ export default function Success() {
                 Estimated arrival time: When the wind is just right (and according to your shipping choice).
             </p>
         </section>
+    );
+}
+
+export default function Success() {
+    return (
+        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center text-pink-500 font-bold">Summoning storks... 🎁</div>}>
+            <SuccessContent />
+        </Suspense>
     );
 }

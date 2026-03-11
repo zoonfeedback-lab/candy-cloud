@@ -59,12 +59,11 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     shippingAddress: {
-        firstName: String,
-        lastName: String,
-        street: String,
-        city: String,
-        zip: String,
-        phone: String,
+        firstName: { type: String, required: true },
+        lastName: { type: String, required: true },
+        address: { type: String, required: true },
+        city: { type: String, required: true },
+        zipCode: { type: String, required: true },
     },
     shippingMethod: {
         type: String,

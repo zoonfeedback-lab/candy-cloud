@@ -40,7 +40,7 @@ export default function AdminCustomers() {
     // Helpers
     const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "??";
     const getInitialsBg = (name) => {
-        const colors = ["bg-pink-100 text-pink-600", "bg-blue-100 text-blue-600", "bg-purple-100 text-purple-600", "bg-green-100 text-green-600", "bg-orange-100 text-orange-600", "bg-teal-100 text-teal-600"];
+        const colors = ["bg-pink-100 text-pink-600", "bg-blue-100 text-blue-600", "bg-purple-100 text-purple-600", "bg-green-100 text-green-600", "bg-pink-100 text-pink-600", "bg-teal-100 text-teal-600"];
         const i = (name || "").charCodeAt(0) % colors.length;
         return colors[i];
     };
@@ -139,7 +139,7 @@ export default function AdminCustomers() {
                             placeholder="Search by name or email..."
                             value={search}
                             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-                            className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] transition-all text-gray-700 shadow-sm"
+                            className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ec4899] focus:border-[#ec4899] transition-all text-gray-700 shadow-sm"
                         />
                     </div>
                     <p className="text-sm text-gray-400 font-bold">{pagination.totalItems} customers</p>
@@ -163,7 +163,7 @@ export default function AdminCustomers() {
                                 <tr>
                                     <td colSpan="6">
                                         <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
-                                            <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+                                            <div className="w-8 h-8 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
                                         </div>
                                     </td>
                                 </tr>
@@ -210,7 +210,7 @@ export default function AdminCustomers() {
                                     <td className="py-5 text-right pr-4">
                                         <Link
                                             href={`/admin/customers/${c.id}`}
-                                            className="text-gray-400 hover:text-[#ea580c] w-8 h-8 inline-flex items-center justify-center rounded-lg hover:bg-orange-50 transition-colors"
+                                            className="text-gray-400 hover:text-[#ec4899] w-8 h-8 inline-flex items-center justify-center rounded-lg hover:bg-pink-50 transition-colors"
                                             title="View Profile"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>

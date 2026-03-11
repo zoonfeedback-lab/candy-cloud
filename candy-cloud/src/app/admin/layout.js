@@ -34,7 +34,7 @@ export default function AdminLayout({ children }) {
     if (loading || !isAuthorized) {
         return (
             <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center space-y-4">
-                <div className="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
                 <div className="text-gray-500 font-bold text-sm uppercase tracking-widest">Loading Admin Panel</div>
             </div>
         );
@@ -54,7 +54,7 @@ export default function AdminLayout({ children }) {
                         <input
                             type="text"
                             placeholder="Search orders, inventory, or customers..."
-                            className="w-full bg-white border border-gray-200 rounded-full py-2.5 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 shadow-sm"
+                            className="w-full bg-white border border-gray-200 rounded-full py-2.5 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 shadow-sm"
                         />
                     </div>
                     <div className="flex items-center gap-3">

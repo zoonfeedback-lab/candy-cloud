@@ -187,7 +187,7 @@ export default function AdminInventory() {
         }
         if (status === "Low Stock") {
             return (
-                <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-400 border-[3px] border-white shadow-sm ring-1 ring-gray-100 mb-2">
+                <div className="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center text-pink-400 border-[3px] border-white shadow-sm ring-1 ring-gray-100 mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 </div>
             );
@@ -200,7 +200,7 @@ export default function AdminInventory() {
     };
 
     const getCategoryStyles = (category) => {
-        if (category.includes("Sweet Treat") || category.includes("sweet-treat")) return { bg: "bg-orange-50", text: "text-orange-500", icon: "✨" };
+        if (category.includes("Sweet Treat") || category.includes("sweet-treat")) return { bg: "bg-pink-50", text: "text-pink-500", icon: "✨" };
         if (category.includes("Dreamy Delight") || category.includes("dreamy-delight")) return { bg: "bg-green-50", text: "text-green-500", icon: "📋" };
         if (category.includes("Cloud Nine") || category.includes("cloud-nine")) return { bg: "bg-blue-50", text: "text-blue-500", icon: "🖌️" };
         if (category.includes("bundle")) return { bg: "bg-purple-50", text: "text-purple-500", icon: "🎁" };
@@ -224,7 +224,7 @@ export default function AdminInventory() {
                         <div>
                             <p className="text-sm font-bold text-gray-500 mb-1">Sweet Treat <span className="font-medium">({kpis.sweetTreat.status})</span></p>
                             <h2 className="text-3xl font-black text-gray-900 mb-4">{kpis.sweetTreat.items} Items</h2>
-                            <p className="text-xs font-bold text-orange-500 flex items-center gap-1">
+                            <p className="text-xs font-bold text-pink-500 flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>
                                 -5% from last week
                             </p>
@@ -282,7 +282,7 @@ export default function AdminInventory() {
                                 placeholder="Search items by name or SKU..."
                                 value={search}
                                 onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-                                className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] transition-all text-gray-700 shadow-sm"
+                                className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ec4899] focus:border-[#ec4899] transition-all text-gray-700 shadow-sm"
                             />
                         </div>
 
@@ -291,7 +291,7 @@ export default function AdminInventory() {
                             <select
                                 value={categoryFilter}
                                 onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
-                                className="bg-white border border-gray-200 rounded-xl py-3 px-10 pl-11 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] text-gray-700 appearance-none min-w-[160px] shadow-sm"
+                                className="bg-white border border-gray-200 rounded-xl py-3 px-10 pl-11 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#ec4899] focus:border-[#ec4899] text-gray-700 appearance-none min-w-[160px] shadow-sm"
                             >
                                 <option value="all">Category</option>
                                 <option value="Sweet Treat Box">Sweet Treat</option>
@@ -307,7 +307,7 @@ export default function AdminInventory() {
                             <select
                                 value={stockFilter}
                                 onChange={(e) => { setStockFilter(e.target.value); setCurrentPage(1); }}
-                                className="bg-white border border-gray-200 rounded-xl py-3 px-10 pl-11 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-[#ea580c] text-gray-700 appearance-none min-w-[160px] shadow-sm"
+                                className="bg-white border border-gray-200 rounded-xl py-3 px-10 pl-11 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#ec4899] focus:border-[#ec4899] text-gray-700 appearance-none min-w-[160px] shadow-sm"
                             >
                                 <option value="all">Stock Status</option>
                                 <option value="in_stock">In Stock</option>
@@ -321,7 +321,7 @@ export default function AdminInventory() {
 
                     <button
                         onClick={openAddModal}
-                        className="w-full lg:w-auto bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-xl py-3 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm whitespace-nowrap"
+                        className="w-full lg:w-auto bg-[#ec4899] hover:bg-[#be185d] text-white rounded-xl py-3 px-6 text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm whitespace-nowrap"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         Add New Item
@@ -347,7 +347,7 @@ export default function AdminInventory() {
                                 <tr>
                                     <td colSpan="6">
                                         <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
-                                            <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+                                            <div className="w-8 h-8 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
                                         </div>
                                     </td>
                                 </tr>
@@ -375,16 +375,16 @@ export default function AdminInventory() {
                                     textStatus = "OUT OF STOCK";
                                     textStatusColor = "text-red-400";
                                 } else if (item.stockStatus === "low_stock") {
-                                    barColor = "bg-orange-500";
+                                    barColor = "bg-pink-500";
                                     textStatus = "LOW STOCK";
-                                    textStatusColor = "text-orange-500";
+                                    textStatusColor = "text-pink-500";
                                 }
 
                                 return (
                                     <tr key={item.id} className="hover:bg-gray-50/50 transition-colors group">
 
                                         <td className="py-5 pl-4 flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-lg shadow-sm">
+                                            <div className="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-lg shadow-sm">
                                                 {item.emoji || styles.icon}
                                             </div>
                                             <div>
@@ -428,14 +428,14 @@ export default function AdminInventory() {
                                                 <button
                                                     onClick={() => openEditModal(item)}
                                                     title="Edit item"
-                                                    className="text-gray-400 hover:text-[#ea580c] w-8 h-8 flex items-center justify-center rounded-lg hover:bg-orange-50 transition-colors"
+                                                    className="text-gray-400 hover:text-[#ec4899] w-8 h-8 flex items-center justify-center rounded-lg hover:bg-pink-50 transition-colors"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
                                                 </button>
                                                 {item.stockStatus === "out_of_stock" ? (
                                                     <button
                                                         onClick={() => openEditModal(item)}
-                                                        className="ml-2 text-[#ea580c] hover:text-[#c2410c] text-xs font-bold leading-tight px-2 hover:bg-orange-50 rounded-lg py-1 transition-colors"
+                                                        className="ml-2 text-[#ec4899] hover:text-[#be185d] text-xs font-bold leading-tight px-2 hover:bg-pink-50 rounded-lg py-1 transition-colors"
                                                     >
                                                         Restock<br />Now
                                                     </button>
@@ -494,7 +494,7 @@ export default function AdminInventory() {
                     <div className="relative bg-white rounded-[32px] w-full max-w-[520px] overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
 
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-8 relative shrink-0">
+                        <div className="bg-gradient-to-r from-pink-500 to-pink-500 p-8 relative shrink-0">
                             <button
                                 onClick={closeModal}
                                 className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors"
@@ -530,7 +530,7 @@ export default function AdminInventory() {
                                         onChange={(e) => handleFormChange("name", e.target.value)}
                                         placeholder="e.g. Kawaii Sticker Pack"
                                         required
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700"
                                     />
                                 </div>
                                 <div>
@@ -539,7 +539,7 @@ export default function AdminInventory() {
                                         type="text"
                                         value={form.emoji}
                                         onChange={(e) => handleFormChange("emoji", e.target.value)}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-2xl text-center focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-2xl text-center focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500"
                                     />
                                 </div>
                             </div>
@@ -555,7 +555,7 @@ export default function AdminInventory() {
                                         placeholder="0"
                                         required
                                         min="0"
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700"
                                     />
                                 </div>
                                 <div>
@@ -566,7 +566,7 @@ export default function AdminInventory() {
                                         onChange={(e) => handleFormChange("stock", e.target.value)}
                                         placeholder="100"
                                         min="0"
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700"
                                     />
                                 </div>
                             </div>
@@ -578,7 +578,7 @@ export default function AdminInventory() {
                                     value={form.category}
                                     onChange={(e) => handleFormChange("category", e.target.value)}
                                     required
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700 appearance-none"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700 appearance-none"
                                 >
                                     {CATEGORIES.map(cat => (
                                         <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -594,7 +594,7 @@ export default function AdminInventory() {
                                     onChange={(e) => handleFormChange("description", e.target.value)}
                                     placeholder="Short product description..."
                                     rows={2}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700 resize-none placeholder:text-gray-300"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700 resize-none placeholder:text-gray-300"
                                 />
                             </div>
 
@@ -607,7 +607,7 @@ export default function AdminInventory() {
                                         onChange={(e) => handleFormChange("items", e.target.value)}
                                         placeholder="e.g. Stickers, Washi Tape, Erasers"
                                         rows={2}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700 resize-none placeholder:text-gray-300"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700 resize-none placeholder:text-gray-300"
                                     />
                                 </div>
                             )}
@@ -621,7 +621,7 @@ export default function AdminInventory() {
                                 <button
                                     type="button"
                                     onClick={() => handleFormChange("isFeatured", !form.isFeatured)}
-                                    className={`relative w-12 h-7 rounded-full transition-colors duration-200 ${form.isFeatured ? "bg-[#ea580c]" : "bg-gray-300"}`}
+                                    className={`relative w-12 h-7 rounded-full transition-colors duration-200 ${form.isFeatured ? "bg-[#ec4899]" : "bg-gray-300"}`}
                                 >
                                     <div className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${form.isFeatured ? "translate-x-6" : "translate-x-1"}`}></div>
                                 </button>
@@ -641,8 +641,8 @@ export default function AdminInventory() {
                                     disabled={saving}
                                     className={`flex-1 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
                                         saving
-                                            ? "bg-orange-300 text-white cursor-not-allowed"
-                                            : "bg-[#ea580c] hover:bg-[#c2410c] text-white shadow-sm shadow-orange-200"
+                                            ? "bg-pink-300 text-white cursor-not-allowed"
+                                            : "bg-[#ec4899] hover:bg-[#be185d] text-white shadow-sm shadow-pink-200"
                                     }`}
                                 >
                                     {saving ? (
@@ -669,7 +669,7 @@ export default function AdminInventory() {
                         </form>
 
                         {/* Bottom decorative bar */}
-                        <div className="h-1.5 w-full bg-gradient-to-r from-orange-300 via-pink-300 to-yellow-200 shrink-0"></div>
+                        <div className="h-1.5 w-full bg-gradient-to-r from-pink-300 via-pink-300 to-yellow-200 shrink-0"></div>
 
                     </div>
                 </div>

@@ -80,7 +80,7 @@ export default function AdminSidebar() {
         <aside className="w-[280px] bg-white border-r border-gray-100 flex flex-col h-screen fixed top-0 left-0 z-40 overflow-y-auto">
             {/* Logo area */}
             <div className="p-6 flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-xl">
+                <div className="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center text-white font-black text-xl">
                     ☁️
                 </div>
                 <span className="font-extrabold text-xl text-gray-900 tracking-tight">CandyCloud</span>
@@ -95,11 +95,11 @@ export default function AdminSidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-4 px-4 py-3 rounded-lg font-bold text-sm transition-all duration-200 ${isActive
-                                ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500"
+                                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
                                 : "text-gray-500 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent"
                                 }`}
                         >
-                            <span className={isActive ? "text-orange-500" : "text-gray-400"}>
+                            <span className={isActive ? "text-pink-500" : "text-gray-400"}>
                                 {item.icon}
                             </span>
                             {item.name}

@@ -10,7 +10,7 @@ export default function CheckoutPage() {
             {/* Top Wavy Decorator */}
             <div className="relative h-12 w-full overflow-hidden bg-white">
                 <svg viewBox="0 0 1440 48" preserveAspectRatio="none" className="absolute bottom-0 w-full h-full block">
-                    <path d="M0,48 C480,0 960,96 1440,48 L1440,0 L0,0 Z" fill="#fde68a" />
+                    <path d="M0,48 C480,0 960,96 1440,48 L1440,0 L0,0 Z" fill="#fce7f3" />
                 </svg>
             </div>
 
@@ -21,7 +21,7 @@ export default function CheckoutPage() {
             {/* Bottom Wavy Decorator */}
             <div className="relative h-16 w-full overflow-hidden bg-white mt-auto">
                 <svg viewBox="0 0 1440 64" preserveAspectRatio="none" className="absolute top-0 w-full h-full block">
-                    <path d="M0,0 C480,64 960,-16 1440,24 L1440,64 L0,64 Z" fill="#fef3c7" />
+                    <path d="M0,0 C480,64 960,-16 1440,24 L1440,64 L0,64 Z" fill="#fdf2f8" />
                 </svg>
             </div>
 

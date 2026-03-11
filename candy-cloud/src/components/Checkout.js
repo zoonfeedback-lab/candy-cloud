@@ -30,6 +30,16 @@ function CheckoutContent() {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [jazzCashData, setJazzCashData] = useState(null);
     const [easyPaisaData, setEasyPaisaData] = useState(null);
+    const [paymentOrderId, setPaymentOrderId] = useState(null);
+
+    // Shipping Form State
+    const [shippingForm, setShippingForm] = useState({
+        firstName: "",
+        lastName: "",
+        address: "",
+        city: "",
+        zipCode: "",
+    });
 
     // Active reward state (auto-applied from spinner)
     const [activeReward, setActiveReward] = useState(null);
@@ -133,24 +143,24 @@ function CheckoutContent() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-gray-500">First Name</label>
-                                <input type="text" placeholder="Sugar" className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
+                                <label className="text-xs font-bold text-gray-500">First Name <span className="text-pink-500">*</span></label>
+                                <input type="text" placeholder="Sugar" value={shippingForm.firstName} onChange={(e) => setShippingForm({ ...shippingForm, firstName: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-gray-500">Last Name</label>
-                                <input type="text" placeholder="Rush" className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
+                                <label className="text-xs font-bold text-gray-500">Last Name <span className="text-pink-500">*</span></label>
+                                <input type="text" placeholder="Rush" value={shippingForm.lastName} onChange={(e) => setShippingForm({ ...shippingForm, lastName: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
                             </div>
                             <div className="flex flex-col gap-1.5 sm:col-span-2">
-                                <label className="text-xs font-bold text-gray-500">Address</label>
-                                <input type="text" placeholder="123 Gumdrop Lane" className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
+                                <label className="text-xs font-bold text-gray-500">Address <span className="text-pink-500">*</span></label>
+                                <input type="text" placeholder="123 Gumdrop Lane" value={shippingForm.address} onChange={(e) => setShippingForm({ ...shippingForm, address: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-gray-500">City</label>
-                                <input type="text" placeholder="Marshmallow City" className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
+                                <label className="text-xs font-bold text-gray-500">City <span className="text-pink-500">*</span></label>
+                                <input type="text" placeholder="Marshmallow City" value={shippingForm.city} onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-gray-500">Zip Code</label>
-                                <input type="text" placeholder="55555" className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
+                                <label className="text-xs font-bold text-gray-500">Zip Code <span className="text-pink-500">*</span></label>
+                                <input type="text" placeholder="55555" value={shippingForm.zipCode} onChange={(e) => setShippingForm({ ...shippingForm, zipCode: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-[#f8f9fa] border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 focus:bg-white transition-all text-gray-700" />
                             </div>
                         </div>
                     </div>
@@ -326,6 +336,12 @@ function CheckoutContent() {
                         <div className="flex flex-col gap-4">
                             <button
                                 onClick={async () => {
+                                    // Validate Shipping
+                                    if (!shippingForm.firstName.trim() || !shippingForm.lastName.trim() || !shippingForm.address.trim() || !shippingForm.city.trim() || !shippingForm.zipCode.trim()) {
+                                        setOrderError("Please fill out all required shipping fields so the storks know where to go!");
+                                        return;
+                                    }
+
                                     setOrderError("");
                                     setOrderLoading(true);
 
@@ -346,10 +362,7 @@ function CheckoutContent() {
                                         couponCode: activeReward ? activeReward.label : null,
                                         shippingMethod,
                                         paymentMethod,
-                                        shippingAddress: {
-                                            firstName: document.querySelector('input[placeholder="Sugar"]')?.value || "",
-                                            lastName: document.querySelector('input[placeholder="Rush"]')?.value || "",
-                                        },
+                                        shippingAddress: shippingForm,
                                     };
 
                                     if (isAuthenticated) {
@@ -370,6 +383,11 @@ function CheckoutContent() {
                                                     if (stripeData.success) {
                                                         setClientSecret(stripeData.clientSecret);
                                                         setIsPaymentModalOpen(true);
+                                                        // Pass the orderNumber implicitly by saving it locally if needed,
+                                                        // or we could append it to a state.
+                                                        // For now let's save the order number in a state variable 
+                                                        // so the modal can use it on success.
+                                                        setPaymentOrderId(data.order.orderNumber);
                                                         setOrderLoading(false);
                                                         return;
                                                     } else {
@@ -417,7 +435,7 @@ function CheckoutContent() {
                                                         } catch (e) { console.error("Failed to redeem reward", e); }
                                                     }
                                                     if (!isDirect) clearCart();
-                                                    router.push("/success");
+                                                    router.push(`/success?orderId=${data.order.orderNumber}`);
                                                 }
                                             } else {
                                                 setOrderError(data.message || "Order failed");
@@ -426,9 +444,10 @@ function CheckoutContent() {
                                             setOrderError("Network error. Please try again.");
                                         }
                                     } else {
-                                        // Guest checkout - just go to success
+                                        // Guest checkout - generate a fun mock ID since it's not saved to DB
                                         if (!isDirect) clearCart();
-                                        router.push("/success");
+                                        const guestOrderId = "GST-" + Math.floor(10000 + Math.random() * 90000);
+                                        router.push(`/success?orderId=${guestOrderId}`);
                                     }
 
                                     setOrderLoading(false);
@@ -464,7 +483,7 @@ function CheckoutContent() {
                         totalAmount={total}
                         onPaymentSuccess={() => {
                             if (!isDirect) clearCart();
-                            router.push("/success");
+                            router.push(`/success?orderId=${paymentOrderId}`);
                         }}
                     />
                 </Elements>

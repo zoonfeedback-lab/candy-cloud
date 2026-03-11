@@ -10,7 +10,7 @@ const STATUS_FLOW = [
     { key: "confirmed", label: "Confirmed", emoji: "✅", color: "bg-teal-500" },
     { key: "processing", label: "Processing", emoji: "⚙️", color: "bg-yellow-500" },
     { key: "shipped", label: "Shipped", emoji: "🚚", color: "bg-purple-500" },
-    { key: "out_for_delivery", label: "Out for Delivery", emoji: "🏃", color: "bg-orange-500" },
+    { key: "out_for_delivery", label: "Out for Delivery", emoji: "🏃", color: "bg-pink-500" },
     { key: "delivered", label: "Delivered", emoji: "🎉", color: "bg-green-500" },
 ];
 
@@ -109,7 +109,7 @@ export default function AdminOrderDetail() {
                 <div className="text-4xl mb-4">😔</div>
                 <h2 className="text-2xl font-black text-gray-900 mb-2">Order Not Found</h2>
                 <p className="text-gray-500 mb-6">{error || "This order does not exist."}</p>
-                <button onClick={() => router.push("/admin/orders")} className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-6 py-2.5 rounded-xl font-bold transition-colors">
+                <button onClick={() => router.push("/admin/orders")} className="bg-[#ec4899] hover:bg-[#be185d] text-white px-6 py-2.5 rounded-xl font-bold transition-colors">
                     Back to Orders
                 </button>
             </div>
@@ -138,7 +138,7 @@ export default function AdminOrderDetail() {
             confirmed: "bg-teal-50 text-teal-600 border-teal-200",
             processing: "bg-yellow-50 text-yellow-700 border-yellow-200",
             shipped: "bg-purple-50 text-purple-600 border-purple-200",
-            out_for_delivery: "bg-orange-50 text-orange-600 border-orange-200",
+            out_for_delivery: "bg-pink-50 text-pink-600 border-pink-200",
             delivered: "bg-green-50 text-green-600 border-green-200",
             cancelled: "bg-red-50 text-red-600 border-red-200",
         };
@@ -202,7 +202,7 @@ export default function AdminOrderDetail() {
                     {/* Status Stepper Card */}
                     <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm relative overflow-hidden">
                         <div className="flex justify-between items-center mb-10">
-                            <h3 className="text-gray-700 font-bold">Current Status: <span className="text-[#ea580c] ml-1">{order.orderStatus.replace(/_/g, " ")}</span></h3>
+                            <h3 className="text-gray-700 font-bold">Current Status: <span className="text-[#ec4899] ml-1">{order.orderStatus.replace(/_/g, " ")}</span></h3>
                             {order.estimatedDelivery && (
                                 <span className="text-xs font-medium text-gray-400 text-right">
                                     Est. Delivery: {new Date(order.estimatedDelivery).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -245,7 +245,7 @@ export default function AdminOrderDetail() {
                                                 )}
                                             </div>
                                             <span className={`text-[8px] sm:text-[9px] uppercase font-black tracking-widest text-center leading-tight ${
-                                                isCurrent ? "text-[#ea580c]" : isComplete ? "text-gray-700" : "text-gray-400"
+                                                isCurrent ? "text-[#ec4899]" : isComplete ? "text-gray-700" : "text-gray-400"
                                             }`}>
                                                 {step.label}
                                             </span>
@@ -277,7 +277,7 @@ export default function AdminOrderDetail() {
                         {/* Shipping Card */}
                         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col">
                             <div className="flex items-center gap-3 mb-5">
-                                <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="10" r="3" /><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z" /></svg>
                                 </div>
                                 <h3 className="font-bold text-gray-900 text-[15px]">Shipping</h3>
@@ -285,8 +285,8 @@ export default function AdminOrderDetail() {
                             {order.shippingAddress ? (
                                 <div className="space-y-1 text-xs text-gray-500 font-medium flex-1">
                                     <p className="font-bold text-gray-900 text-sm mb-2">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
-                                    {order.shippingAddress.street && <p>{order.shippingAddress.street}</p>}
-                                    <p>{[order.shippingAddress.city, order.shippingAddress.zip].filter(Boolean).join(", ")}</p>
+                                    {order.shippingAddress.address && <p>{order.shippingAddress.address}</p>}
+                                    <p>{[order.shippingAddress.city, order.shippingAddress.zipCode].filter(Boolean).join(", ")}</p>
                                 </div>
                             ) : (
                                 <p className="text-xs text-gray-400">No address on file</p>
@@ -313,7 +313,7 @@ export default function AdminOrderDetail() {
                                 <div className="flex justify-between items-center text-xs">
                                     <span className="text-gray-400 font-medium">Status</span>
                                     <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                                        order.paymentStatus === "paid" ? "bg-green-100 text-green-600" : "bg-orange-100 text-orange-600"
+                                        order.paymentStatus === "paid" ? "bg-green-100 text-green-600" : "bg-pink-100 text-pink-600"
                                     }`}>
                                         {order.paymentStatus}
                                     </span>
@@ -327,7 +327,7 @@ export default function AdminOrderDetail() {
                     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                         <div className="p-6 sm:p-8 flex justify-between items-center border-b border-gray-50 bg-white">
                             <h3 className="text-lg font-black text-gray-900">Items Scooped</h3>
-                            <span className="text-xs font-bold text-orange-500">{order.items?.length || 0} Items</span>
+                            <span className="text-xs font-bold text-pink-500">{order.items?.length || 0} Items</span>
                         </div>
 
                         <div className="overflow-x-auto w-full border-b border-gray-100">
@@ -345,7 +345,7 @@ export default function AdminOrderDetail() {
                                         <tr key={i} className="hover:bg-gray-50/30 transition-colors">
                                             <td className="py-5 pl-8">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl">
+                                                    <div className="w-10 h-10 rounded-xl bg-pink-50 text-pink-500 flex items-center justify-center text-xl">
                                                         {item.emoji || "🎁"}
                                                     </div>
                                                     <div>
@@ -373,7 +373,7 @@ export default function AdminOrderDetail() {
                             </div>
                             {order.discountAmt > 0 && (
                                 <div className="w-full max-w-[300px] flex justify-between items-center">
-                                    <span className="text-gray-500 font-bold text-sm">Discount {order.couponCode && <span className="text-orange-500">({order.couponCode})</span>}</span>
+                                    <span className="text-gray-500 font-bold text-sm">Discount {order.couponCode && <span className="text-pink-500">({order.couponCode})</span>}</span>
                                     <span className="text-green-600 font-black text-sm">-Rs {order.discountAmt?.toLocaleString()}</span>
                                 </div>
                             )}
@@ -382,7 +382,7 @@ export default function AdminOrderDetail() {
                         <div className="w-full bg-gray-50/80 border-t border-gray-100 flex justify-end items-center px-6 sm:px-8 py-5">
                             <div className="w-full max-w-[300px] flex justify-between items-center">
                                 <span className="text-gray-900 font-black text-lg">Grand Total</span>
-                                <span className="text-[#ea580c] font-black text-2xl">Rs {order.total?.toLocaleString()}</span>
+                                <span className="text-[#ec4899] font-black text-2xl">Rs {order.total?.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -395,7 +395,7 @@ export default function AdminOrderDetail() {
                     {/* Status Update Panel */}
                     <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
                         <div className="flex items-center gap-2 mb-6">
-                            <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 5-3-3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" /><path d="M8 18h1" /><path d="M18.4 9.6a2 2 0 1 1 3 3L17 17l-4 1 1-4Z" /></svg>
                             </div>
                             <h3 className="text-lg font-black text-gray-900">Update Status</h3>
@@ -415,7 +415,7 @@ export default function AdminOrderDetail() {
                                     <select
                                         value={newStatus}
                                         onChange={(e) => setNewStatus(e.target.value)}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700 appearance-none"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700 appearance-none"
                                     >
                                         <option value="">Select next status...</option>
                                         {availableStatuses.map(s => (
@@ -431,7 +431,7 @@ export default function AdminOrderDetail() {
                                         onChange={(e) => setStatusMessage(e.target.value)}
                                         placeholder="e.g. Packed with extra care! 💖"
                                         rows={3}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 text-gray-700 resize-none placeholder:text-gray-300"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-gray-700 resize-none placeholder:text-gray-300"
                                     />
                                 </div>
 
@@ -441,7 +441,7 @@ export default function AdminOrderDetail() {
                                     className={`w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
                                         !newStatus || updating
                                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                            : "bg-[#ea580c] hover:bg-[#c2410c] text-white shadow-sm shadow-orange-200"
+                                            : "bg-[#ec4899] hover:bg-[#be185d] text-white shadow-sm shadow-pink-200"
                                     }`}
                                 >
                                     {updating ? (
@@ -470,20 +470,20 @@ export default function AdminOrderDetail() {
                     {/* Tracking Timeline */}
                     <div className="bg-[#fffdfa] rounded-3xl p-6 sm:p-8 border border-[#fef3c7] shadow-sm sticky top-6">
                         <div className="flex items-center gap-2 mb-8">
-                            <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                             </div>
                             <h3 className="text-lg font-black text-gray-900">Magic History</h3>
                         </div>
 
                         {order.trackingHistory && order.trackingHistory.length > 0 ? (
-                            <div className="relative border-l-2 border-orange-100 ml-4 space-y-8 pb-4">
+                            <div className="relative border-l-2 border-pink-100 ml-4 space-y-8 pb-4">
                                 {[...order.trackingHistory].reverse().map((event, i) => (
                                     <div key={i} className="relative pl-6">
                                         {i === 0 ? (
-                                            <div className="absolute -left-[5px] top-1 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white ring-2 ring-orange-100"></div>
+                                            <div className="absolute -left-[5px] top-1 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-white ring-2 ring-pink-100"></div>
                                         ) : (
-                                            <div className="absolute -left-[4px] top-1.5 w-1.5 h-1.5 bg-orange-300 rounded-full"></div>
+                                            <div className="absolute -left-[4px] top-1.5 w-1.5 h-1.5 bg-pink-300 rounded-full"></div>
                                         )}
                                         <div className="flex flex-col">
                                             <span className="font-bold text-gray-800 text-[13px] leading-snug mb-1 capitalize">

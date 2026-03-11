@@ -23,6 +23,11 @@ exports.createOrder = async (req, res, next) => {
             return next(new Error("No order items"));
         }
 
+        if (!shippingAddress || !shippingAddress.firstName || !shippingAddress.lastName || !shippingAddress.address || !shippingAddress.city || !shippingAddress.zipCode) {
+            res.status(400);
+            return next(new Error("Incomplete shipping address provided"));
+        }
+
         // Calculate estimated delivery
         const now = new Date();
         const deliveryDays = shippingMethod === "express" ? 3 : 7;

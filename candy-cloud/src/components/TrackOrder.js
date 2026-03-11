@@ -35,6 +35,25 @@ function TrackOrderContent() {
         setError("");
         setLoading(true);
         setOrder(null);
+
+        // Mock response for Guest Orders since they don't save to the DB currently
+        if (num.startsWith("GST-")) {
+            setTimeout(() => {
+                setOrder({
+                    orderNumber: num,
+                    orderStatus: "processing",
+                    items: [],
+                    total: 0,
+                    createdAt: new Date(),
+                    trackingHistory: [
+                        { status: "placed", message: "Guest Order has been placed successfully. Note: Guest checkouts are simulated.", timestamp: new Date() }
+                    ]
+                });
+                setLoading(false);
+            }, 600);
+            return;
+        }
+
         try {
             const res = await fetch(`${API_URL}/api/orders/track/${num}`);
             const data = await res.json();
