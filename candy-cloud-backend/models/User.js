@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    wonRewardLabel: {
+        type: String,
+        default: null,
+    },
     activeReward: {
         label: { type: String, default: null },
         discountType: { type: String, enum: ["percentage", "fixed", "item", null], default: null },

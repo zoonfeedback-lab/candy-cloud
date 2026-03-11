@@ -46,6 +46,7 @@ exports.spinWheel = async (req, res, next) => {
 
         // Save reward directly to user account
         user.hasSpun = true;
+        user.wonRewardLabel = wonPrize.label;
         user.activeReward = {
             label: wonPrize.label,
             discountType: wonPrize.discountType,

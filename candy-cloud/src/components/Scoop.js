@@ -116,8 +116,7 @@ export default function Scoop() {
                                                 border-2 ${isSelected ? "border-pink-400 bg-pink-200 ring-4 ring-pink-100 shadow-md scale-105" : "border-gray-100 bg-white hover:border-pink-200 hover:bg-gray-50"}
                                             `}
                                         >
-                                            {isSelected && <div className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full animate-ping"></div>}
-                                            {isSelected && <div className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full"></div>}
+
 
                                             <span className="text-4xl mb-3">{cat.emoji}</span>
                                             <span className="font-bold text-gray-800 text-md">{cat.name}</span>
@@ -150,8 +149,7 @@ export default function Scoop() {
                                                 border-2 ${isSelected ? "border-pink-400 bg-pink-200 ring-4 ring-pink-100 shadow-md scale-105" : "border-gray-100 bg-white hover:border-pink-200 hover:bg-gray-50"}
                                             `}
                                                 >
-                                                    {isSelected && <div className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full animate-ping"></div>}
-                                                    {isSelected && <div className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full"></div>}
+
 
                                                     <span className="text-4xl mb-3">{size.emoji}</span>
                                                     <span className="font-bold text-gray-800 text-md">{size.name}</span>
@@ -169,7 +167,7 @@ export default function Scoop() {
                                         <span className="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
                                         Pick a Color Theme
                                     </h3>
-                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
                                         {COLOR_THEMES.map((theme) => {
                                             const isSelected = selectedColor.id === theme.id;
                                             return (

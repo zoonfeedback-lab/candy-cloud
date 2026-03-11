@@ -138,10 +138,15 @@ exports.login = async (req, res, next) => {
             return next(new Error("Please provide email and password"));
         }
 
-        const user = await User.findOne({ email }).select("+password");
         if (!user || !(await user.matchPassword(password))) {
             res.status(401);
             return next(new Error("Invalid email or password"));
+        }
+
+        // Block admins from logging into the customer app
+        if (user.role === "admin") {
+            res.status(403);
+            return next(new Error("Administrators must login through the Admin Portal."));
         }
 
         const { accessToken, refreshToken } = generateTokens(user._id);
@@ -201,6 +206,12 @@ exports.googleLogin = async (req, res, next) => {
                 authProvider: "google",
                 // password is not required for google users
             });
+        }
+
+        // Block admins from logging into the customer app
+        if (user.role === "admin") {
+            res.status(403);
+            return next(new Error("Administrators must login through the Admin Portal."));
         }
 
         // Generate our own JWT tokens for the user

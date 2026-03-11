@@ -560,13 +560,11 @@ exports.getAdminGoldenScoop = async (req, res, next) => {
     try {
         // 1. Fetch Golden Scoop Winners (Users who have spun)
         const winners = await User.find({ hasSpun: true })
-            .select("name email createdAt")
+            .select("name email createdAt activeReward wonRewardLabel")
             .sort({ createdAt: -1 })
             .lean();
 
         // 2. Format Winners List 
-        // We'll also try to fetch their associated order to get the Order ID and Reward amount
-        // Since we don't strictly track the exact reward value per user in the schema yet, we'll derive/mock it from recent orders
         const formattedWinners = [];
 
         for (const user of winners) {
@@ -574,12 +572,14 @@ exports.getAdminGoldenScoop = async (req, res, next) => {
             const order = await Order.findOne({ user: user._id, discount: { $gt: 0 } }).lean()
                 || await Order.findOne({ user: user._id }).sort({ createdAt: -1 }).lean();
 
-            // Determine Reward String
-            let rewardStr = "$10 Credit"; // Fallback
-            if (user.activeReward && user.activeReward.label) {
+            // Determine Reward String — wonRewardLabel is permanent and never cleared
+            let rewardStr = "Reward Pending";
+            if (user.wonRewardLabel) {
+                rewardStr = user.wonRewardLabel;
+            } else if (user.activeReward && user.activeReward.label) {
                 rewardStr = user.activeReward.label;
             } else if (order && order.discount > 0) {
-                rewardStr = `$${order.discount.toFixed(2)} Credit`;
+                rewardStr = `Rs ${order.discount} OFF`;
             }
 
             formattedWinners.push({
