@@ -63,7 +63,7 @@ export default function AdminDashboard() {
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-4 right-4 text-orange-100/50 text-5xl font-black">💵</div>
                     <p className="text-sm font-bold text-gray-500 tracking-wide mb-2 uppercase">Total Sales</p>
-                    <h2 className="text-3xl font-black text-gray-900 mb-2 relative z-10">${kpis.totalSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-2 relative z-10">Rs {kpis.totalSales.toLocaleString()}</h2>
                     <p className="text-xs font-bold text-green-500 flex items-center gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                         +12.5%
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-4 right-4 text-teal-100/50 text-5xl font-black">🧾</div>
                     <p className="text-sm font-bold text-gray-500 tracking-wide mb-2 uppercase">Avg Order Value</p>
-                    <h2 className="text-3xl font-black text-gray-900 mb-2 relative z-10">${kpis.avgOrderValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-2 relative z-10">Rs {kpis.avgOrderValue.toLocaleString()}</h2>
                     <p className="text-xs font-bold text-green-500 flex items-center gap-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                         +2.1%
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
                                             {new Date(order.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                                         </td>
                                         <td className="py-4 font-black text-gray-900 text-sm">
-                                            ${order.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            Rs {order.amount.toLocaleString()}
                                         </td>
                                         <td className="py-4">
                                             <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${order.status === "delivered" ? "bg-gray-100 text-gray-500" :
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
 
                     <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 mb-8 mt-auto text-center">
                         <p className="text-xs font-black text-orange-400 uppercase tracking-widest mb-1">Current Jackpot</p>
-                        <h4 className="text-2xl font-black text-gray-900 mb-2">${goldenScoopPanel?.currentJackpot?.toFixed(2) || '500.00'} Store Credit</h4>
+                        <h4 className="text-2xl font-black text-gray-900 mb-2">Rs {goldenScoopPanel?.currentJackpot?.toLocaleString() || '500'} Store Credit</h4>
                         <p className="text-xs text-orange-600/80 font-medium">Remaining Scoops: {goldenScoopPanel?.scoopsRemaining ?? 0} / {goldenScoopPanel?.totalScoops ?? 60}</p>
                     </div>
 
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
                                         <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1">{item.category || 'PRODUCT'} &middot; Stock: {item.stock}</p>
                                     </div>
                                     <span className={`text-sm font-black ${textColors[i]}`}>
-                                        ${item.price.toFixed(2)}
+                                        Rs {item.price.toLocaleString()}
                                     </span>
                                 </div>
                             </div>

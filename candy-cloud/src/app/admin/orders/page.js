@@ -288,7 +288,7 @@ export default function AdminOrders() {
                                         {order.itemsSummary}
                                     </td>
                                     <td className="py-4 font-black text-gray-900 text-sm">
-                                        ${order.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        Rs {order.amount.toLocaleString()}
                                     </td>
                                     <td className="py-4">
                                         {renderStatusBadge(order.status)}

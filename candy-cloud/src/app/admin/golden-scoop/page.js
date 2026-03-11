@@ -152,7 +152,7 @@ export default function AdminGoldenScoop() {
                     <div className="relative z-10">
                         <p className="text-[11px] font-black text-yellow-800 mb-1 uppercase tracking-widest">Current Jackpot</p>
                         <h2 className="text-3xl font-black text-gray-900 leading-none mb-1">
-                            ${campaign.currentJackpot.toFixed(2)}
+                            Rs {campaign.currentJackpot.toLocaleString()}
                         </h2>
                         <span className="text-xs font-bold text-yellow-800">Store Credit Reward</span>
                     </div>
