@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const Product = require("./models/Product");
 const User = require("./models/User");
 const Order = require("./models/Order");
+const Setting = require("./models/Setting");
 
 dotenv.config();
 
@@ -101,7 +102,25 @@ const seedDB = async () => {
         // Clear existing data
         await Product.deleteMany({});
         await Order.deleteMany({});
-        console.log("🗑️  Cleared existing products and orders");
+        await Setting.deleteMany({});
+        console.log("🗑️  Cleared existing products, orders, and settings");
+
+        // Seed default settings
+        const defaultSettings = [
+            { key: "storeName", value: "CandyCloud" },
+            { key: "supportEmail", value: "Info.candycloud1@gmail.com" },
+            { key: "businessAddress", value: "123 Marshmallow Lane, Sugar Valley, Karachi" },
+            { key: "primaryColor", value: "#ec4899" },
+            { key: "secondaryColor", value: "#f0426e" },
+            { key: "nationwideDelivery", value: true },
+            { key: "expressRate", value: 500 },
+            { key: "codEnabled", value: true },
+            { key: "jazzCashEnabled", value: true },
+            { key: "easypaisaEnabled", value: true },
+            { key: "stripeEnabled", value: true }
+        ];
+        await Setting.insertMany(defaultSettings);
+        console.log("⚙️  Seeded default settings");
 
         // Insert products
         const createdProducts = await Product.insertMany(products);
@@ -200,10 +219,9 @@ const seedDB = async () => {
                 shippingAddress: {
                     firstName: customer.name.split(" ")[0],
                     lastName: customer.name.split(" ").slice(1).join(" ") || "Cloud",
-                    street: `${Math.floor(Math.random() * 200) + 1} Sugar Lane`,
+                    address: `${Math.floor(Math.random() * 200) + 1} Sugar Lane`,
                     city: ["Lahore", "Karachi", "Islamabad", "Faisalabad", "Rawalpindi"][i],
-                    zip: `${54000 + i * 1000}`,
-                    phone: customer.phone,
+                    zipCode: `${54000 + i * 1000}`,
                 },
                 shippingMethod: shippingMethods[i],
                 paymentMethod: paymentMethods[i],
@@ -257,10 +275,9 @@ const seedDB = async () => {
                 shippingAddress: {
                     firstName: customer.name.split(" ")[0],
                     lastName: customer.name.split(" ").slice(1).join(" ") || "Cloud",
-                    street: `${Math.floor(Math.random() * 200) + 1} Candy Avenue`,
+                    address: `${Math.floor(Math.random() * 200) + 1} Candy Avenue`,
                     city: "Lahore",
-                    zip: "54000",
-                    phone: customer.phone,
+                    zipCode: "54000",
                 },
                 shippingMethod: "standard",
                 paymentMethod: "cod",

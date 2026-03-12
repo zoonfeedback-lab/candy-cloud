@@ -61,12 +61,12 @@ export function AuthProvider({ children }) {
     };
 
     // Login
-    const login = async (email, password) => {
+    const login = async (email, password, isAdmin = false) => {
         const res = await fetch(`${API_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email, password, isAdmin }),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.message || "Login failed");

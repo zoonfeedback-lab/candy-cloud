@@ -19,13 +19,13 @@ export default function AdminLogin() {
         setIsLoading(true);
 
         try {
-            const data = await login(email, password);
+            const data = await login(email, password, true);
 
-            // Check if user is actually an admin
+            // Double check if user is actually an admin (Backend should have already handled this)
             if (data.user && data.user.role === "admin") {
                 router.replace("/admin");
             } else {
-                // Not an admin, log them out immediately
+                // Should not reach here with new backend logic, but keep for safety
                 await logout();
                 setError("Access Denied. You do not have admin privileges.");
             }

@@ -1,6 +1,7 @@
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const Coupon = require("../models/Coupon");
+const Setting = require("../models/Setting");
 
 // @desc    Create order from cart
 // @route   POST /api/orders
@@ -28,19 +29,40 @@ exports.createOrder = async (req, res, next) => {
             return next(new Error("Incomplete shipping address provided"));
         }
 
-        // Calculate estimated delivery
+        // Fetch settings for dynamic values
+        const settingsRaw = await Setting.find();
+        const settings = settingsRaw.reduce((acc, curr) => {
+            acc[curr.key] = curr.value;
+            return acc;
+        }, {});
+
+        // Validate payment method
+        if (paymentMethod === 'cod' && settings.codEnabled === false) return next(new Error("Cash on Delivery is currently disabled"));
+        if (paymentMethod === 'stripe' && settings.stripeEnabled === false) return next(new Error("Stripe payments are currently disabled"));
+        if (paymentMethod === 'jazzcash' && settings.jazzCashEnabled === false) return next(new Error("JazzCash payments are currently disabled"));
+        if (paymentMethod === 'easypaisa' && settings.easypaisaEnabled === false) return next(new Error("EasyPaisa payments are currently disabled"));
+
+        // Calculate estimated delivery and validate shipping cost
         const now = new Date();
         const deliveryDays = shippingMethod === "express" ? 3 : 7;
         const estimatedDelivery = new Date(now.getTime() + deliveryDays * 24 * 60 * 60 * 1000);
+
+        // Optional: Overwrite shipping cost from settings if it's express
+        let finalShippingCost = shippingCost;
+        if (shippingMethod === "express" && settings.expressRate) {
+            finalShippingCost = Number(settings.expressRate);
+        } else if (shippingMethod === "standard") {
+            finalShippingCost = 0; // Standard is usually free in this app's logic
+        }
 
         const order = await Order.create({
             user: req.user._id,
             items,
             subtotal,
-            shippingCost,
+            shippingCost: finalShippingCost,
             discountAmt: discountAmt || 0,
             couponCode: couponCode || null,
-            total,
+            total: subtotal + finalShippingCost - (discountAmt || 0),
             shippingAddress,
             shippingMethod,
             paymentMethod,

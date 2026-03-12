@@ -131,22 +131,32 @@ exports.register = async (req, res, next) => {
 // @route   POST /api/auth/login
 exports.login = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, isAdmin } = req.body;
 
         if (!email || !password) {
             res.status(400);
             return next(new Error("Please provide email and password"));
         }
 
+        const user = await User.findOne({ email }).select("+password");
         if (!user || !(await user.matchPassword(password))) {
             res.status(401);
             return next(new Error("Invalid email or password"));
         }
 
-        // Block admins from logging into the customer app
-        if (user.role === "admin") {
-            res.status(403);
-            return next(new Error("Administrators must login through the Admin Portal."));
+        // Logic for role-based access control
+        if (isAdmin) {
+            // If trying to access admin portal, must be an admin
+            if (user.role !== "admin") {
+                res.status(403);
+                return next(new Error("Access Denied. Only administrators can access this portal."));
+            }
+        } else {
+            // If trying to login to customer app, must NOT be an admin
+            if (user.role === "admin") {
+                res.status(403);
+                return next(new Error("Administrators must login through the Admin Portal."));
+            }
         }
 
         const { accessToken, refreshToken } = generateTokens(user._id);

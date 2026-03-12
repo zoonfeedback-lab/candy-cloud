@@ -66,7 +66,7 @@ export default function Footer() {
                         </div>
                         <div className="flex items-center gap-3 text-sm text-white/90 font-medium">
                             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm">✉️</span>
-                            <span>info@candycloud.pk</span>
+                            <span>Info.candycloud1@gmail.com</span>
                         </div>
                     </div>
 

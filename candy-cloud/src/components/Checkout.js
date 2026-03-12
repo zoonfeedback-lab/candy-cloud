@@ -23,7 +23,8 @@ function CheckoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [shippingMethod, setShippingMethod] = useState("express");
-    const [paymentMethod, setPaymentMethod] = useState("cod");
+    const [paymentMethod, setPaymentMethod] = useState("");
+    const [settings, setSettings] = useState(null);
     const [orderLoading, setOrderLoading] = useState(false);
     const [orderError, setOrderError] = useState("");
     const [clientSecret, setClientSecret] = useState("");
@@ -47,9 +48,29 @@ function CheckoutContent() {
 
     const isDirect = searchParams.get("direct") === "true";
 
-    // Auto-fetch active reward on mount
+    // Auto-fetch active reward and settings on mount
     useEffect(() => {
-        const fetchActiveReward = async () => {
+        const fetchData = async () => {
+            // Fetch Settings
+            try {
+                const sRes = await fetch(`${API_URL}/api/settings`);
+                const sData = await sRes.json();
+                if (sData.success) {
+                    setSettings(sData.data);
+                    // Set default payment method based on enabled ones
+                    const available = PAYMENT_METHODS.filter(m => {
+                        if (m.id === 'cod') return sData.data.codEnabled !== false;
+                        if (m.id === 'stripe') return sData.data.stripeEnabled !== false;
+                        if (m.id === 'jazzcash') return sData.data.jazzCashEnabled !== false;
+                        if (m.id === 'easypaisa') return sData.data.easypaisaEnabled !== false;
+                        return true;
+                    });
+                    if (available.length > 0) setPaymentMethod(available[0].id);
+                }
+            } catch (err) {
+                console.error("Failed to fetch settings", err);
+            }
+
             if (!isAuthenticated) return;
             setRewardLoading(true);
             try {
@@ -64,8 +85,17 @@ function CheckoutContent() {
                 setRewardLoading(false);
             }
         };
-        fetchActiveReward();
+        fetchData();
     }, [isAuthenticated, authFetch, API_URL]);
+
+    const isMethodEnabled = (methodId) => {
+        if (!settings) return methodId === 'cod'; // Default allow COD if settings loading
+        if (methodId === 'cod') return settings.codEnabled !== false;
+        if (methodId === 'stripe') return settings.stripeEnabled !== false;
+        if (methodId === 'jazzcash') return settings.jazzCashEnabled !== false;
+        if (methodId === 'easypaisa') return settings.easypaisaEnabled !== false;
+        return true;
+    };
 
     if (!isLoaded) return null;
 
@@ -210,22 +240,38 @@ function CheckoutContent() {
                             <span className="text-pink-500">💸</span> Payment Information
                         </h2>
 
-                        <div className="border-2 border-dashed border-pink-200 rounded-xl p-8 bg-pink-50/30 flex flex-col items-center text-center relative overflow-hidden">
-                            <div className="w-14 h-14 bg-pink-500 text-white rounded-full flex items-center justify-center mb-4 shadow-md shadow-pink-500/30 transform transition-transform hover:scale-110">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="2" y="5" width="20" height="14" rx="2" />
-                                    <path d="M2 10h20" />
-                                    <path d="M6 14h.01" />
-                                </svg>
+                        {!isMethodEnabled('cod') ? (
+                            <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 bg-gray-50 flex flex-col items-center text-center opacity-70">
+                                <div className="w-14 h-14 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center mb-4">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                                        <path d="M2 10h20" />
+                                        <path d="m15 13-6 6" /><path d="m9 13 6 6" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-base font-black text-gray-400 mb-2">Cash on Delivery Disabled</h3>
+                                <p className="text-xs text-gray-400 max-w-sm mb-5 leading-relaxed">
+                                    COD is temporarily unavailable. Please select another sweet payment method from the right!
+                                </p>
                             </div>
-                            <h3 className="text-base font-black text-gray-800 mb-2">Cash on Delivery (COD)</h3>
-                            <p className="text-xs text-gray-500 max-w-sm mb-5 leading-relaxed">
-                                No credit card? No problem! Hand over the gold coins when your sweets arrive at your door.
-                            </p>
-                            <span className="px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-[10px] font-bold tracking-wider uppercase">
-                                Our Signature Payment Method
-                            </span>
-                        </div>
+                        ) : (
+                            <div className="border-2 border-dashed border-pink-200 rounded-xl p-8 bg-pink-50/30 flex flex-col items-center text-center relative overflow-hidden">
+                                <div className="w-14 h-14 bg-pink-500 text-white rounded-full flex items-center justify-center mb-4 shadow-md shadow-pink-500/30 transform transition-transform hover:scale-110">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                                        <path d="M2 10h20" />
+                                        <path d="M6 14h.01" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-base font-black text-gray-800 mb-2">Cash on Delivery (COD)</h3>
+                                <p className="text-xs text-gray-500 max-w-sm mb-5 leading-relaxed">
+                                    No credit card? No problem! Hand over the gold coins when your sweets arrive at your door.
+                                </p>
+                                <span className="px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-[10px] font-bold tracking-wider uppercase">
+                                    Our Signature Payment Method
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -303,26 +349,38 @@ function CheckoutContent() {
                         <div className="mb-6">
                             <h3 className="text-sm font-black text-gray-800 mb-3">💳 Payment Method</h3>
                             <div className="flex flex-col gap-2">
-                                {PAYMENT_METHODS.map((method) => (
-                                    <label
-                                        key={method.id}
-                                        onClick={() => setPaymentMethod(method.id)}
-                                        className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all text-left ${paymentMethod === method.id
-                                            ? "border-pink-500 bg-pink-50/30"
-                                            : "border-gray-100 hover:border-gray-200 bg-white"
-                                            }`}
-                                    >
-                                        <div className={`w-4 h-4 rounded-full shrink-0 ${paymentMethod === method.id
-                                            ? "border-4 border-pink-500 bg-white"
-                                            : "border border-gray-300 bg-white"
-                                            }`} />
-                                        <span className="text-lg">{method.emoji}</span>
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-gray-800">{method.label}</span>
-                                            <span className="text-[10px] text-gray-400">{method.desc}</span>
-                                        </div>
-                                    </label>
-                                ))}
+                                {PAYMENT_METHODS.map((method) => {
+                                    const isEnabled = isMethodEnabled(method.id);
+                                    return (
+                                        <label
+                                            key={method.id}
+                                            onClick={() => isEnabled && setPaymentMethod(method.id)}
+                                            className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${!isEnabled
+                                                ? "opacity-50 grayscale bg-gray-50 border-gray-100 cursor-not-allowed"
+                                                : paymentMethod === method.id
+                                                    ? "border-pink-500 bg-pink-50/30 cursor-pointer"
+                                                    : "border-gray-100 hover:border-gray-200 bg-white cursor-pointer"
+                                                }`}
+                                        >
+                                            <div className={`w-4 h-4 rounded-full shrink-0 ${!isEnabled
+                                                ? "border-gray-300 bg-gray-200"
+                                                : paymentMethod === method.id
+                                                    ? "border-4 border-pink-500 bg-white"
+                                                    : "border border-gray-300 bg-white"
+                                                }`} />
+                                            <span className="text-lg">{method.emoji}</span>
+                                            <div className="flex-1 flex flex-col">
+                                                <div className="flex items-center justify-between">
+                                                    <span className={`text-xs font-bold ${isEnabled ? "text-gray-800" : "text-gray-400"}`}>{method.label}</span>
+                                                    {!isEnabled && (
+                                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Disabled</span>
+                                                    )}
+                                                </div>
+                                                <span className="text-[10px] text-gray-400">{method.desc}</span>
+                                            </div>
+                                        </label>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -339,6 +397,12 @@ function CheckoutContent() {
                                     // Validate Shipping
                                     if (!shippingForm.firstName.trim() || !shippingForm.lastName.trim() || !shippingForm.address.trim() || !shippingForm.city.trim() || !shippingForm.zipCode.trim()) {
                                         setOrderError("Please fill out all required shipping fields so the storks know where to go!");
+                                        return;
+                                    }
+
+                                    // Validate Payment Method Enablement
+                                    if (paymentMethod && !isMethodEnabled(paymentMethod)) {
+                                        setOrderError("This payment method is temporarily unavailable. Please choose another one.");
                                         return;
                                     }
 
@@ -383,10 +447,6 @@ function CheckoutContent() {
                                                     if (stripeData.success) {
                                                         setClientSecret(stripeData.clientSecret);
                                                         setIsPaymentModalOpen(true);
-                                                        // Pass the orderNumber implicitly by saving it locally if needed,
-                                                        // or we could append it to a state.
-                                                        // For now let's save the order number in a state variable 
-                                                        // so the modal can use it on success.
                                                         setPaymentOrderId(data.order.orderNumber);
                                                         setOrderLoading(false);
                                                         return;
@@ -401,12 +461,11 @@ function CheckoutContent() {
                                                     const jcData = await jcRes.json();
 
                                                     if (jcData.success) {
-                                                        // Set the data to auto-submit the form
                                                         setJazzCashData({
                                                             url: jcData.paymentUrl,
                                                             data: jcData.paymentData
                                                         });
-                                                        return; // Don't clear loading state until redirected
+                                                        return;
                                                     } else {
                                                         setOrderError(jcData.message || "Failed to initialize JazzCash payment.");
                                                     }
@@ -418,12 +477,11 @@ function CheckoutContent() {
                                                     const epData = await epRes.json();
 
                                                     if (epData.success) {
-                                                        // Set the data to auto-submit the form
                                                         setEasyPaisaData({
                                                             url: epData.paymentUrl,
                                                             data: epData.paymentData
                                                         });
-                                                        return; // Don't clear loading state until redirected
+                                                        return;
                                                     } else {
                                                         setOrderError(epData.message || "Failed to initialize EasyPaisa payment.");
                                                     }
@@ -444,7 +502,6 @@ function CheckoutContent() {
                                             setOrderError("Network error. Please try again.");
                                         }
                                     } else {
-                                        // Guest checkout - generate a fun mock ID since it's not saved to DB
                                         if (!isDirect) clearCart();
                                         const guestOrderId = "GST-" + Math.floor(10000 + Math.random() * 90000);
                                         router.push(`/success?orderId=${guestOrderId}`);

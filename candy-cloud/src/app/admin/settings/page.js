@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 const TABS = [
     { id: "general", label: "General" },
@@ -11,8 +12,10 @@ const TABS = [
 ];
 
 export default function AdminSettings() {
+    const { authFetch, API_URL } = useAuth();
     const [activeTab, setActiveTab] = useState("general");
     const [saved, setSaved] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // General Settings state
     const [storeName, setStoreName] = useState("CandyCloud");
@@ -31,6 +34,7 @@ export default function AdminSettings() {
     const [codEnabled, setCodEnabled] = useState(true);
     const [jazzCashEnabled, setJazzCashEnabled] = useState(true);
     const [easypaisaEnabled, setEasypaisaEnabled] = useState(false);
+    const [stripeEnabled, setStripeEnabled] = useState(true);
 
     // Team state (mock data)
     const [teamMembers] = useState([
@@ -38,14 +42,68 @@ export default function AdminSettings() {
         { name: "Sarah Jenkins", email: "sarah@candycloud.co", role: "Content Editor", status: "Active" },
     ]);
 
-    const handleSave = () => {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+    // Fetch settings on mount
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/settings`);
+                const data = await res.json();
+                if (data.success && data.data) {
+                    const s = data.data;
+                    if (s.storeName) setStoreName(s.storeName);
+                    if (s.supportEmail) setSupportEmail(s.supportEmail);
+                    if (s.businessAddress) setBusinessAddress(s.businessAddress);
+                    if (s.primaryColor) setPrimaryColor(s.primaryColor);
+                    if (s.secondaryColor) setSecondaryColor(s.secondaryColor);
+                    if (s.nationwideDelivery !== undefined) setNationwideDelivery(s.nationwideDelivery);
+                    if (s.expressRate) setExpressRate(s.expressRate);
+                    if (s.codEnabled !== undefined) setCodEnabled(s.codEnabled);
+                    if (s.jazzCashEnabled !== undefined) setJazzCashEnabled(s.jazzCashEnabled);
+                    if (s.easypaisaEnabled !== undefined) setEasypaisaEnabled(s.easypaisaEnabled);
+                    if (s.stripeEnabled !== undefined) setStripeEnabled(s.stripeEnabled);
+                }
+            } catch (err) {
+                console.error("Failed to fetch settings", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSettings();
+    }, [API_URL]);
+
+    const handleSave = async () => {
+        const settingsPayload = {
+            storeName,
+            supportEmail,
+            businessAddress,
+            primaryColor,
+            secondaryColor,
+            nationwideDelivery,
+            expressRate,
+            codEnabled,
+            jazzCashEnabled,
+            easypaisaEnabled,
+            stripeEnabled
+        };
+
+        try {
+            const res = await authFetch(`${API_URL}/api/settings`, {
+                method: "POST",
+                body: JSON.stringify(settingsPayload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                setSaved(true);
+                setTimeout(() => setSaved(false), 2000);
+            }
+        } catch (err) {
+            console.error("Failed to save settings", err);
+        }
     };
 
     const getInitials = (name) => name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "??";
     const getInitialsBg = (name) => {
-        const colors = ["bg-pink-100 text-pink-600", "bg-pink-100 text-pink-600", "bg-teal-100 text-teal-600", "bg-blue-100 text-blue-600", "bg-purple-100 text-purple-600"];
+        const colors = ["bg-pink-100 text-pink-600", "bg-teal-100 text-teal-600", "bg-blue-100 text-blue-600", "bg-purple-100 text-purple-600"];
         const i = (name || "").charCodeAt(0) % colors.length;
         return colors[i];
     };
@@ -59,6 +117,10 @@ export default function AdminSettings() {
             <div className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${enabled ? "translate-x-6" : "translate-x-1"}`}></div>
         </button>
     );
+
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-[400px] text-pink-500 font-bold">Summoning Settings...</div>;
+    }
 
     return (
         <div className="max-w-5xl mx-auto space-y-8 pb-12">
@@ -113,7 +175,6 @@ export default function AdminSettings() {
             {/* ─── General Tab ─── */}
             {activeTab === "general" && (
                 <div className="space-y-10">
-                    {/* General Settings */}
                     <div>
                         <h2 className="text-lg font-black text-gray-900 flex items-center gap-2 mb-5">
                             <span className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-500">🏪</span>
@@ -164,7 +225,6 @@ export default function AdminSettings() {
                         </h2>
                         <div className="bg-white rounded-[24px] p-8 shadow-sm border border-gray-100">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {/* Store Logo */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 mb-3">Store Logo</label>
                                     <div className="w-full aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-pink-300 hover:bg-pink-50/30 transition-all">
@@ -174,8 +234,6 @@ export default function AdminSettings() {
                                         <p className="text-xs font-bold text-gray-400">Upload SVG/PNG</p>
                                     </div>
                                 </div>
-
-                                {/* Colors */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 mb-3">Primary Brand Color</label>
                                     <div className="flex items-center gap-3">
@@ -215,7 +273,6 @@ export default function AdminSettings() {
                             Shipping & Delivery
                         </h2>
                         <div className="bg-white rounded-[24px] p-8 shadow-sm border border-gray-100 space-y-6">
-                            {/* Nationwide Delivery Toggle */}
                             <div className="flex items-center justify-between p-5 bg-gray-50 rounded-2xl">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
@@ -228,8 +285,6 @@ export default function AdminSettings() {
                                 </div>
                                 <Toggle enabled={nationwideDelivery} onChange={setNationwideDelivery} />
                             </div>
-
-                            {/* Express Flat Rate */}
                             <div>
                                 <label className="block text-sm font-bold text-gray-600 mb-2">Cloud Express Flat Rate</label>
                                 <div className="relative w-64">
@@ -256,7 +311,7 @@ export default function AdminSettings() {
                             Payment Methods
                         </h2>
                         <div className="bg-white rounded-[24px] p-8 shadow-sm border border-gray-100">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {/* COD */}
                                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
                                     <div className="flex items-center gap-3">
@@ -281,6 +336,14 @@ export default function AdminSettings() {
                                     </div>
                                     <Toggle enabled={easypaisaEnabled} onChange={setEasypaisaEnabled} />
                                 </div>
+                                {/* Stripe */}
+                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-lg">💳</span>
+                                        <span className="text-sm font-bold text-gray-700">Stripe (Card)</span>
+                                    </div>
+                                    <Toggle enabled={stripeEnabled} onChange={setStripeEnabled} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,10 +359,6 @@ export default function AdminSettings() {
                                 <span className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500">👥</span>
                                 Team Management
                             </h2>
-                            <button className="flex items-center gap-2 text-sm font-bold text-[#ec4899] hover:text-[#be185d] transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                Invite Member
-                            </button>
                         </div>
                         <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
                             <table className="w-full text-left border-collapse">
