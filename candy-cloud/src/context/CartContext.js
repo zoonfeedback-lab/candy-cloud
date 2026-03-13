@@ -8,7 +8,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const { token, authFetch, API_URL } = useAuth();
+    const { token, authFetch } = useAuth();
 
     // Load from local storage on mount and bind storage event listener
     useEffect(() => {
@@ -51,7 +51,7 @@ export function CartProvider({ children }) {
         const fetchRemoteCart = async () => {
             if (token) {
                 try {
-                    const res = await authFetch(`${API_URL}/api/cart`);
+                    const res = await authFetch(`/api/cart`);
                     const data = await res.json();
                     if (data.success && data.cart) {
                         // Map backend format back to frontend format
@@ -71,7 +71,7 @@ export function CartProvider({ children }) {
             }
         };
         fetchRemoteCart();
-    }, [token, authFetch, API_URL]);
+    }, [token, authFetch]);
 
     // Save to local storage whenever cart items change
     useEffect(() => {
@@ -100,7 +100,7 @@ export function CartProvider({ children }) {
 
         if (token) {
             try {
-                await authFetch(`${API_URL}/api/cart`, {
+                await authFetch(`/api/cart`, {
                     method: "POST",
                     body: JSON.stringify({
                         productId: product.id,
@@ -121,7 +121,7 @@ export function CartProvider({ children }) {
         setCartItems(prev => prev.filter(item => item.id !== id));
         if (token) {
             try {
-                await authFetch(`${API_URL}/api/cart/${id}`, { method: "DELETE" });
+                await authFetch(`/api/cart/${id}`, { method: "DELETE" });
             } catch (err) {
                 console.error("Failed to sync remove from cart", err);
             }
@@ -135,7 +135,7 @@ export function CartProvider({ children }) {
         );
         if (token) {
             try {
-                await authFetch(`${API_URL}/api/cart/${id}`, {
+                await authFetch(`/api/cart/${id}`, {
                     method: "PUT",
                     body: JSON.stringify({ quantity: newQuantity }),
                 });
@@ -149,12 +149,12 @@ export function CartProvider({ children }) {
         setCartItems([]);
         if (token) {
             try {
-                await authFetch(`${API_URL}/api/cart`, { method: "DELETE" });
+                await authFetch(`/api/cart`, { method: "DELETE" });
             } catch (err) {
                 console.error("Failed to sync clear cart", err);
             }
         }
-    }, [token, authFetch, API_URL]);
+    }, [token, authFetch]);
 
     const clearLocalCart = useCallback(() => {
         setCartItems([]);

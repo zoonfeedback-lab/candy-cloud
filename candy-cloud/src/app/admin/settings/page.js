@@ -12,7 +12,7 @@ const TABS = [
 ];
 
 export default function AdminSettings() {
-    const { authFetch, API_URL } = useAuth();
+    const { authFetch } = useAuth();
     const [activeTab, setActiveTab] = useState("general");
     const [saved, setSaved] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ export default function AdminSettings() {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const res = await fetch(`${API_URL}/api/settings`);
+                const res = await fetch(`/api/settings`);
                 const data = await res.json();
                 if (data.success && data.data) {
                     const s = data.data;
@@ -55,12 +55,12 @@ export default function AdminSettings() {
                     if (s.businessAddress) setBusinessAddress(s.businessAddress);
                     if (s.primaryColor) setPrimaryColor(s.primaryColor);
                     if (s.secondaryColor) setSecondaryColor(s.secondaryColor);
-                    if (s.nationwideDelivery !== undefined) setNationwideDelivery(s.nationwideDelivery);
+                    if (s.nationwideDelivery !== undefined) setNationwideDelivery(s.nationwideDelivery !== false && s.nationwideDelivery !== 'false');
                     if (s.expressRate) setExpressRate(s.expressRate);
-                    if (s.codEnabled !== undefined) setCodEnabled(s.codEnabled);
-                    if (s.jazzCashEnabled !== undefined) setJazzCashEnabled(s.jazzCashEnabled);
-                    if (s.easypaisaEnabled !== undefined) setEasypaisaEnabled(s.easypaisaEnabled);
-                    if (s.stripeEnabled !== undefined) setStripeEnabled(s.stripeEnabled);
+                    if (s.codEnabled !== undefined) setCodEnabled(s.codEnabled !== false && s.codEnabled !== 'false');
+                    if (s.jazzCashEnabled !== undefined) setJazzCashEnabled(s.jazzCashEnabled !== false && s.jazzCashEnabled !== 'false');
+                    if (s.easypaisaEnabled !== undefined) setEasypaisaEnabled(s.easypaisaEnabled !== false && s.easypaisaEnabled !== 'false');
+                    if (s.stripeEnabled !== undefined) setStripeEnabled(s.stripeEnabled !== false && s.stripeEnabled !== 'false');
                 }
             } catch (err) {
                 console.error("Failed to fetch settings", err);
@@ -69,7 +69,7 @@ export default function AdminSettings() {
             }
         };
         fetchSettings();
-    }, [API_URL]);
+    }, []);
 
     const handleSave = async () => {
         const settingsPayload = {
@@ -87,7 +87,7 @@ export default function AdminSettings() {
         };
 
         try {
-            const res = await authFetch(`${API_URL}/api/settings`, {
+            const res = await authFetch(`/api/settings`, {
                 method: "POST",
                 body: JSON.stringify(settingsPayload)
             });

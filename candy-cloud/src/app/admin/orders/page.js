@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminOrders() {
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -24,7 +24,7 @@ export default function AdminOrders() {
                 status: statusFilter
             });
 
-            const res = await authFetch(`${API_URL}/api/admin/orders?${queryParams}`);
+            const res = await authFetch(`/api/admin/orders?${queryParams}`);
             const result = await res.json();
             if (result.success) {
                 setData(result);

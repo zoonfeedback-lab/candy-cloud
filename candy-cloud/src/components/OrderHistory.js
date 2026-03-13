@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function OrderHistory() {
-    const { isAuthenticated, isLoading, authFetch, API_URL, openAuthModal } = useAuth();
+    const { isAuthenticated, isLoading, authFetch, openAuthModal } = useAuth();
     const router = useRouter();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function OrderHistory() {
 
     const fetchOrders = async () => {
         try {
-            const res = await authFetch(`${API_URL}/api/orders`);
+            const res = await authFetch(`/api/orders`);
             const data = await res.json();
             if (data.success) {
                 setOrders(data.orders);

@@ -9,7 +9,7 @@ export default function AdminCustomerDetail() {
     const params = useParams();
     const router = useRouter();
     const customerId = params.id;
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function AdminCustomerDetail() {
             if (!user || user.role !== "admin") return;
 
             try {
-                const res = await authFetch(`${API_URL}/api/admin/customers/${customerId}`);
+                const res = await authFetch(`/api/admin/customers/${customerId}`);
                 const result = await res.json();
 
                 if (result.success) {
@@ -37,7 +37,7 @@ export default function AdminCustomerDetail() {
         };
 
         fetchCustomerDetails();
-    }, [user, customerId, authFetch, API_URL]);
+    }, [user, customerId, authFetch]);
 
     if (loading) {
         return (

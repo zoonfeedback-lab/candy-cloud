@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminDashboard() {
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const res = await authFetch(`${API_URL}/api/admin/dashboard`);
+                const res = await authFetch(`/api/admin/dashboard`);
                 const result = await res.json();
                 if (result.success) {
                     setData(result);
@@ -26,7 +26,7 @@ export default function AdminDashboard() {
         if (user && user.role === "admin") {
             fetchDashboardData();
         }
-    }, [user, authFetch, API_URL]);
+    }, [user, authFetch]);
 
     if (loading) {
         return (

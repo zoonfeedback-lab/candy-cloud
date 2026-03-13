@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 // Category display config
 const CATEGORY_CONFIG = {
     "sweet-treat": { label: "Sweet Treat", emoji: "🍬", color: "from-pink to-pink-dark", bgLight: "bg-pink-50", borderColor: "border-pink-200" },
@@ -25,7 +23,7 @@ export default function ShopByCategory() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch(`${API_URL}/api/products`);
+                const res = await fetch(`/api/products`);
                 const data = await res.json();
                 if (data.success) {
                     setProducts(data.products);

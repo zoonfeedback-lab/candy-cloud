@@ -14,7 +14,7 @@ const PRIZES = [
 ];
 
 export default function PrizeSpinner() {
-    const { isAuthenticated, user, openAuthModal, authFetch, API_URL } = useAuth();
+    const { isAuthenticated, user, openAuthModal, authFetch } = useAuth();
     const [isSpinning, setIsSpinning] = useState(false);
     const [hasSpun, setHasSpun] = useState(false);
     const [prize, setPrize] = useState(null);
@@ -45,7 +45,7 @@ export default function PrizeSpinner() {
         setPrize(null);
 
         try {
-            const res = await authFetch(`${API_URL}/api/rewards/spin`, {
+            const res = await authFetch(`/api/rewards/spin`, {
                 method: "POST"
             });
             const data = await res.json();

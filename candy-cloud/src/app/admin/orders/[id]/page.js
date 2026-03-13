@@ -18,7 +18,7 @@ export default function AdminOrderDetail() {
     const params = useParams();
     const router = useRouter();
     const orderId = params.id;
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
 
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function AdminOrderDetail() {
 
     const fetchOrder = async () => {
         try {
-            const res = await authFetch(`${API_URL}/api/orders/${orderId}`);
+            const res = await authFetch(`/api/orders/${orderId}`);
             const data = await res.json();
             if (data.success) {
                 setOrder(data.order);
@@ -61,7 +61,7 @@ export default function AdminOrderDetail() {
         setUpdateSuccess(false);
 
         try {
-            const res = await authFetch(`${API_URL}/api/orders/${orderId}/status`, {
+            const res = await authFetch(`/api/orders/${orderId}/status`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

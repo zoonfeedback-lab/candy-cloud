@@ -19,7 +19,7 @@ const PAYMENT_METHODS = [
 
 function CheckoutContent() {
     const { cartItems, cartTotal, isLoaded, clearCart } = useCart();
-    const { isAuthenticated, authFetch, API_URL, openAuthModal } = useAuth();
+    const { isAuthenticated, authFetch, openAuthModal } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [shippingMethod, setShippingMethod] = useState("express");
@@ -53,16 +53,16 @@ function CheckoutContent() {
         const fetchData = async () => {
             // Fetch Settings
             try {
-                const sRes = await fetch(`${API_URL}/api/settings`);
+                const sRes = await fetch(`/api/settings`);
                 const sData = await sRes.json();
                 if (sData.success) {
                     setSettings(sData.data);
                     // Set default payment method based on enabled ones
                     const available = PAYMENT_METHODS.filter(m => {
-                        if (m.id === 'cod') return sData.data.codEnabled !== false;
-                        if (m.id === 'stripe') return sData.data.stripeEnabled !== false;
-                        if (m.id === 'jazzcash') return sData.data.jazzCashEnabled !== false;
-                        if (m.id === 'easypaisa') return sData.data.easypaisaEnabled !== false;
+                        if (m.id === 'cod') return sData.data.codEnabled !== false && sData.data.codEnabled !== 'false';
+                        if (m.id === 'stripe') return sData.data.stripeEnabled !== false && sData.data.stripeEnabled !== 'false';
+                        if (m.id === 'jazzcash') return sData.data.jazzCashEnabled !== false && sData.data.jazzCashEnabled !== 'false';
+                        if (m.id === 'easypaisa') return sData.data.easypaisaEnabled !== false && sData.data.easypaisaEnabled !== 'false';
                         return true;
                     });
                     if (available.length > 0) setPaymentMethod(available[0].id);
@@ -74,7 +74,7 @@ function CheckoutContent() {
             if (!isAuthenticated) return;
             setRewardLoading(true);
             try {
-                const res = await authFetch(`${API_URL}/api/rewards/active`);
+                const res = await authFetch(`/api/rewards/active`);
                 const data = await res.json();
                 if (data.success && data.reward) {
                     setActiveReward(data.reward);
@@ -86,14 +86,14 @@ function CheckoutContent() {
             }
         };
         fetchData();
-    }, [isAuthenticated, authFetch, API_URL]);
+    }, [isAuthenticated, authFetch]);
 
     const isMethodEnabled = (methodId) => {
         if (!settings) return methodId === 'cod'; // Default allow COD if settings loading
-        if (methodId === 'cod') return settings.codEnabled !== false;
-        if (methodId === 'stripe') return settings.stripeEnabled !== false;
-        if (methodId === 'jazzcash') return settings.jazzCashEnabled !== false;
-        if (methodId === 'easypaisa') return settings.easypaisaEnabled !== false;
+        if (methodId === 'cod') return settings.codEnabled !== false && settings.codEnabled !== 'false';
+        if (methodId === 'stripe') return settings.stripeEnabled !== false && settings.stripeEnabled !== 'false';
+        if (methodId === 'jazzcash') return settings.jazzCashEnabled !== false && settings.jazzCashEnabled !== 'false';
+        if (methodId === 'easypaisa') return settings.easypaisaEnabled !== false && settings.easypaisaEnabled !== 'false';
         return true;
     };
 
@@ -431,14 +431,14 @@ function CheckoutContent() {
 
                                     if (isAuthenticated) {
                                         try {
-                                            const res = await authFetch(`${API_URL}/api/orders`, {
+                                            const res = await authFetch(`/api/orders`, {
                                                 method: "POST",
                                                 body: JSON.stringify(orderPayload),
                                             });
                                             const data = await res.json();
                                             if (data.success) {
                                                 if (paymentMethod === "stripe") {
-                                                    const stripeRes = await authFetch(`${API_URL}/api/payments/stripe/create-intent`, {
+                                                    const stripeRes = await authFetch(`/api/payments/stripe/create-intent`, {
                                                         method: "POST",
                                                         body: JSON.stringify({ amount: total, orderId: data.order._id }),
                                                     });
@@ -454,7 +454,7 @@ function CheckoutContent() {
                                                         setOrderError("Failed to initialize secure payment.");
                                                     }
                                                 } else if (paymentMethod === "jazzcash") {
-                                                    const jcRes = await authFetch(`${API_URL}/api/payments/jazzcash/initiate`, {
+                                                    const jcRes = await authFetch(`/api/payments/jazzcash/initiate`, {
                                                         method: "POST",
                                                         body: JSON.stringify({ amount: total, orderId: data.order._id }),
                                                     });
@@ -470,7 +470,7 @@ function CheckoutContent() {
                                                         setOrderError(jcData.message || "Failed to initialize JazzCash payment.");
                                                     }
                                                 } else if (paymentMethod === "easypaisa") {
-                                                    const epRes = await authFetch(`${API_URL}/api/payments/easypaisa/initiate`, {
+                                                    const epRes = await authFetch(`/api/payments/easypaisa/initiate`, {
                                                         method: "POST",
                                                         body: JSON.stringify({ amount: total, orderId: data.order._id }),
                                                     });
@@ -489,7 +489,7 @@ function CheckoutContent() {
                                                     // Redeem reward if applied
                                                     if (activeReward) {
                                                         try {
-                                                            await authFetch(`${API_URL}/api/rewards/redeem`, { method: "POST" });
+                                                            await authFetch(`/api/rewards/redeem`, { method: "POST" });
                                                         } catch (e) { console.error("Failed to redeem reward", e); }
                                                     }
                                                     if (!isDirect) clearCart();

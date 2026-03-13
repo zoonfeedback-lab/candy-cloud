@@ -23,7 +23,7 @@ const EMPTY_FORM = {
 };
 
 export default function AdminInventory() {
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -52,7 +52,7 @@ export default function AdminInventory() {
                 stockStatus: stockFilter
             });
 
-            const res = await authFetch(`${API_URL}/api/admin/inventory?${queryParams}`);
+            const res = await authFetch(`/api/admin/inventory?${queryParams}`);
             const result = await res.json();
             if (result.success) {
                 setData(result);
@@ -135,8 +135,8 @@ export default function AdminInventory() {
 
         try {
             const url = modalMode === "add"
-                ? `${API_URL}/api/admin/inventory`
-                : `${API_URL}/api/admin/inventory/${editingId}`;
+                ? `/api/admin/inventory`
+                : `/api/admin/inventory/${editingId}`;
 
             const res = await authFetch(url, {
                 method: modalMode === "add" ? "POST" : "PUT",

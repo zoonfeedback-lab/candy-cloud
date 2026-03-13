@@ -17,8 +17,6 @@ export function AuthProvider({ children }) {
     };
     const closeAuthModal = () => setShowAuthModal(false);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
     // Load token from localStorage on mount
     useEffect(() => {
         const savedToken = localStorage.getItem("cc_token");
@@ -32,7 +30,7 @@ export function AuthProvider({ children }) {
 
     // Request OTP for Registration
     const requestRegistrationOTP = async (email) => {
-        const res = await fetch(`${API_URL}/api/auth/register/otp`, {
+        const res = await fetch(`/api/auth/register/otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
@@ -44,7 +42,7 @@ export function AuthProvider({ children }) {
 
     // Register
     const register = async (name, email, password, phone, otp) => {
-        const res = await fetch(`${API_URL}/api/auth/register`, {
+        const res = await fetch(`/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -62,7 +60,7 @@ export function AuthProvider({ children }) {
 
     // Login
     const login = async (email, password, isAdmin = false) => {
-        const res = await fetch(`${API_URL}/api/auth/login`, {
+        const res = await fetch(`/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -80,7 +78,7 @@ export function AuthProvider({ children }) {
 
     // Google Login
     const loginWithGoogle = async (credential) => {
-        const res = await fetch(`${API_URL}/api/auth/google`, {
+        const res = await fetch(`/api/auth/google`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -99,7 +97,7 @@ export function AuthProvider({ children }) {
     // Logout
     const logout = useCallback(async () => {
         try {
-            await fetch(`${API_URL}/api/auth/logout`, {
+            await fetch(`/api/auth/logout`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -111,12 +109,12 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("cc_token");
         localStorage.removeItem("cc_user");
         localStorage.removeItem("candyCloudCart");
-    }, [API_URL]);
+    }, []);
 
     // Refresh token
     const refreshAccessToken = useCallback(async () => {
         try {
-            const res = await fetch(`${API_URL}/api/auth/refresh`, {
+            const res = await fetch(`/api/auth/refresh`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -131,7 +129,7 @@ export function AuthProvider({ children }) {
         }
         logout();
         return null;
-    }, [API_URL, logout]);
+    }, [logout]);
 
     // Authenticated fetch helper
     const authFetch = useCallback(async (url, options = {}) => {
@@ -169,7 +167,6 @@ export function AuthProvider({ children }) {
             loginWithGoogle,
             logout,
             authFetch,
-            API_URL,
             showAuthModal,
             authModalMode,
             openAuthModal,

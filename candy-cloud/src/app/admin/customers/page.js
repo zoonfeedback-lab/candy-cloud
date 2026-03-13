@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
 export default function AdminCustomers() {
-    const { user, authFetch, API_URL } = useAuth();
+    const { user, authFetch } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -19,7 +19,7 @@ export default function AdminCustomers() {
                 limit: 15,
                 search,
             });
-            const res = await authFetch(`${API_URL}/api/admin/customers?${params}`);
+            const res = await authFetch(`/api/admin/customers?${params}`);
             const result = await res.json();
             if (result.success) setData(result);
         } catch (err) {

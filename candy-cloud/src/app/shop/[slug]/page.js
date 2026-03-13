@@ -8,8 +8,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 const CATEGORY_CONFIG = {
     "sweet-treat": { label: "Sweet Treat", emoji: "🍬", color: "from-pink to-pink-dark" },
     "dreamy-delight": { label: "Dreamy Delight", emoji: "✨", color: "from-purple-400 to-pink" },
@@ -43,7 +41,7 @@ export default function ItemDetail() {
 
             try {
                 // Fetch all products and find by slug match
-                const res = await fetch(`${API_URL}/api/products`);
+                const res = await fetch(`/api/products`);
                 const data = await res.json();
 
                 if (data.success) {

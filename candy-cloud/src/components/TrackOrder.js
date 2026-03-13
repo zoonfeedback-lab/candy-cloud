@@ -20,8 +20,6 @@ function TrackOrderContent() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
     // Auto-fill and auto-track from query param
     useEffect(() => {
         const q = searchParams.get("q");
@@ -55,7 +53,7 @@ function TrackOrderContent() {
         }
 
         try {
-            const res = await fetch(`${API_URL}/api/orders/track/${num}`);
+            const res = await fetch(`/api/orders/track/${num}`);
             const data = await res.json();
             if (data.success) {
                 setOrder(data.order);

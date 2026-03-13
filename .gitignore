@@ -59,6 +59,7 @@ Thumbs.db
 # Backend
 /candy-cloud-backend/node_modules/
 /candy-cloud-backend/.env
-
+/candy-cloud-backend/
+/cand
 # Config
 .env
