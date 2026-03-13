@@ -12,9 +12,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK || "pk_test_p
 
 const PAYMENT_METHODS = [
     { id: "cod", label: "Cash on Delivery", emoji: "💵", desc: "Pay when your package arrives" },
-    { id: "stripe", label: "Credit / Debit Card", emoji: "💳", desc: "Secure payment via Stripe" },
-    { id: "jazzcash", label: "JazzCash", emoji: "📱", desc: "Pay with your JazzCash wallet" },
-    { id: "easypaisa", label: "EasyPaisa", emoji: "📲", desc: "Pay with EasyPaisa" },
 ];
 
 function CheckoutContent() {
