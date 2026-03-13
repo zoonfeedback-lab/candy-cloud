@@ -108,11 +108,7 @@ If you are starting from a fresh database, you can seed it with default products
 # First build the Next.js runtime environment
 npm run build
 
-# Then run the seeder script
-node scripts/seed.js
-```
-* **Default Admin Login:** `admin@candycloud.com`
-* **Default Admin Password:** `admin123456`
+
 
 ### 5. Launch Development Server
 ```bash
@@ -121,14 +117,3 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
-
-## ☁️ Deployment
-
-This repository is optimized automatically for **Vercel**. 
-
-1. Push your code to GitHub.
-2. Import the project in Vercel. Ensure the Framework Preset is set to `Next.js` and the Root Directory is set to `candy-cloud` (if deploying from the mono-repo root).
-3. Add all the Environment Variables from your `.env.local` into the Vercel Dashboard.
-4. Click **Deploy**. Vercel will automatically configure the serverless functions and asset routing.
-
-Enjoy the sweetness! 🍭
