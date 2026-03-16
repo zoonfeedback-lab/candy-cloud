@@ -25,6 +25,8 @@ const deals = [
         decorBg: "bg-green-300/60",
         decorShape: "rounded-[55%_45%_50%_50%/45%_55%_50%_50%]",
         emoji: "🌈",
+        href: "/customize",
+        description: "Pick 10 products customized by you! 🌈",
     },
 ];
 
@@ -99,7 +101,7 @@ function DealCard({ deal }) {
                         </h3>
                         <span className="text-4xl animate-spin-8">{deal.emoji}</span>
                     </div>
-                    <p className="text-sm text-gray-500 mb-5">Gift basket for your loved ones 💝</p>
+                    <p className="text-sm text-gray-500 mb-5">{deal.description || 'Gift basket for your loved ones 💝'}</p>
                     <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
                         View &amp; Customize →
                     </span>
