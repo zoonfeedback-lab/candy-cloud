@@ -3,14 +3,14 @@ import Image from "next/image";
 const steps = [
     {
         num: "01",
-        title: "Pick Your Favorites",
-        desc: "Browse our dreamy catalogue and handpick your favorite stationery, cosmetics, and cute accessories.",
+        title: "Pick your favourit scoop",
+        desc: "Browse our dreamy catalogue and pick your favourit type of scoop",
         bg: "bg-pink-light",
     },
     {
         num: "02",
         title: "We Assemble Magic",
-        desc: "Our candy artisans carefully pack your selections into a beautiful, themed gift box.",
+        desc: "Our candy artisans carefully pack your selections into a beautiful box.",
         bg: "bg-[#e0f7fa]",
     },
     {
@@ -36,22 +36,13 @@ export default function HowItWorks() {
                     {steps.map((step) => (
                         <div
                             key={step.num}
-                            className={`${step.bg} rounded-xl p-7 text-center hover:-translate-y-1.5 hover:shadow-md transition-all`}
+                            className={`${step.bg} rounded-xl p-10 py-16 text-center hover:-translate-y-1.5 hover:shadow-md transition-all flex flex-col items-center justify-start h-full`}
                         >
-                            <div className="rounded-lg overflow-hidden mb-5">
-                                <Image
-                                    src="/images/how-it-works.png"
-                                    alt={step.title}
-                                    width={280}
-                                    height={200}
-                                    className="w-full h-auto object-cover"
-                                />
-                            </div>
-                            <div className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white font-bold text-sm text-pink shadow-sm mb-3">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white font-bold text-lg text-pink shadow-sm mb-6">
                                 {step.num}
                             </div>
-                            <h3 className="text-lg font-bold mb-2">{step.title}</h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                            <h3 className="text-2xl font-bold mb-4 text-dark">{step.title}</h3>
+                            <p className="text-base text-gray-600 leading-relaxed font-medium">{step.desc}</p>
                         </div>
                     ))}
                 </div>
