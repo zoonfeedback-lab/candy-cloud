@@ -14,6 +14,7 @@ const deals = [
         decorBg: "bg-pink/40",
         decorShape: "rounded-[40%_60%_55%_45%/50%_45%_55%_50%]",
         emoji: "☀️",
+        href: "/basket",
     },
     {
         subtitle: "10 PRODUCTS OF YOUR CHOICE",
@@ -59,7 +60,6 @@ function DealCard({ deal }) {
             return;
         }
 
-        // Strip non-numeric characters from price (e.g. "Rs 2,500" -> 2500)
         const numericPrice = parseInt(deal.price.replace(/[^0-9]/g, ''), 10);
 
         const queryParams = new URLSearchParams({
@@ -74,32 +74,52 @@ function DealCard({ deal }) {
         router.push(`/checkout?${queryParams}`);
     };
 
+    // If the deal has an href, make the whole card a clickable link
+    if (deal.href) {
+        return (
+            <a
+                href={deal.href}
+                className={`
+                    relative ${deal.bg} rounded-2xl p-8 overflow-hidden
+                    border-2 border-dashed ${deal.border}
+                    hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block group
+                `}
+            >
+                <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
+                <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
+                <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
+
+                <div className="relative z-10">
+                    <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">
+                        {deal.subtitle}
+                    </p>
+                    <div className="flex items-start justify-between mb-4">
+                        <h3 className="text-2xl md:text-3xl font-extrabold text-dark leading-tight whitespace-pre-line">
+                            {deal.title}
+                        </h3>
+                        <span className="text-4xl animate-spin-8">{deal.emoji}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-5">Gift basket for your loved ones 💝</p>
+                    <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
+                        View &amp; Customize →
+                    </span>
+                </div>
+            </a>
+        );
+    }
+
     return (
         <div
             className={`
-        relative ${deal.bg} rounded-2xl p-8 overflow-hidden
-        border-2 border-dashed ${deal.border}
-        hover:shadow-lg transition-shadow
-      `}
+                relative ${deal.bg} rounded-2xl p-8 overflow-hidden
+                border-2 border-dashed ${deal.border}
+                hover:shadow-lg transition-shadow
+            `}
         >
-            {/* Decorative blob */}
-            <div
-                className={`
-          absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg}
-          ${deal.decorShape} opacity-70
-        `}
-            />
-            {/* Decorative blob right */}
-            <div
-                className={`
-          absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg}
-          ${deal.decorShape} opacity-50
-        `}
-            />
-            {/* Decorative half circle */}
+            <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
+            <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
             <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
 
-            {/* Content */}
             <div className="relative z-10">
                 <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">
                     {deal.subtitle}
@@ -144,3 +164,4 @@ function DealCard({ deal }) {
         </div>
     );
 }
+
