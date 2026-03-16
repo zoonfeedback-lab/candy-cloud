@@ -3,9 +3,11 @@ import Image from "next/image";
 export default function Gallery() {
     return (
         <section className="py-24 bg-[#FEF2F4] relative overflow-hidden">
-            {/* Decorative background elements */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-pink-100 rounded-full blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-40 translate-x-1/3 translate-y-1/3"></div>
+            {/* Soft decorative background */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-pink-100 rounded-full blur-[120px] opacity-30"></div>
+                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-100 rounded-full blur-[120px] opacity-30"></div>
+            </div>
 
             <div className="max-w-[1200px] mx-auto px-5 relative z-10">
                 <div className="text-center mb-16">
@@ -17,68 +19,77 @@ export default function Gallery() {
                     </p>
                 </div>
 
-                {/* Complex Grid Layout */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
-                    
-                    {/* Left Panel: Large Vertical Feature */}
-                    <div className="md:col-span-5 h-[500px] md:h-full relative group overflow-hidden rounded-[40px] shadow-2xl border-8 border-white">
+                {/* Complex Grid Layout - Seamless Moodboard */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-0 h-auto md:h-[800px] shadow-2xl rounded-[40px] overflow-hidden">
+
+                    {/* Left Panel: Feature Pink Box */}
+                    <div className="md:col-span-5 h-[500px] md:h-full relative group overflow-hidden border-r border-white/20">
                         <Image
-                            src="/images/gallery-candy.png"
-                            alt="Magical Candy Bowl"
+                            src="/images/gallery-pink-box.png"
+                            alt="Magical Pink Box"
                             fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            className="object-cover transition-transform duration-1000 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                            <p className="text-white font-bold text-xl drop-shadow-md">Hand-picked Joy 🍬</p>
+                            <p className="text-white font-bold text-xl drop-shadow-md">Pink Perfection 🎀</p>
                         </div>
                     </div>
 
-                    {/* Right Panel: Top Large + Bottom Grid */}
-                    <div className="md:col-span-7 flex flex-col gap-6 h-full">
-                        
-                        {/* Top Right: Wide Feature (The Box) */}
-                        <div className="h-[300px] md:h-[45%] relative group overflow-hidden rounded-[40px] shadow-xl border-8 border-white">
+                    {/* Right Panel: Top Blue Box + Bottom Grid */}
+                    <div className="md:col-span-7 flex flex-col gap-0 h-full">
+
+                        {/* Top Right: Feature Blue Box */}
+                        <div className="h-[300px] md:h-[45%] relative group overflow-hidden border-b border-white/20">
                             <Image
-                                src="/images/gallery-box.png"
-                                alt="Unboxing the Magic"
+                                src="/images/gallery-blue-box.jpg"
+                                alt="Unboxing the Blue Magic"
                                 fill
-                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="object-cover transition-transform duration-1000 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                                <p className="text-white font-bold text-xl drop-shadow-md">The Ultimate Unboxing 📦</p>
+                                <p className="text-white font-bold text-xl drop-shadow-md">Zen Unboxing 📦</p>
                             </div>
                         </div>
 
                         {/* Bottom Right: 2x2 Mini Grid */}
-                        <div className="h-[400px] md:h-[55%] grid grid-cols-2 grid-rows-2 gap-4">
-                            <div className="relative group overflow-hidden rounded-[30px] shadow-lg border-4 border-white">
+                        <div className="h-[400px] md:h-[55%] grid grid-cols-2 grid-rows-2 gap-0">
+                            {/* Stationary */}
+                            <div className="relative group overflow-hidden border-r border-b border-white/20">
                                 <Image
-                                    src="/images/hero-candy.png"
-                                    alt="Sweets"
+                                    src="/images/gallery-stationary.png"
+                                    alt="Aesthetic Stationary"
                                     fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                             </div>
-                            <div className="relative group overflow-hidden rounded-[30px] shadow-lg border-4 border-white">
+                            {/* Jewelry */}
+                            <div className="relative group overflow-hidden border-b border-white/20">
                                 <Image
-                                    src="/images/candy-categories.png"
-                                    alt="Colors"
+                                    src="/images/gallery-jewelry.png"
+                                    alt="Premium Jewelry"
                                     fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                             </div>
-                            <div className="relative group overflow-hidden rounded-[30px] shadow-lg border-4 border-white">
+                            {/* Hairclips */}
+                            <div className="relative group overflow-hidden border-r border-white/20">
                                 <Image
-                                    src="/images/how-it-works.png"
-                                    alt="Magic"
+                                    src="/images/gallery-hairclips.png"
+                                    alt="Ribbon Hairclips"
                                     fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                             </div>
-                            <div className="relative group overflow-hidden rounded-[30px] shadow-lg border-4 border-white bg-pink-100 flex items-center justify-center">
-                                <div className="text-center p-4">
-                                    <span className="text-4xl mb-2 block animate-bounce">🌈</span>
-                                    <p className="text-pink-600 font-bold text-sm">More Magic Awaits</p>
+                            {/* Hand Creams replaced with Candy choice */}
+                            <div className="relative group overflow-hidden">
+                                <Image
+                                    src="/images/gallery-candy.png"
+                                    alt="Colorful Candy Choice"
+                                    fill
+                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center p-4">
+                                    <p className="text-white font-bold text-sm drop-shadow-md text-center">Sugar Rush 🍬</p>
                                 </div>
                             </div>
                         </div>
