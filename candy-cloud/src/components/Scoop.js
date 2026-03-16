@@ -8,7 +8,15 @@ import { useAuth } from "@/context/AuthContext";
 const SCOOP_SIZES = [
     { id: "mini", name: "Mini Scoop", weight: "250g", price: 500, emoji: "🥄" },
     { id: "mega", name: "Mega Scoop", weight: "500g", price: 900, emoji: "🥣" },
-    { id: "ultimate", name: "Ultimate Bucket", weight: "1kg", price: 1600, emoji: "🪣" },
+    { id: "ultimate", name: "Ultimate Scoop", weight: "1kg", price: 1600, emoji: "🛍️" },
+];
+
+const SCOOP_ITEMS = [
+    "Stickers", "Washi tape", "Erasers", "Hair ties", "Paper soap", "Bookmarks", "Pens", "Pencils", "Sharpener", "Scale", "Nail files", "Mini wipes",
+    "Hair clips", "Scrunchies", "Makeup sponges", "Hair claws", "Hair band", "Popsockets", "Mini notebooks", "Sticky notes", "Highlighter", "Marker", "Memopads", "Card holder", "Coin purse", "Mirror", "Socks",
+    "Phone charm", "Eye mask", "Lipliner", "Nail clipper", "Key chain", "Phone ring", "Lip balm", "Studs", "Planners", "Journals", "Notebook", "Multi color pens", "Watches", "Necklaces", "Bracelet", "Jewelry boxes", "Building blocks", "Diamond painting kits", "Mystery box", "Full-sized bag", "Pouch", "Wallet", "Lipstick", "Eyeliner", "Nails", "Broach",
+    "Hair brush", "Perfume", "Earrings", "Rings", "Lip gloss",
+    "Face masks", "Hand cream", "Makeup", "Makeup brushes"
 ];
 
 const COLOR_THEMES = [
@@ -306,9 +314,6 @@ export default function Scoop() {
                                             <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
                                                 🌈 Premium Quality
                                             </span>
-                                            <span className="flex items-center gap-1 text-xs font-bold text-gray-500 bg-white/50 px-3 py-1.5 rounded-full border border-gray-200">
-                                                🚀 Ships in 24h
-                                            </span>
                                         </div>
 
                                     </div>
@@ -316,6 +321,23 @@ export default function Scoop() {
 
                             </div>
                         </div>
+
+                        {/* Items listed in the scoop */}
+                        <div className="mt-14 pt-10 border-t border-pink-100">
+                            <h3 className="text-xl font-bold text-gray-800 mb-8 flex items-center justify-center gap-3">
+                                <span className="text-2xl">✨</span> 
+                                Items in Candy Cloud Scoop
+                                <span className="text-2xl">✨</span>
+                            </h3>
+                            <div className="flex flex-wrap justify-center gap-3">
+                                {SCOOP_ITEMS.map((item, i) => (
+                                    <span key={i} className="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold text-gray-600 border border-pink-50 shadow-sm hover:scale-105 hover:bg-pink-100 hover:text-pink-600 transition-all cursor-default">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

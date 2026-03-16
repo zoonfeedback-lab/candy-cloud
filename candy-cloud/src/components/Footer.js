@@ -60,11 +60,11 @@ export default function Footer() {
                         <p className="text-sm text-white/90 leading-relaxed font-medium mt-2 pr-4 lg:pr-10 text-justify">
                             Our Story Candy Cloud started in my living room with a simple goal: to create a shop that felt like a hug. I&apos;ve always loved the thrill of a mystery bag, but I wanted to make it better. I wanted it to be interactive, colorful, and curated with care. Today, Candy Cloud is a community of mystery-lovers. Every scoop is performed with a focus on quality and that &quot;wow&quot; factor. When you shop with us, you&apos;re supporting a small business dream and in return, we&apos;re sending you a scoop full of joy.
                         </p>
-                        
+
                         <div className="flex flex-col gap-3 mt-2">
                             <div className="flex items-start gap-3 text-sm text-white/90 font-medium">
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm shrink-0">📍</span>
-                                <span className="pt-1">1999/2 Dhodial Nawanshehr<br/>Abbottabad</span>
+                                <span className="pt-1">1999/2 Dhodial Nawanshehr<br />Abbottabad</span>
                             </div>
                             <div className="flex items-center gap-3 text-sm text-white/90 font-medium">
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm shrink-0">📞</span>
@@ -101,19 +101,19 @@ export default function Footer() {
                         </ul>
 
                         <div className="flex gap-3 mt-2">
-                            <a href="#" aria-label="Instagram" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-gradient-to-tr hover:from-pink-500 hover:to-purple-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(236,72,153,0.4)] transition-all duration-300">
+                            <a href="https://www.instagram.com/" aria-label="Instagram" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-gradient-to-tr hover:from-pink-500 hover:to-purple-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(236,72,153,0.4)] transition-all duration-300">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                                     <circle cx="12" cy="12" r="5" />
                                     <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
                                 </svg>
                             </a>
-                            <a href="#" aria-label="TikTok" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-gradient-to-r hover:from-cyan-500 hover:to-pink-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(236,72,153,0.4)] transition-all duration-300">
+                            <a href="https://www.tiktok.com/" aria-label="TikTok" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-gradient-to-r hover:from-cyan-500 hover:to-pink-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(236,72,153,0.4)] transition-all duration-300">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.88-2.88 2.89 2.89 0 0 1 2.88-2.88c.28 0 .56.04.82.11v-3.51a6.37 6.37 0 0 0-.82-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.69a8.24 8.24 0 0 0 3.76.92V6.16a4.84 4.84 0 0 1-.01.53z" />
                                 </svg>
                             </a>
-                            <a href="#" aria-label="YouTube" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-red-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(239,68,68,0.4)] transition-all duration-300">
+                            <a href="https://www.youtube.com/" aria-label="YouTube" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 border-2 border-white/20 text-white backdrop-blur-sm hover:bg-red-500 hover:border-transparent hover:-translate-y-1.5 hover:scale-110 hover:shadow-[0_8px_20px_rgba(239,68,68,0.4)] transition-all duration-300">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                                 </svg>
