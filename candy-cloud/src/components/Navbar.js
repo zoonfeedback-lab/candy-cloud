@@ -47,17 +47,17 @@ export default function Navbar() {
                         </button>
 
                         {/* Desktop Icons */}
-                        <div className="hidden md:flex items-center gap-3">
-                            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-transparent hover:bg-red-50 text-gray-500 hover:text-red-500 transition-all hover:-translate-y-1 hover:shadow-sm group" aria-label="Wishlist">
-                                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <div className="hidden md:flex items-center gap-4">
+                            <button className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md" aria-label="Wishlist">
+                                <Image src="/images/cute-heart.png" alt="Wishlist" width={36} height={36} className="w-[36px] h-[36px] object-contain" />
                             </button>
-                            <a href="/cart" className="w-10 h-10 flex items-center justify-center rounded-full bg-transparent hover:bg-pink-50 text-gray-500 hover:text-pink transition-all hover:-translate-y-1 hover:shadow-sm relative group" aria-label="Cart">
+                            <a href="/cart" className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md relative" aria-label="Cart">
                                 {mounted && isLoaded && totalItems > 0 && (
-                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 bg-pink text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10 px-0.5 transition-transform animate-pulse2">
+                                    <span className="absolute -top-2 -right-2 min-w-[20px] h-5 bg-pink text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 px-1 transition-transform animate-pulse2">
                                         {totalItems > 99 ? '99+' : totalItems}
                                     </span>
                                 )}
-                                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <Image src="/images/cute-cart.png" alt="Cart" width={36} height={36} className="w-[36px] h-[36px] object-contain" />
                             </a>
                         </div>
                     </div>
@@ -68,10 +68,10 @@ export default function Navbar() {
                             <Image
                                 src="/images/logo.png"
                                 alt="CandyCloud"
-                                width={180}
-                                height={60}
+                                width={250}
+                                height={83}
                                 priority
-                                className="w-[120px] md:w-[150px] h-auto object-contain transition-transform hover:scale-105"
+                                className="w-[150px] md:w-[200px] h-auto object-contain transition-transform hover:scale-105"
                             />
                         </a>
                     </div>
@@ -80,13 +80,13 @@ export default function Navbar() {
                     <div className="flex-1 flex items-center justify-end gap-3 z-50">
                         {/* Mobile Cart */}
                         <div className="md:hidden flex items-center gap-4">
-                            <a href="/cart" className="text-gray-600 hover:text-pink transition-colors relative" aria-label="Cart">
+                            <a href="/cart" className="relative" aria-label="Cart">
                                 {mounted && isLoaded && totalItems > 0 && (
-                                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 bg-pink text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white px-0.5">
+                                    <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-pink text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10 px-0.5">
                                         {totalItems > 99 ? '99+' : totalItems}
                                     </span>
                                 )}
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                <Image src="/images/cute-cart.png" alt="Cart" width={30} height={30} className="w-[30px] h-[30px] object-contain" />
                             </a>
                         </div>
 
