@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function MysteryBuilder({
     title,
@@ -20,6 +21,7 @@ export default function MysteryBuilder({
 }) {
     const { addToCart } = useCart();
     const { isAuthenticated, openAuthModal } = useAuth();
+    const { toggleWishlist, isInWishlist } = useWishlist();
 
     // State, initializing with the first options from props
     const [selectedSize, setSelectedSize] = useState(sizes[0]);
@@ -62,13 +64,36 @@ export default function MysteryBuilder({
         }, 1500);
     };
 
+    const handleWishlistToggle = () => {
+        if (!isAuthenticated) {
+            openAuthModal("login");
+            return;
+        }
+        toggleWishlist({
+            productId: productIdPrefix,
+            name: title,
+            emoji: "🎁",
+            type: "mystery",
+            description: description.props ? description.props.children.join("") : description,
+        });
+    };
+
     return (
         <section className="py-20 bg-white relative overflow-hidden">
             <div className="max-w-[1200px] mx-auto px-5 relative z-10">
-                <div className="text-center mb-10">
+                <div className="text-center mb-10 relative">
                     <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-3 inline-block whitespace-pre-line">
                         {title}
                     </h2>
+                    <button 
+                        onClick={handleWishlistToggle}
+                        className={`absolute top-0 right-0 md:relative md:top-auto md:right-auto md:ml-4 p-3 rounded-full transition-all hover:scale-110 active:scale-90 shadow-sm border border-pink-100 ${isInWishlist(productIdPrefix) ? "bg-white text-pink" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
+                        aria-label="Toggle Wishlist"
+                    >
+                        <svg className="w-6 h-6" fill={isInWishlist(productIdPrefix) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
                     <p className="text-lg text-gray-500 max-w-[600px] mx-auto font-medium whitespace-pre-line">
                         {description}
                     </p>

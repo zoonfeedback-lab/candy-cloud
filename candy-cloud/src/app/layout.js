@@ -2,6 +2,7 @@ import { Outfit } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
 import "./globals.css";
 
@@ -24,8 +25,10 @@ export default function RootLayout({ children }) {
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
           <AuthProvider>
             <CartProvider>
-              {children}
-              <AuthModal />
+              <WishlistProvider>
+                {children}
+                <AuthModal />
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </GoogleOAuthProvider>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const bundles = [
     {
@@ -16,6 +17,7 @@ const bundles = [
         items: "Stickers, Washitape, Erasers, Hairties, Paper soap, Pens, Pencils, Scrunchies",
         tagColor: "bg-pink-100/50 text-pink font-medium",
         iconContainer: "h-16 w-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-2",
+        emoji: "🍬",
     },
     {
         tag: "Selling fast! - Glow like a galaxy",
@@ -27,6 +29,7 @@ const bundles = [
         items: "Lip gloss, Face masks, Earrings, Mini notebooks, Sticky notes, Highlighter, Mirror, Eye mask",
         tagColor: "bg-red-50 text-red-400 font-medium",
         iconContainer: "h-16 w-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-2",
+        emoji: "✨",
     },
     {
         tag: "Only 3 left - Pure magic in a bag!",
@@ -38,12 +41,14 @@ const bundles = [
         items: "Planners, Journals, Multicolor pens, Watches, Necklaces, Jewelry boxes, Mystery box, Full-sized bag",
         tagColor: "bg-pink-100/50 text-pink font-medium",
         iconContainer: "h-16 w-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2",
+        emoji: "☁️",
     }
 ];
 
 export default function HomeShopByCategory() {
     const { addToCart } = useCart();
     const { isAuthenticated, openAuthModal } = useAuth();
+    const { toggleWishlist, isInWishlist } = useWishlist();
     const [addedStates, setAddedStates] = useState({});
 
     const handleAddToCart = (bundle) => {
@@ -57,7 +62,7 @@ export default function HomeShopByCategory() {
             name: `${bundle.title} Bundle Pack`,
             price: bundle.price,
             type: "Bundle Kit",
-            emoji: bundle.title === "Sweet Treat" ? "🍬" : (bundle.title === "Dreamy Delight" ? "✨" : "☁️"),
+            emoji: bundle.emoji,
         };
         addToCart(payload, 1);
 
@@ -66,6 +71,21 @@ export default function HomeShopByCategory() {
         setTimeout(() => {
             setAddedStates(prev => ({ ...prev, [bundle.title]: false }));
         }, 1500);
+    };
+
+    const handleWishlistToggle = (bundle) => {
+        if (!isAuthenticated) {
+            openAuthModal("login");
+            return;
+        }
+        const productId = `bundle-${bundle.title.toLowerCase().replace(/\s+/g, '-')}`;
+        toggleWishlist({
+            productId,
+            name: bundle.title,
+            emoji: bundle.emoji,
+            type: "bundle",
+            description: bundle.items,
+        });
     };
 
     return (
@@ -89,52 +109,68 @@ export default function HomeShopByCategory() {
 
                 {/* Cards */}
                 <div className="grid md:grid-cols-3 gap-8 justify-items-center">
-                    {bundles.map((bundle, index) => (
-                        <div
-                            key={index}
-                            className="relative w-[340px] h-[340px] bg-white rounded-full flex flex-col items-center justify-center p-8 shadow-[0_0_50px_rgba(0,0,0,0.06)] border border-pink-50/50 transition-transform hover:-translate-y-2 hover:shadow-[0_10px_60px_rgba(244,114,182,0.15)] group"
-                        >
-                            {/* Floating Top Tag */}
-                            <div className={`absolute top-0 -translate-y-1/2 px-4 py-1 rounded-full text-[10px] sm:text-xs whitespace-nowrap shadow-sm ${bundle.tagColor}`}>
-                                {bundle.tag}
-                            </div>
+                    {bundles.map((bundle, index) => {
+                        const productId = `bundle-${bundle.title.toLowerCase().replace(/\s+/g, '-')}`;
+                        const isWishlisted = isInWishlist(productId);
 
-                            {/* Icon */}
-                            <div className={bundle.iconContainer}>
-                                {bundle.icon}
-                            </div>
-
-                            {/* Title & Rating */}
-                            <h3 className="text-xl font-bold text-dark mt-2">{bundle.title}</h3>
-                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                                <span className="text-yellow-400">⭐</span> {bundle.rating} ({bundle.reviews})
-                            </div>
-
-                            {/* Price */}
-                            <div className="text-2xl font-bold text-pink mt-3">
-                                Rs {bundle.price.toLocaleString()}
-                            </div>
-
-                            {/* Items List */}
-                            <div className="flex items-start gap-1 mt-3 text-[10px] text-gray-400 text-center leading-tight h-[30px] overflow-hidden">
-                                <span className="text-[10px] mt-0.5">🎁</span>
-                                <p>{bundle.items}</p>
-                            </div>
-
-                            {/* COD Available */}
-                            <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-2">
-                                <span>🚚</span> COD Available
-                            </div>
-
-                            {/* Button */}
-                            <button
-                                onClick={() => handleAddToCart(bundle)}
-                                className={`absolute bottom-6 w-[80%] py-3 rounded-full font-medium text-sm transition-all transform group-hover:scale-105 ${addedStates[bundle.title] ? 'bg-pink-500 text-white shadow-[0_5px_15px_rgba(236,72,153,0.3)]' : 'bg-[#f64b73] text-white hover:bg-[#e03b62] shadow-[0_5px_15px_rgba(246,75,115,0.3)]'}`}
+                        return (
+                            <div
+                                key={index}
+                                className="relative w-[340px] h-[340px] bg-white rounded-full flex flex-col items-center justify-center p-8 shadow-[0_0_50px_rgba(0,0,0,0.06)] border border-pink-50/50 transition-transform hover:-translate-y-2 hover:shadow-[0_10px_60px_rgba(244,114,182,0.15)] group"
                             >
-                                {addedStates[bundle.title] ? '✓ Added to Cart' : 'Add to Cart'}
-                            </button>
-                        </div>
-                    ))}
+                                {/* Floating Top Tag */}
+                                <div className={`absolute top-0 -translate-y-1/2 px-4 py-1 rounded-full text-[10px] sm:text-xs whitespace-nowrap shadow-sm ${bundle.tagColor}`}>
+                                    {bundle.tag}
+                                </div>
+
+                                {/* Wishlist Button */}
+                                <button
+                                    onClick={() => handleWishlistToggle(bundle)}
+                                    className={`absolute top-10 right-10 p-2 rounded-full transition-all hover:scale-110 active:scale-90 ${isWishlisted ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-300 hover:bg-white hover:text-pink"}`}
+                                    aria-label="Toggle Wishlist"
+                                >
+                                    <svg className="w-5 h-5" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </button>
+
+                                {/* Icon */}
+                                <div className={bundle.iconContainer}>
+                                    {bundle.icon}
+                                </div>
+
+                                {/* Title & Rating */}
+                                <h3 className="text-xl font-bold text-dark mt-2">{bundle.title}</h3>
+                                <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                    <span className="text-yellow-400">⭐</span> {bundle.rating} ({bundle.reviews})
+                                </div>
+
+                                {/* Price */}
+                                <div className="text-2xl font-bold text-pink mt-3">
+                                    Rs {bundle.price.toLocaleString()}
+                                </div>
+
+                                {/* Items List */}
+                                <div className="flex items-start gap-1 mt-3 text-[10px] text-gray-400 text-center leading-tight h-[30px] overflow-hidden">
+                                    <span className="text-[10px] mt-0.5">🎁</span>
+                                    <p>{bundle.items}</p>
+                                </div>
+
+                                {/* COD Available */}
+                                <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-2">
+                                    <span>🚚</span> COD Available
+                                </div>
+
+                                {/* Button */}
+                                <button
+                                    onClick={() => handleAddToCart(bundle)}
+                                    className={`absolute bottom-6 w-[80%] py-3 rounded-full font-medium text-sm transition-all transform group-hover:scale-105 ${addedStates[bundle.title] ? 'bg-pink-500 text-white shadow-[0_5px_15_rgba(236,72,153,0.3)]' : 'bg-[#f64b73] text-white hover:bg-[#e03b62] shadow-[0_5px_15_rgba(246,75,115,0.3)]'}`}
+                                >
+                                    {addedStates[bundle.title] ? '✓ Added to Cart' : 'Add to Cart'}
+                                </button>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </section>

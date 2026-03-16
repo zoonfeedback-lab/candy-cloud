@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const navItems = [
     { label: "Home", href: "/" },
@@ -17,7 +18,8 @@ export default function Navbar() {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
-    const { totalItems, isLoaded, clearLocalCart } = useCart();
+    const { totalItems: totalCartItems, isLoaded: cartLoaded, clearLocalCart } = useCart();
+    const { totalItems: totalWishlistItems, isLoaded: wishlistLoaded } = useWishlist();
     const { user, isAuthenticated, logout, openAuthModal } = useAuth();
 
     // Prevent hydration mismatch for client-rendered bubble cart
@@ -48,13 +50,18 @@ export default function Navbar() {
 
                         {/* Desktop Icons */}
                         <div className="hidden md:flex items-center gap-4">
-                            <button className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md" aria-label="Wishlist">
-                                <Image src="/images/cute-heart.png" alt="Wishlist" width={36} height={36} className="w-[36px] h-[36px] object-contain" />
-                            </button>
-                            <a href="/cart" className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md relative" aria-label="Cart">
-                                {mounted && isLoaded && totalItems > 0 && (
+                            <a href="/wishlist" className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md relative" aria-label="Wishlist">
+                                {mounted && wishlistLoaded && totalWishlistItems > 0 && (
                                     <span className="absolute -top-2 -right-2 min-w-[20px] h-5 bg-pink text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 px-1 transition-transform animate-pulse2">
-                                        {totalItems > 99 ? '99+' : totalItems}
+                                        {totalWishlistItems > 99 ? '99+' : totalWishlistItems}
+                                    </span>
+                                )}
+                                <Image src="/images/cute-heart.png" alt="Wishlist" width={36} height={36} className="w-[36px] h-[36px] object-contain" />
+                            </a>
+                            <a href="/cart" className="flex items-center justify-center transition-all hover:-translate-y-1 hover:scale-110 drop-shadow-sm hover:drop-shadow-md relative" aria-label="Cart">
+                                {mounted && cartLoaded && totalCartItems > 0 && (
+                                    <span className="absolute -top-2 -right-2 min-w-[20px] h-5 bg-pink text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 px-1 transition-transform animate-pulse2">
+                                        {totalCartItems > 99 ? '99+' : totalCartItems}
                                     </span>
                                 )}
                                 <Image src="/images/cute-cart.png" alt="Cart" width={36} height={36} className="w-[36px] h-[36px] object-contain" />
@@ -81,9 +88,9 @@ export default function Navbar() {
                         {/* Mobile Cart */}
                         <div className="md:hidden flex items-center gap-4">
                             <a href="/cart" className="relative" aria-label="Cart">
-                                {mounted && isLoaded && totalItems > 0 && (
+                                {mounted && cartLoaded && totalCartItems > 0 && (
                                     <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-pink text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10 px-0.5">
-                                        {totalItems > 99 ? '99+' : totalItems}
+                                        {totalCartItems > 99 ? '99+' : totalCartItems}
                                     </span>
                                 )}
                                 <Image src="/images/cute-cart.png" alt="Cart" width={30} height={30} className="w-[30px] h-[30px] object-contain" />

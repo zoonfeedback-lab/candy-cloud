@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const deals = [
     {
@@ -15,6 +16,7 @@ const deals = [
         decorShape: "rounded-[40%_60%_55%_45%/50%_45%_55%_50%]",
         emoji: "☀️",
         href: "/basket",
+        id: "deal-candycloud-basket",
     },
     {
         subtitle: "10 PRODUCTS OF YOUR CHOICE",
@@ -27,6 +29,7 @@ const deals = [
         emoji: "🌈",
         href: "/customize",
         description: "Pick 10 products customized by you! 🌈",
+        id: "deal-customize-cloud-deal",
     },
 ];
 
@@ -55,6 +58,25 @@ function DealCard({ deal }) {
     const [qty, setQty] = useState(1);
     const router = useRouter();
     const { isAuthenticated, openAuthModal } = useAuth();
+    const { toggleWishlist, isInWishlist } = useWishlist();
+
+    const isWishlisted = isInWishlist(deal.id);
+
+    const handleWishlistToggle = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            openAuthModal("login");
+            return;
+        }
+        toggleWishlist({
+            productId: deal.id,
+            name: deal.title.replace('\n', ' '),
+            emoji: deal.emoji,
+            type: "deal",
+            description: deal.description || 'Special value deal',
+        });
+    };
 
     const handleBuyNow = () => {
         if (!isAuthenticated) {
@@ -66,7 +88,7 @@ function DealCard({ deal }) {
 
         const queryParams = new URLSearchParams({
             direct: "true",
-            id: `deal-${deal.title.replace(/\s+/g, '-').toLowerCase()}`,
+            id: deal.id,
             name: deal.title.replace('\n', ' '),
             price: numericPrice,
             emoji: deal.emoji,
@@ -79,34 +101,45 @@ function DealCard({ deal }) {
     // If the deal has an href, make the whole card a clickable link
     if (deal.href) {
         return (
-            <a
-                href={deal.href}
-                className={`
-                    relative ${deal.bg} rounded-2xl p-8 overflow-hidden
-                    border-2 border-dashed ${deal.border}
-                    hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block group
-                `}
-            >
-                <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
-                <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
-                <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
+            <div className="relative group">
+                <a
+                    href={deal.href}
+                    className={`
+                        relative ${deal.bg} rounded-2xl p-8 overflow-hidden
+                        border-2 border-dashed ${deal.border}
+                        hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block h-full
+                    `}
+                >
+                    <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
+                    <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
+                    <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
 
-                <div className="relative z-10">
-                    <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">
-                        {deal.subtitle}
-                    </p>
-                    <div className="flex items-start justify-between mb-4">
-                        <h3 className="text-2xl md:text-3xl font-extrabold text-dark leading-tight whitespace-pre-line">
-                            {deal.title}
-                        </h3>
-                        <span className="text-4xl animate-spin-8">{deal.emoji}</span>
+                    <div className="relative z-10">
+                        <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">
+                            {deal.subtitle}
+                        </p>
+                        <div className="flex items-start justify-between mb-4">
+                            <h3 className="text-2xl md:text-3xl font-extrabold text-dark leading-tight whitespace-pre-line">
+                                {deal.title}
+                            </h3>
+                            <span className="text-4xl animate-spin-8">{deal.emoji}</span>
+                        </div>
+                        <p className="text-sm text-gray-500 mb-5">{deal.description || 'Gift basket for your loved ones 💝'}</p>
+                        <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
+                            View &amp; Customize →
+                        </span>
                     </div>
-                    <p className="text-sm text-gray-500 mb-5">{deal.description || 'Gift basket for your loved ones 💝'}</p>
-                    <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
-                        View &amp; Customize →
-                    </span>
-                </div>
-            </a>
+                </a>
+                <button
+                    onClick={handleWishlistToggle}
+                    className={`absolute top-4 right-4 p-2 rounded-full transition-all hover:scale-110 active:scale-90 z-20 ${isWishlisted ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
+                    aria-label="Toggle Wishlist"
+                >
+                    <svg className="w-5 h-5" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </button>
+            </div>
         );
     }
 
@@ -121,6 +154,16 @@ function DealCard({ deal }) {
             <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
             <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
             <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
+
+            <button
+                onClick={handleWishlistToggle}
+                className={`absolute top-4 right-4 p-2 rounded-full transition-all hover:scale-110 active:scale-90 z-20 ${isWishlisted ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
+                aria-label="Toggle Wishlist"
+            >
+                <svg className="w-5 h-5" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </button>
 
             <div className="relative z-10">
                 <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">

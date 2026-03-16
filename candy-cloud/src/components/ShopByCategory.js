@@ -1,39 +1,68 @@
 "use client";
 
 import Link from "next/link";
+import { useWishlist } from "@/context/WishlistContext";
+import { useAuth } from "@/context/AuthContext";
 
 const SHOP_CATEGORIES = [
     {
+        id: "mystery-bags",
         subtitle: "The Ultimate Jewelry Haul",
         title: "Mystery Bags",
         href: "/shop/mystery-bags",
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
+        emoji: "🛍️",
     },
     {
+        id: "makeup-scoop",
         subtitle: "Glow-Up with A Single Dip",
         title: "Makeup Scoop",
         href: "/shop/makeup-scoop",
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
+        emoji: "💄",
     },
     {
+        id: "stationary-balls",
         subtitle: "Tiny Capsule Of Magic",
         title: "Stationary Balls",
         href: "/shop/stationary-balls",
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
+        emoji: "🎾",
     },
     {
+        id: "mystery-jar",
         subtitle: "Candy-Coated Wonderland",
         title: "Mystery Jar",
         href: "/shop/mystery-jar",
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
+        emoji: "🫙",
     },
 ];
 
 export default function ShopByCategory() {
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const { isAuthenticated, openAuthModal } = useAuth();
+
+    const handleWishlistToggle = (e, cat) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            openAuthModal("login");
+            return;
+        }
+        toggleWishlist({
+            productId: cat.id,
+            name: cat.title,
+            emoji: cat.emoji,
+            type: "category",
+            description: cat.subtitle,
+        });
+    };
+
     return (
         <section id="categories" className="py-20 bg-white relative overflow-hidden">
             <div className="max-w-[1200px] mx-auto px-5 relative z-10">
@@ -75,9 +104,19 @@ export default function ShopByCategory() {
                                 <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
                                 
                                 <div className="relative z-10">
-                                    <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase mb-2">
-                                        {cat.subtitle}
-                                    </p>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase">
+                                            {cat.subtitle}
+                                        </p>
+                                        <button 
+                                            onClick={(e) => handleWishlistToggle(e, cat)}
+                                            className={`p-2 rounded-full transition-all hover:scale-110 active:scale-90 ${isInWishlist(cat.id) ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
+                                        >
+                                            <svg className="w-5 h-5" fill={isInWishlist(cat.id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                     <div className="flex items-start justify-between mb-4">
                                         <h3 className="text-2xl md:text-3xl font-extrabold text-[#111] leading-tight whitespace-pre-line">
                                             {cat.title}
