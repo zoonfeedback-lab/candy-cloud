@@ -161,6 +161,7 @@ export default function MysteryBuilder({
                                             `}
                                                 >
                                                     {size.emoji && <span className="text-4xl mb-3">{size.emoji}</span>}
+                                                    {size.image_url && <img src={size.image_url} alt={size.name} className="w-16 h-16 object-contain mb-3" />}
                                                     <span className="font-bold text-gray-800 text-md">{size.name}</span>
                                                     {size.weight && (
                                                         <span className="text-xs font-bold text-pink-500 bg-pink-100 px-2 py-1 rounded-full mt-2 mb-1">{size.weight}</span>
@@ -216,7 +217,8 @@ export default function MysteryBuilder({
 
                                             <div className="text-center z-10 relative">
                                                 <div className="text-7xl mb-2 filter drop-shadow-lg animate-bounce (slow)">
-                                                    {selectedSize.emoji}
+                                                    {selectedSize.emoji && selectedSize.emoji}
+                                                    {selectedSize.image_url && <img src={selectedSize.image_url} alt="Jar Preview" className="w-24 h-24 object-contain mx-auto" />}
                                                 </div>
                                             </div>
 

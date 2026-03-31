@@ -4,9 +4,9 @@ import MysteryBuilder from "@/components/MysteryBuilder";
 
 // Configuration Options for Mystery Jar
 const JAR_SIZES = [
-    { id: "small-jar", name: "Small Jar", weight: "Sweet Treats", price: 600, emoji: "🏺" },
-    { id: "medium-jar", name: "Medium Jar", weight: "Sweet Treats", price: 1100, emoji: "🏺" },
-    { id: "large-jar", name: "Large Jar", weight: "Sweet Treats", price: 1800, emoji: "🏺" },
+    { id: "small-jar", name: "Small Jar", weight: "Sweet Treats", price: 600, image_url: "/images/candy-jar.png" },
+    { id: "medium-jar", name: "Medium Jar", weight: "Sweet Treats", price: 1100, image_url: "/images/candy-jar.png" },
+    { id: "large-jar", name: "Large Jar", weight: "Sweet Treats", price: 1800, image_url: "/images/candy-jar.png" },
 ];
 
 const MYSTERY_JAR_ITEMS = [
@@ -42,7 +42,7 @@ export default function MysteryJarPage() {
     return (
         <div className="bg-[#fdf6ec] min-h-screen pt-24 pb-12">
             <MysteryBuilder
-                title="Mystery Jar 🏺"
+                title="Mystery Jar"
                 description={
                     <>
                         You choose the vibe, we pack the surprise! Build your <span className="text-pink font-extrabold">Candy-Coated Wonderland</span>.
