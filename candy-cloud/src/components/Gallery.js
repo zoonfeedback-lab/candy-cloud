@@ -25,7 +25,7 @@ export default function Gallery() {
                     {/* Left Panel: Feature Pink Box */}
                     <div className="md:col-span-5 h-[500px] md:h-full relative group overflow-hidden border-r border-white/20">
                         <Image
-                            src="/images/gallery-pink-box.png"
+                            src="/images/gallery-pink-box1.jpeg"
                             alt="Magical Pink Box"
                             fill
                             className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -41,7 +41,7 @@ export default function Gallery() {
                         {/* Top Right: Feature Blue Box */}
                         <div className="h-[300px] md:h-[45%] relative group overflow-hidden border-b border-white/20">
                             <Image
-                                src="/images/gallery-blue-box.jpg"
+                                src="/images/gallery-mystery-box.jpeg"
                                 alt="Unboxing the Blue Magic"
                                 fill
                                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -56,7 +56,7 @@ export default function Gallery() {
                             {/* Stationary */}
                             <div className="relative group overflow-hidden border-r border-b border-white/20">
                                 <Image
-                                    src="/images/gallery-stationary.png"
+                                    src="/images/right1.jpeg"
                                     alt="Aesthetic Stationary"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -65,7 +65,7 @@ export default function Gallery() {
                             {/* Jewelry */}
                             <div className="relative group overflow-hidden border-b border-white/20">
                                 <Image
-                                    src="/images/gallery-jewelry.png"
+                                    src="/images/right2.jpeg"
                                     alt="Premium Jewelry"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -74,7 +74,7 @@ export default function Gallery() {
                             {/* Hairclips */}
                             <div className="relative group overflow-hidden border-r border-white/20">
                                 <Image
-                                    src="/images/gallery-hairclips.png"
+                                    src="/images/right3.jpeg"
                                     alt="Ribbon Hairclips"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -83,7 +83,7 @@ export default function Gallery() {
                             {/* Hand Creams replaced with Candy choice */}
                             <div className="relative group overflow-hidden">
                                 <Image
-                                    src="/images/gallery-candy.png"
+                                    src="/images/right4.jpeg"
                                     alt="Colorful Candy Choice"
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
