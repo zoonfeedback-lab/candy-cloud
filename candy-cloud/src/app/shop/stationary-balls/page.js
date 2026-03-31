@@ -4,9 +4,9 @@ import MysteryBuilder from "@/components/MysteryBuilder";
 
 // Configuration Options for Stationary Balls
 const SCOOP_SIZES = [
-    { id: "mini", name: "Mini Scoop", weight: "5 balls", price: 500, emoji: "🥄" },
-    { id: "mega", name: "Mega Scoop", weight: "7 balls", price: 900, emoji: "🥣" },
-    { id: "ultimate", name: "Ultimate Scoop", weight: "10 balls", price: 1600, emoji: "🛍️" },
+    { id: "mini", name: "Mini Scoop", weight: "5 balls", price: 1500, emoji: "🥄" },
+    { id: "mega", name: "Mega Scoop", weight: "7 balls", price: 3000, emoji: "🥣" },
+    { id: "ultimate", name: "Ultimate Scoop", weight: "10 balls", price: 5000, emoji: "🛍️" },
 ];
 
 const STATIONARY_ITEMS = [

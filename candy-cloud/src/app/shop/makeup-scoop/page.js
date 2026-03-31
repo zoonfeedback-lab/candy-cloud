@@ -4,9 +4,9 @@ import MysteryBuilder from "@/components/MysteryBuilder";
 
 // Configuration Options for Makeup Scoop
 const SCOOP_SIZES = [
-    { id: "mini", name: "Mini Scoop", weight: "250g", price: 500, emoji: "🥄" },
-    { id: "mega", name: "Mega Scoop", weight: "500g", price: 900, emoji: "🥣" },
-    { id: "ultimate", name: "Ultimate Scoop", weight: "1kg", price: 1600, emoji: "🛍️" },
+    { id: "mini", name: "Mini Scoop", weight: "250g", price: 1500, emoji: "🥄" },
+    { id: "mega", name: "Mega Scoop", weight: "500g", price: 3000, emoji: "🥣" },
+    { id: "ultimate", name: "Ultimate Scoop", weight: "1kg", price: 5000, emoji: "🛍️" },
 ];
 
 const MAKEUP_ITEMS = [
@@ -35,10 +35,10 @@ const MAKEUP_ITEMS = [
 ];
 
 const COLOR_THEMES = [
-    { id: "rainbow", name: "Rainbow Riot", emoji: "🌈", bgRaw: "bg-gradient-to-br from-red-100 via-yellow-100 to-blue-100", activeClass: "border-pink-400 ring-pink-200" },
-    { id: "pink", name: "Pink Princess", emoji: "🎀", bgRaw: "bg-gradient-to-br from-pink-100 to-rose-100", activeClass: "border-pink-500 ring-pink-300" },
-    { id: "blue", name: "Blue Lagoon", emoji: "🌊", bgRaw: "bg-gradient-to-br from-blue-100 to-cyan-100", activeClass: "border-blue-400 ring-blue-200" },
-    { id: "mystery", name: "Mystery Mix", emoji: "🃏", bgRaw: "bg-gradient-to-br from-purple-100 to-indigo-100", activeClass: "border-purple-400 ring-purple-200" },
+    { id: "lips", name: "Glazed Nebula (only lip products)", emoji: "👄", bgRaw: "bg-gradient-to-br from-pink-100 to-rose-200", activeClass: "border-pink-400 ring-pink-200" },
+    { id: "eyes", name: "Pastel Aurora (only eye products)", emoji: "👁️", bgRaw: "bg-gradient-to-br from-purple-100 to-indigo-200", activeClass: "border-purple-400 ring-purple-200" },
+    { id: "face", name: "Blushing Breeze (only face products)", emoji: "🧴", bgRaw: "bg-gradient-to-br from-orange-50 to-orange-100", activeClass: "border-orange-300 ring-orange-100" },
+    { id: "all", name: "Candy-Coated Canvas (All Products)", emoji: "💄", bgRaw: "bg-gradient-to-br from-red-100 via-yellow-100 to-blue-100", activeClass: "border-pink-400 ring-pink-200" },
 ];
 
 const CATEGORY_PREFS = [
@@ -64,7 +64,7 @@ export default function MakeupScoopPage() {
                 listTitle="Items in Makeup Scoop"
                 categoryStepLabel="Choose Category Preference"
                 sizeStepLabel="Choose your Size"
-                themeStepLabel="Pick a Color Theme"
+                themeStepLabel="Pick A Product Theme"
                 productIdPrefix="makeup-scoop"
                 productType="Makeup Scoop"
             />
