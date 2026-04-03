@@ -13,6 +13,7 @@ const SHOP_CATEGORIES = [
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
         emoji: "🛍️",
+        comingSoon: true,
     },
     {
         id: "makeup-scoop",
@@ -22,6 +23,7 @@ const SHOP_CATEGORIES = [
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
         emoji: "💄",
+        comingSoon: true,
     },
     {
         id: "stationary-balls",
@@ -31,6 +33,7 @@ const SHOP_CATEGORIES = [
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
         emoji: "🎾",
+        comingSoon: true,
     },
     {
         id: "mystery-jar",
@@ -40,6 +43,7 @@ const SHOP_CATEGORIES = [
         bg: "bg-[#e2d5ff]",
         decorBg: "bg-[#d3bfff]/60",
         emoji: "🫙",
+        comingSoon: true,
     },
 ];
 
@@ -95,7 +99,7 @@ export default function ShopByCategory() {
                                 className={`
                                     relative ${cat.bg} rounded-2xl p-8 overflow-hidden
                                     border-2 border-dashed border-[#d3bfff]
-                                    hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block group
+                                    ${cat.comingSoon ? "pointer-events-none opacity-90 grayscale-[0.2]" : "hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block group"}
                                 `}
                             >
                                 {/* Decorative Blobs similar to Customize deal */}
@@ -108,29 +112,41 @@ export default function ShopByCategory() {
                                         <p className="text-xs font-semibold tracking-wider text-pink-dark uppercase">
                                             {cat.subtitle}
                                         </p>
-                                        <button 
-                                            onClick={(e) => handleWishlistToggle(e, cat)}
-                                            className={`p-2 rounded-full transition-all hover:scale-110 active:scale-90 ${isInWishlist(cat.id) ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
-                                        >
-                                            <svg className="w-5 h-5" fill={isInWishlist(cat.id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                            </svg>
-                                        </button>
+                                        {!cat.comingSoon && (
+                                            <button 
+                                                onClick={(e) => handleWishlistToggle(e, cat)}
+                                                className={`p-2 rounded-full transition-all hover:scale-110 active:scale-90 ${isInWishlist(cat.id) ? "bg-white text-pink shadow-md" : "bg-white/50 text-gray-400 hover:bg-white hover:text-pink"}`}
+                                            >
+                                                <svg className="w-5 h-5" fill={isInWishlist(cat.id) ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                </svg>
+                                            </button>
+                                        )}
                                     </div>
                                     <div className="flex items-start justify-between mb-4">
                                         <h3 className="text-2xl md:text-3xl font-extrabold text-[#111] leading-tight whitespace-pre-line">
                                             {cat.title}
                                         </h3>
-                                        <span className="text-4xl text-[#ff6fae] font-bold group-hover:translate-x-2 transition-transform duration-300">
-                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                                            </svg>
-                                        </span>
+                                        {!cat.comingSoon && (
+                                            <span className="text-4xl text-[#ff6fae] font-bold group-hover:translate-x-2 transition-transform duration-300">
+                                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                                </svg>
+                                            </span>
+                                        )}
                                     </div>
                                     <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-[#111] text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors opacity-0 h-0 overflow-hidden" aria-hidden="true">
                                         Hidden Button
                                     </span>
                                 </div>
+
+                                {cat.comingSoon && (
+                                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-20 flex items-center justify-center p-4">
+                                        <div className="bg-white/90 px-6 py-3 rounded-2xl shadow-xl border-2 border-[#d3bfff] transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+                                            <span className="text-xl md:text-2xl font-black text-[#111] tracking-tight uppercase">COMING SOON</span>
+                                        </div>
+                                    </div>
+                                )}
                             </Link>
                         ))}
                     </div>

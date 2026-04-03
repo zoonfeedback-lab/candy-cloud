@@ -30,6 +30,7 @@ const deals = [
         href: "/customize",
         description: "Pick 10 products customized by you! 🌈",
         id: "deal-customize-cloud-deal",
+        comingSoon: true,
     },
 ];
 
@@ -107,9 +108,16 @@ function DealCard({ deal }) {
                     className={`
                         relative ${deal.bg} rounded-2xl p-8 overflow-hidden
                         border-2 border-dashed ${deal.border}
-                        hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer block h-full
+                        ${deal.comingSoon ? "pointer-events-none opacity-90 grayscale-[0.2]" : "hover:shadow-lg hover:-translate-y-1 cursor-pointer transition-all"} block h-full
                     `}
                 >
+                    {deal.comingSoon && (
+                        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+                            <div className="bg-white/90 px-6 py-3 rounded-2xl shadow-xl border-2 border-green-400 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                <span className="text-xl md:text-2xl font-black text-[#111] tracking-tight uppercase">COMING SOON</span>
+                            </div>
+                        </div>
+                    )}
                     <div className={`absolute -bottom-6 -left-6 w-32 h-32 ${deal.decorBg} ${deal.decorShape} opacity-70`} />
                     <div className={`absolute -top-4 -right-4 w-28 h-28 ${deal.decorBg} ${deal.decorShape} opacity-50`} />
                     <div className="absolute bottom-0 right-16 w-20 h-10 border-2 border-white/50 rounded-t-full opacity-60" />
@@ -125,9 +133,11 @@ function DealCard({ deal }) {
                             <span className="text-4xl animate-spin-8">{deal.emoji}</span>
                         </div>
                         <p className="text-sm text-gray-500 mb-5">{deal.description || 'Gift basket for your loved ones 💝'}</p>
-                        <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
-                            View &amp; Customize →
-                        </span>
+                        {!deal.comingSoon && (
+                            <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-dark text-white text-sm font-semibold group-hover:bg-gray-800 transition-colors">
+                                View &amp; Customize →
+                            </span>
+                        )}
                     </div>
                 </a>
                 <button
