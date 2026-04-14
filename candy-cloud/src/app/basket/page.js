@@ -5,9 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export default function BasketPage() {
+    const [selectedPrice, setSelectedPrice] = useState(1500);
     const [qty, setQty] = useState(1);
     const [note, setNote] = useState("");
     const router = useRouter();
+
+    const priceOptions = [1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
     const { isAuthenticated, openAuthModal } = useAuth();
 
     const handleBuyNow = () => {
@@ -20,7 +23,7 @@ export default function BasketPage() {
             direct: "true",
             id: "candycloud-basket",
             name: "CandyCloud Basket",
-            price: 2500,
+            price: selectedPrice,
             emoji: "🎁",
             qty: qty,
             ...(note.trim() && { note: note.trim() })
@@ -68,9 +71,36 @@ export default function BasketPage() {
                             className="w-full h-32 px-5 py-4 rounded-2xl border-2 border-pink-200 bg-pink-50/30 text-gray-700 text-sm placeholder:text-gray-300 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition-all resize-none mb-6"
                         />
 
+                        {/* Budget / Price Selection */}
+                        <div className="mb-8">
+                            <label className="block mb-3">
+                                <span className="text-sm font-bold text-gray-700">
+                                    Choose your budget ✨
+                                </span>
+                            </label>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {priceOptions.map((price) => (
+                                    <button
+                                        key={price}
+                                        onClick={() => setSelectedPrice(price)}
+                                        className={`py-3 px-2 rounded-xl border-2 font-bold text-sm transition-all ${
+                                            selectedPrice === price
+                                                ? "border-pink-500 bg-pink-500 text-white shadow-md scale-105"
+                                                : "border-pink-100 bg-white text-gray-600 hover:border-pink-300"
+                                        }`}
+                                    >
+                                        Rs {price.toLocaleString()}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Price + Qty + Buy Row */}
-                        <div className="flex items-center gap-4 flex-wrap">
-                            <span className="text-2xl font-extrabold text-pink-500">Rs 2,500</span>
+                        <div className="flex items-center gap-4 flex-wrap pb-2">
+                            <div className="flex flex-col">
+                                <span className="text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">Total Per Basket</span>
+                                <span className="text-3xl font-extrabold text-pink-500">Rs {selectedPrice.toLocaleString()}</span>
+                            </div>
 
                             <div className="flex items-center border-2 border-pink-300 rounded-xl overflow-hidden">
                                 <button
