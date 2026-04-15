@@ -11,25 +11,58 @@ export default function BasketPage() {
     const router = useRouter();
 
     const priceOptions = [1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
-    const { isAuthenticated, openAuthModal } = useAuth();
+    const [saving, setSaving] = useState(false);
+    const { isAuthenticated, openAuthModal, authFetch } = useAuth();
 
-    const handleBuyNow = () => {
+    const handleBuyNow = async () => {
         if (!isAuthenticated) {
             openAuthModal("login");
             return;
         }
 
-        const queryParams = new URLSearchParams({
-            direct: "true",
-            id: "candycloud-basket",
-            name: "CandyCloud Basket",
-            price: selectedPrice,
-            emoji: "🎁",
-            qty: qty,
-            ...(note.trim() && { note: note.trim() })
-        }).toString();
+        setSaving(true);
+        try {
+            // Save configuration to database
+            const configPayload = {
+                type: "basket",
+                settings: {
+                    id: "candycloud-basket",
+                    name: "CandyCloud Basket",
+                    price: selectedPrice,
+                    emoji: "🎁",
+                    qty: qty,
+                    note: note.trim() || "",
+                }
+            };
 
-        router.push(`/checkout?${queryParams}`);
+            const res = await authFetch("/api/custom-configs", {
+                method: "POST",
+                body: JSON.stringify(configPayload),
+            });
+
+            const data = await res.json();
+            if (data.success && data.configId) {
+                // Redirect with configId
+                router.push(`/checkout?direct=true&configId=${data.configId}`);
+            } else {
+                throw new Error(data.message || "Failed to save configuration");
+            }
+        } catch (err) {
+            console.error("Save config error:", err);
+            // Fallback to URL method if save fails
+            const queryParams = new URLSearchParams({
+                direct: "true",
+                id: "candycloud-basket",
+                name: "CandyCloud Basket",
+                price: selectedPrice,
+                emoji: "🎁",
+                qty: qty,
+                ...(note.trim() && { note: note.trim() })
+            }).toString();
+            router.push(`/checkout?${queryParams}`);
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -122,9 +155,10 @@ export default function BasketPage() {
 
                             <button
                                 onClick={handleBuyNow}
-                                className="px-8 py-3 rounded-2xl bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all tracking-wide ml-auto"
+                                disabled={saving}
+                                className={`px-8 py-3 rounded-2xl bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all tracking-wide ml-auto ${saving ? "opacity-70 cursor-not-allowed" : ""}`}
                             >
-                                BUY NOW
+                                {saving ? "SAVING..." : "BUY NOW"}
                             </button>
                         </div>
                     </div>

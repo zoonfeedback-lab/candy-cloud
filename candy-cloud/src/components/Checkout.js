@@ -42,10 +42,13 @@ function CheckoutContent() {
     // Active reward state (auto-applied from spinner)
     const [activeReward, setActiveReward] = useState(null);
     const [rewardLoading, setRewardLoading] = useState(false);
+    const [dbConfig, setDbConfig] = useState(null);
+    const [configLoading, setConfigLoading] = useState(false);
 
     const isDirect = searchParams.get("direct") === "true";
+    const configId = searchParams.get("configId");
 
-    // Auto-fetch active reward and settings on mount
+    // Auto-fetch active reward, settings, and db config on mount
     useEffect(() => {
         const fetchData = async () => {
             // Fetch Settings
@@ -69,6 +72,23 @@ function CheckoutContent() {
             }
 
             if (!isAuthenticated) return;
+
+            // Fetch Custom Config if configId present
+            if (configId) {
+                setConfigLoading(true);
+                try {
+                    const res = await authFetch(`/api/custom-configs/${configId}`);
+                    const data = await res.json();
+                    if (data.success) {
+                        setDbConfig(data.settings);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch custom config", err);
+                } finally {
+                    setConfigLoading(false);
+                }
+            }
+
             setRewardLoading(true);
             try {
                 const res = await authFetch(`/api/rewards/active`);
@@ -83,7 +103,7 @@ function CheckoutContent() {
             }
         };
         fetchData();
-    }, [isAuthenticated, authFetch]);
+    }, [isAuthenticated, authFetch, configId]);
 
     const isMethodEnabled = (methodId) => {
         if (!settings) return methodId === 'cod'; // Default allow COD if settings loading
@@ -94,27 +114,46 @@ function CheckoutContent() {
         return true;
     };
 
-    if (!isLoaded) return null;
+    if (!isLoaded || configLoading) return (
+        <div className="min-h-[50vh] flex items-center justify-center text-pink-500 font-bold">
+            {configLoading ? "Retreiving your custom configuration..." : "Loading checkout..."}
+        </div>
+    );
 
     let itemsToRender = cartItems;
     let itemsSubtotal = cartTotal;
 
     if (isDirect) {
-        const qtyStr = searchParams.get("qty");
-        const priceStr = searchParams.get("price");
-        const parsedQty = qtyStr ? parseInt(qtyStr, 10) : 1;
-        const parsedPrice = priceStr ? parseInt(priceStr, 10) : 0;
+        if (dbConfig) {
+            // Use config from DB
+            const directItem = {
+                id: dbConfig.id || "direct-bundle",
+                name: dbConfig.name || "Custom Bundle",
+                price: dbConfig.price || 0,
+                emoji: dbConfig.emoji || "✨",
+                quantity: dbConfig.qty || 1,
+                description: dbConfig.note || "Custom Configuration"
+            };
+            itemsToRender = [directItem];
+            itemsSubtotal = directItem.price * directItem.quantity;
+        } else {
+            // Fallback to URL parameters
+            const qtyStr = searchParams.get("qty");
+            const priceStr = searchParams.get("price");
+            const parsedQty = qtyStr ? parseInt(qtyStr, 10) : 1;
+            const parsedPrice = priceStr ? parseInt(priceStr, 10) : 0;
 
-        const directItem = {
-            id: searchParams.get("id") || "direct-bundle",
-            name: searchParams.get("name") || "Custom Bundle",
-            price: parsedPrice,
-            emoji: searchParams.get("emoji") || "✨",
-            quantity: parsedQty,
-            description: "Instant Purchase"
-        };
-        itemsToRender = [directItem];
-        itemsSubtotal = directItem.price * directItem.quantity;
+            const directItem = {
+                id: searchParams.get("id") || "direct-bundle",
+                name: searchParams.get("name") || "Custom Bundle",
+                price: parsedPrice,
+                emoji: searchParams.get("emoji") || "✨",
+                quantity: parsedQty,
+                description: "Instant Purchase"
+            };
+            itemsToRender = [directItem];
+            itemsSubtotal = directItem.price * directItem.quantity;
+        }
     }
 
     if (itemsToRender.length === 0) {

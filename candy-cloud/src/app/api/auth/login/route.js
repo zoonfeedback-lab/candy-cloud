@@ -24,7 +24,18 @@ export async function POST(request) {
         }
 
         const user = await User.findOne({ email }).select("+password");
-        if (!user || !(await user.matchPassword(password))) {
+        if (!user) {
+            return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
+        }
+
+        if (user.authProvider === "google" && !user.password) {
+            return NextResponse.json(
+                { success: false, message: "This account uses Google sign-in. Please continue with Google." },
+                { status: 401 }
+            );
+        }
+
+        if (!(await user.matchPassword(password))) {
             return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
         }
 

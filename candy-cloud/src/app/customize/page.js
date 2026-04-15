@@ -9,7 +9,8 @@ export default function CustomizePage() {
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState([]);
     const router = useRouter();
-    const { isAuthenticated, openAuthModal } = useAuth();
+    const [saving, setSaving] = useState(false);
+    const { isAuthenticated, openAuthModal, authFetch } = useAuth();
 
     const MAX_ITEMS = 10;
 
@@ -41,29 +42,67 @@ export default function CustomizePage() {
         });
     };
 
-    const handleBuyNow = () => {
+    const handleBuyNow = async () => {
         if (!isAuthenticated) {
             openAuthModal("login");
             return;
         }
         if (selected.length !== MAX_ITEMS) return;
 
-        const selectedNames = selected
-            .map((id) => products.find((p) => p._id === id)?.name)
-            .filter(Boolean)
-            .join(", ");
+        setSaving(true);
+        try {
+            const selectedNames = selected
+                .map((id) => products.find((p) => p._id === id)?.name)
+                .filter(Boolean)
+                .join(", ");
 
-        const queryParams = new URLSearchParams({
-            direct: "true",
-            id: "customize-cloud-deal",
-            name: "Customize Cloud Deal",
-            price: 3500,
-            emoji: "🌈",
-            qty: 1,
-            note: `Selected items: ${selectedNames}`,
-        }).toString();
+            // Save configuration to database
+            const configPayload = {
+                type: "customize",
+                settings: {
+                    id: "customize-cloud-deal",
+                    name: "Customize Cloud Deal",
+                    price: 3500,
+                    emoji: "🌈",
+                    qty: 1,
+                    note: `Selected items: ${selectedNames}`,
+                }
+            };
 
-        router.push(`/checkout?${queryParams}`);
+            const res = await authFetch("/api/custom-configs", {
+                method: "POST",
+                body: JSON.stringify(configPayload),
+            });
+
+            const data = await res.json();
+            if (data.success && data.configId) {
+                // Redirect with configId
+                router.push(`/checkout?direct=true&configId=${data.configId}`);
+            } else {
+                throw new Error(data.message || "Failed to save configuration");
+            }
+        } catch (err) {
+            console.error("Save config error:", err);
+            // Fallback to URL method
+            const selectedNames = selected
+                .map((id) => products.find((p) => p._id === id)?.name)
+                .filter(Boolean)
+                .join(", ");
+
+            const queryParams = new URLSearchParams({
+                direct: "true",
+                id: "customize-cloud-deal",
+                name: "Customize Cloud Deal",
+                price: 3500,
+                emoji: "🌈",
+                qty: 1,
+                note: `Selected items: ${selectedNames}`,
+            }).toString();
+
+            router.push(`/checkout?${queryParams}`);
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -152,16 +191,17 @@ export default function CustomizePage() {
                             <span className="text-2xl font-extrabold text-green-600">Rs 3,500</span>
                             <button
                                 onClick={handleBuyNow}
-                                disabled={selected.length !== MAX_ITEMS}
+                                disabled={selected.length !== MAX_ITEMS || saving}
                                 className={`
                                     px-8 py-3 rounded-2xl text-sm font-bold tracking-wide transition-all
-                                    ${selected.length === MAX_ITEMS
+                                    ${selected.length === MAX_ITEMS && !saving
                                         ? 'bg-gray-900 text-white hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer'
                                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                     }
+                                    ${saving ? "opacity-70" : ""}
                                 `}
                             >
-                                {selected.length === MAX_ITEMS ? 'BUY NOW' : `Select ${MAX_ITEMS - selected.length} more`}
+                                {saving ? "SAVING..." : (selected.length === MAX_ITEMS ? 'BUY NOW' : `Select ${MAX_ITEMS - selected.length} more`)}
                             </button>
                         </div>
                     </div>
