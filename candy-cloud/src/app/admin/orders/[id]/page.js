@@ -350,6 +350,11 @@ export default function AdminOrderDetail() {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-800 text-sm mb-0.5">{item.name}</p>
+                                                        {item.description && (
+                                                            <p className="max-w-md text-xs text-gray-500 leading-relaxed">
+                                                                {item.description}
+                                                            </p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </td>

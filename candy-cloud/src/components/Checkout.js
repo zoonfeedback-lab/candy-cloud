@@ -140,6 +140,7 @@ function CheckoutContent() {
             // Fallback to URL parameters
             const qtyStr = searchParams.get("qty");
             const priceStr = searchParams.get("price");
+            const noteStr = searchParams.get("note");
             const parsedQty = qtyStr ? parseInt(qtyStr, 10) : 1;
             const parsedPrice = priceStr ? parseInt(priceStr, 10) : 0;
 
@@ -149,7 +150,7 @@ function CheckoutContent() {
                 price: parsedPrice,
                 emoji: searchParams.get("emoji") || "✨",
                 quantity: parsedQty,
-                description: "Instant Purchase"
+                description: noteStr || "Instant Purchase"
             };
             itemsToRender = [directItem];
             itemsSubtotal = directItem.price * directItem.quantity;

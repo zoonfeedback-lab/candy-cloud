@@ -284,8 +284,13 @@ export default function AdminOrders() {
                                     <td className="py-4 font-medium text-gray-500 text-sm">
                                         {new Date(order.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                                     </td>
-                                    <td className="py-4 text-sm text-gray-600 font-medium truncate max-w-[200px]">
-                                        {order.itemsSummary}
+                                    <td className="py-4 text-sm text-gray-600 font-medium max-w-[240px]">
+                                        <div className="truncate">{order.itemsSummary}</div>
+                                        {order.itemsNote && (
+                                            <div className="mt-1 truncate text-xs text-gray-400 font-medium">
+                                                {order.itemsNote}
+                                            </div>
+                                        )}
                                     </td>
                                     <td className="py-4 font-black text-gray-900 text-sm">
                                         Rs {order.amount.toLocaleString()}

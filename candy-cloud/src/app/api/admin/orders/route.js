@@ -43,11 +43,13 @@ export async function GET(request) {
 
         const formattedOrders = orders.map((order) => {
             let itemsSummary = "No items";
+            let itemsNote = "";
             if (order.items && order.items.length > 0) {
                 const firstItemName = order.items[0].name;
                 const remainingCount = order.items.length - 1;
                 itemsSummary = remainingCount > 0 ? `${firstItemName} + ${remainingCount}` : `${firstItemName} (x${order.items[0].quantity})`;
                 if (firstItemName === "Custom Bundle") itemsSummary = "Custom Bundle";
+                itemsNote = order.items[0].description || "";
             }
 
             return {
@@ -60,6 +62,7 @@ export async function GET(request) {
                 amount: order.total,
                 status: order.orderStatus,
                 itemsSummary,
+                itemsNote,
                 isGoldenScoop: order.user?.hasSpun || order.couponCode ? true : false,
             };
         });
