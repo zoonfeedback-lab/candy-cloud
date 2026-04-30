@@ -4,9 +4,9 @@ import MysteryBuilder from "./MysteryBuilder";
 
 // Configuration Options
 const SCOOP_SIZES = [
-    { id: "mini", name: "Mini Scoop", weight: "250g", price: 1500, emoji: "🥄" },
-    { id: "mega", name: "Mega Scoop", weight: "500g", price: 3000, emoji: "🥣" },
-    { id: "ultimate", name: "Ultimate Scoop", weight: "1kg", price: 5000, emoji: "🛍️" },
+    { id: "mini", name: "Mini Scoop", price: 1500, emoji: "🥄" },
+    { id: "mega", name: "Mega Scoop", price: 3000, emoji: "🥣" },
+    { id: "ultimate", name: "Ultimate Scoop", price: 5000, emoji: "🛍️" },
 ];
 
 const SCOOP_ITEMS = [

@@ -47,7 +47,7 @@ export default function MysteryBuilder({
             price: selectedSize.price, // Cart context multiplies by qty automatically
             emoji: selectedColor.emoji,
             type: productType,
-            description: `Category: ${selectedCategory.name} | Theme: ${selectedColor.name} | Size: ${selectedSize.weight}`
+            description: `Category: ${selectedCategory.name} | Theme: ${selectedColor.name} | Size: ${selectedSize.name}`
         };
 
         addToCart(mysteryItem, quantity);
