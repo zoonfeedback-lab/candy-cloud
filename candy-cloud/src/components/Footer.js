@@ -156,6 +156,23 @@ export default function Footer() {
                     <path d="M0,0 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="url(#wave-gradient-bottom)" />
                 </svg>
             </div>
+
+            {/* Powered By */}
+            <div className="w-full bg-gradient-to-r from-[#f9a8d4] to-[#f472b6] py-6 relative z-20">
+                <div className="max-w-[1200px] mx-auto px-5">
+                    <a href="https://zoonlabs.com/" target="_blank" rel="noopener noreferrer" className="block">
+                        <Image 
+                            src="/images/Poweredby ZOON.png" 
+                            alt="Powered by ZOON" 
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            style={{ width: '100%', height: 'auto' }}
+                            className="opacity-90 hover:opacity-100 hover:scale-[1.01] transition-all duration-300 cursor-pointer"
+                        />
+                    </a>
+                </div>
+            </div>
         </footer>
     );
 }
