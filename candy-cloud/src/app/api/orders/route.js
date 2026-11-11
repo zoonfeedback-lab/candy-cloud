@@ -6,6 +6,7 @@ import Order from "@/models/Order";
 import Cart from "@/models/Cart";
 import Coupon from "@/models/Coupon";
 import Setting from "@/models/Setting";
+import { sendOrderNotification } from "@/lib/sendEmail";
 
 export async function GET(request) {
     try {
@@ -74,6 +75,9 @@ export async function POST(request) {
         }
 
         await Cart.findOneAndUpdate({ user: user._id }, { items: [] });
+
+        // Notification failure must not turn a successfully created order into a checkout error.
+        await sendOrderNotification(order);
 
         return NextResponse.json({ success: true, order }, { status: 201 });
     } catch (error) {
